@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:alhadiqa/screens/welcome_screen.dart';
 import 'package:alhadiqa/screens/login_screen.dart';
 import 'package:alhadiqa/screens/register_screen.dart';
+import 'package:alhadiqa/screens/home_screen.dart';
+import 'package:alhadiqa/screens/menu_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,6 +21,8 @@ class MyApp extends StatelessWidget {
         WelcomeScreen.id: (context) => WelcomeScreen(),
         RegisterScreen.id: (context) => RegisterScreen(),
         LoginScreen.id: (context) => LoginScreen(),
+        HomeScreen.id: (context) => HomeScreen(),
+        MenuScreen.id: (context) => MenuScreen(),
       },
     );
   }

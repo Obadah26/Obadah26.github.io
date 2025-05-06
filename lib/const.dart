@@ -1,14 +1,54 @@
 import 'package:flutter/material.dart';
 
-const kText = TextStyle(
-  fontSize: 20,
-  color: Color(0xFF2F4858),
-  fontWeight: FontWeight.bold,
-  shadows: [
-    Shadow(
-      color: Color.fromARGB(150, 31, 56, 72),
-      offset: Offset(2, 2),
-      blurRadius: 8,
-    ),
-  ],
+const Color primaryText = Color(0xFFD7D9CE); // Light beige
+const Color secondaryText = Color(0xFF0C7489); // Dark teal
+const Color accentText = Color(0xFF119DA4); // Vibrant teal
+
+const TextStyle kHeading1Text = TextStyle(
+  color: primaryText,
+  fontSize: 32,
+  fontWeight: FontWeight.w700,
+  height: 1.2,
+);
+
+const TextStyle kHeading2Text = TextStyle(
+  color: primaryText,
+  fontSize: 24,
+  fontWeight: FontWeight.w600,
+  height: 1.3,
+);
+
+const TextStyle kBodyLargeText = TextStyle(
+  color: primaryText,
+  fontSize: 18,
+  fontWeight: FontWeight.w400,
+  height: 1.5,
+);
+
+const TextStyle kBodyRegularText = TextStyle(
+  color: primaryText,
+  fontSize: 16,
+  fontWeight: FontWeight.w400,
+  height: 1.5,
+);
+
+const TextStyle kBodySmallText = TextStyle(
+  color: primaryText,
+  fontSize: 14,
+  fontWeight: FontWeight.w400,
+  height: 1.5,
+);
+
+const TextStyle kSecondaryText = TextStyle(
+  color: secondaryText,
+  fontSize: 16,
+  fontWeight: FontWeight.w500,
+);
+
+const TextStyle kLinkText = TextStyle(
+  color: accentText,
+  fontSize: 16,
+  fontWeight: FontWeight.w600,
+  decoration: TextDecoration.underline,
+  decorationColor: accentText,
 );
