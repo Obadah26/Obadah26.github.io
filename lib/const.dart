@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-const Color primaryText = Color(0xFFD7D9CE); // Light beige
-const Color secondaryText = Color(0xFF0C7489); // Dark teal
-const Color accentText = Color(0xFF119DA4); // Vibrant teal
+const Color primaryText = Color(0xFFD7D9CE);
+const Color secondaryText = Color(0xFF0C7489);
+const Color accentText = Color(0xFF119DA4);
 
 const TextStyle kHeading1Text = TextStyle(
   color: primaryText,

@@ -56,6 +56,30 @@ class _MenuScreenState extends State<MenuScreen> {
                 Text('التسميع اليومي', style: kHeading2Text),
               ],
             ),
+            Row(
+              children: [
+                IconButton(
+                  onPressed: () {
+                    //Navigator.pushNamed(context, routname?);
+                  },
+                  color: Color(0xffc0fcf9),
+                  icon: Icon(Icons.menu_book),
+                ),
+                Text('تسميع الاجازة', style: kHeading2Text),
+              ],
+            ),
+            Row(
+              children: [
+                IconButton(
+                  onPressed: () {
+                    //Navigator.pushNamed(context, routname?);
+                  },
+                  color: Color(0xffc0fcf9),
+                  icon: Icon(Icons.menu_book),
+                ),
+                Text('رمضان', style: kHeading2Text),
+              ],
+            ),
           ],
         ),
       ),
