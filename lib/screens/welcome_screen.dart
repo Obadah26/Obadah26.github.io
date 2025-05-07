@@ -13,16 +13,13 @@ class WelcomeScreen extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          BackgroundColor(
-            begin: Alignment.centerLeft,
-            end: Alignment.centerRight,
-          ),
+          BackgroundColor(),
           SafeArea(
             child: Center(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  SizedBox(height: 10),
+                  SizedBox(height: 300),
                   // Image.asset('images/example.jpeg', height: 100, width: 100),
                   SizedBox(height: 10),
                   Text('! مرحبا بكم في الحديقة', style: kHeading1TextDark),

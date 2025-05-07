@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:alhadiqa/screens/home_screen.dart';
 import 'package:alhadiqa/screens/menu_screen.dart';
+import 'package:alhadiqa/const.dart';
 
 class BottomBar extends StatelessWidget {
   const BottomBar({super.key});
@@ -11,33 +12,29 @@ class BottomBar extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        IconButton(
-          onPressed: () {},
-          icon: Icon(Icons.group),
-          color: Color(0xFFFFFFFF),
-        ),
-        IconButton(
-          onPressed: () {
-            Navigator.pushNamed(context, HomeScreen.id);
-          },
-          icon: Icon(Icons.home),
-          color: Color(0xFFFFFFFF),
-        ),
-        IconButton(
-          onPressed: () {
-            Navigator.pushNamed(context, MenuScreen.id);
-          },
-          icon: Icon(Icons.menu),
-          color: Color(0xFFFFFFFF),
-        ),
-        IconButton(
-          onPressed: () {
-            // Navigator.pushNamed(context, MenuScreen.id);
-          },
-          icon: Icon(Icons.notifications),
-          color: Color(0xFFFFFFFF),
-        ),
+        BottomBarIcons(icon: Icons.group, route: HomeScreen.id),
+        BottomBarIcons(icon: Icons.home, route: HomeScreen.id),
+        BottomBarIcons(icon: Icons.menu, route: MenuScreen.id),
+        BottomBarIcons(icon: Icons.notifications, route: HomeScreen.id),
       ],
+    );
+  }
+}
+
+class BottomBarIcons extends StatelessWidget {
+  const BottomBarIcons({super.key, required this.icon, required this.route});
+
+  final IconData icon;
+  final String route;
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      onPressed: () {
+        Navigator.pushNamed(context, route);
+      },
+      icon: Icon(icon),
+      color: kDarkPrimaryColor,
     );
   }
 }

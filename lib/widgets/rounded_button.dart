@@ -19,6 +19,7 @@ class RoundedButton extends StatelessWidget {
   static const accentColor = Color(0xFFFFEB3B);
   static const disabledColor = Color(0xFFB3E5FC);
   static const whiteColor = Color(0xFFFFFFFF);
+  static const blackColor = Color(0xFF212121);
   static const grayTextColor = Color(0xFF757575);
 
   @override
@@ -53,7 +54,12 @@ class RoundedButton extends StatelessWidget {
           child: Text(
             buttonText,
             style: TextStyle(
-              color: isDisabled ? grayTextColor : whiteColor,
+              color:
+                  isDisabled
+                      ? grayTextColor
+                      : isPrimary
+                      ? whiteColor
+                      : blackColor,
               fontSize: 16,
               fontWeight: FontWeight.w600,
             ),

@@ -20,7 +20,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          BackgroundColor(begin: Alignment.topLeft, end: Alignment.bottomRight),
+          BackgroundColor(),
           SafeArea(
             child: SingleChildScrollView(
               child: Column(
@@ -32,12 +32,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     icon: Icons.person,
                     textHint: 'name@email.com',
                     keyboardType: TextInputType.emailAddress,
+                    hintColor: kPrimaryTextDark.withValues(
+                      alpha: (0.199 * 255),
+                    ),
                   ),
                   SizedBox(height: 50),
                   RoundedTextField(
                     textHint: 'password',
                     icon: Icons.lock,
                     keyboardType: TextInputType.visiblePassword,
+                    hintColor: kPrimaryTextDark.withValues(
+                      alpha: (0.199 * 255),
+                    ),
                   ),
                   SizedBox(height: 40),
                   RoundedButton(route: HomeScreen.id, buttonText: 'إنشاء حساب'),

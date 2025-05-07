@@ -4,10 +4,16 @@ import 'package:flutter/material.dart';
 const Color kPrimaryTextLight = Color(0xFF212121); // Almost black
 const Color kSecondaryTextLight = Color(0xFF757575); // Gray
 const Color kPrimaryTextDark = Color(0xFFFFFFFF); // White on dark backgrounds
-const Color kAccentColor = Color(0xFF119DA4); // Accent color
+const Color kAccentColorText = Color(0xFF119DA4); // Accent color
 const Color kSecondaryColor = Color(0xFFB3E5FC); // Secondary color
 
-// Text Styles - All const
+// UI Colors
+const Color kLightPrimaryColor = Color(0xFFB3E5FC);
+const Color kPrimaryColor = Color(0xFF03A9F4);
+const Color kDarkPrimaryColor = Color(0xFF0288D1);
+const Color kAccentColor = Color(0xFFFFEB3B);
+const Color kBottomBarIconsColor = Color(0xFFFFFFFF);
+
 const TextStyle kHeading1Text = TextStyle(
   color: kPrimaryTextLight,
   fontSize: 32,
@@ -50,11 +56,11 @@ const TextStyle kSecondaryText = TextStyle(
 );
 
 const TextStyle kLinkText = TextStyle(
-  color: kAccentColor,
+  color: kAccentColorText,
   fontSize: 16,
   fontWeight: FontWeight.w600,
   decoration: TextDecoration.underline,
-  decorationColor: kAccentColor,
+  decorationColor: kAccentColorText,
 );
 
 // Dark Mode Variants (also const)
