@@ -5,8 +5,12 @@ import 'package:alhadiqa/screens/register_screen.dart';
 import 'package:alhadiqa/screens/home_screen.dart';
 import 'package:alhadiqa/screens/menu_screen.dart';
 import 'package:alhadiqa/screens/daily_recitation_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MyApp());
 }
 
