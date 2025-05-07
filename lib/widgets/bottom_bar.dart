@@ -14,21 +14,28 @@ class BottomBar extends StatelessWidget {
         IconButton(
           onPressed: () {},
           icon: Icon(Icons.group),
-          color: Color(0xffc0fcf9),
+          color: Color(0xFFFFFFFF),
         ),
         IconButton(
           onPressed: () {
             Navigator.pushNamed(context, HomeScreen.id);
           },
           icon: Icon(Icons.home),
-          color: Color(0xffc0fcf9),
+          color: Color(0xFFFFFFFF),
         ),
         IconButton(
           onPressed: () {
             Navigator.pushNamed(context, MenuScreen.id);
           },
           icon: Icon(Icons.menu),
-          color: Color(0xffc0fcf9),
+          color: Color(0xFFFFFFFF),
+        ),
+        IconButton(
+          onPressed: () {
+            // Navigator.pushNamed(context, MenuScreen.id);
+          },
+          icon: Icon(Icons.notifications),
+          color: Color(0xFFFFFFFF),
         ),
       ],
     );

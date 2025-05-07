@@ -20,13 +20,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          BackgroundColor(),
+          BackgroundColor(begin: Alignment.topLeft, end: Alignment.bottomRight),
           SafeArea(
             child: SingleChildScrollView(
               child: Column(
                 children: [
                   SizedBox(height: 50),
-                  Center(child: Text('إنشاء حساب', style: kHeading1Text)),
+                  Center(child: Text('إنشاء حساب', style: kHeading1TextDark)),
                   SizedBox(height: 50),
                   RoundedTextField(
                     icon: Icons.person,
@@ -40,14 +40,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     keyboardType: TextInputType.visiblePassword,
                   ),
                   SizedBox(height: 40),
-                  RoundedButton(
-                    route: HomeScreen.id,
-                    buttonText: 'إنشاء حساب',
-                    isPrimary: true,
-                  ),
+                  RoundedButton(route: HomeScreen.id, buttonText: 'إنشاء حساب'),
                   SizedBox(height: 50),
                   Center(
-                    child: Text('هل لديك حساب من قبل؟', style: kHeading2Text),
+                    child: Text(
+                      'هل لديك حساب من قبل؟',
+                      style: kHeading2TextDark,
+                    ),
                   ),
                   SizedBox(height: 50),
                   RoundedButton(

@@ -22,13 +22,13 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          BackgroundColor(),
+          BackgroundColor(begin: Alignment.topLeft, end: Alignment.bottomRight),
           SafeArea(
             child: SingleChildScrollView(
               child: Column(
                 children: [
                   SizedBox(height: 50),
-                  Center(child: Text('تسجيل دخول', style: kHeading1Text)),
+                  Center(child: Text('تسجيل دخول', style: kHeading1TextDark)),
                   SizedBox(height: 50),
                   RoundedTextField(
                     icon: Icons.person,
@@ -48,7 +48,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     children: [
                       Text(
                         'تذكرني',
-                        style: kBodySmallText.copyWith(
+                        style: kBodySmallTextDark.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -56,21 +56,21 @@ class _LoginScreenState extends State<LoginScreen> {
                         padding: const EdgeInsets.only(right: 8),
                         child: Checkbox(
                           value: _rememberMe,
-                          activeColor: Color(0xFF119DA4),
-                          checkColor: Color(0xFFD7D9CE),
+                          activeColor: Color(0xFFB3E5FC),
+                          checkColor: Color(0xFF03A9F4),
                           fillColor: WidgetStateProperty.resolveWith<Color>((
                             states,
                           ) {
                             if (states.contains(WidgetState.selected)) {
-                              return Color(0xFF119DA4);
+                              return Color(0xFFB3E5FC);
                             }
                             return Colors.transparent;
                           }),
                           side: BorderSide(
                             color:
                                 _rememberMe
-                                    ? Color(0xFF119DA4)
-                                    : Color(0xFF0C7489),
+                                    ? Color(0xFF03A9F4)
+                                    : Color(0xFFB3E5FC),
                             width: 1.5,
                           ),
                           shape: RoundedRectangleBorder(
@@ -86,13 +86,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     ],
                   ),
                   SizedBox(height: 10),
-                  RoundedButton(
-                    route: HomeScreen.id,
-                    buttonText: 'تسجيل دخول',
-                    isPrimary: true,
-                  ),
+                  RoundedButton(route: HomeScreen.id, buttonText: 'تسجيل دخول'),
                   SizedBox(height: 40),
-                  Center(child: Text('او', style: kHeading2Text)),
+                  Center(child: Text('او', style: kHeading2TextDark)),
                   SizedBox(height: 40),
                   RoundedButton(
                     route: RegisterScreen.id,

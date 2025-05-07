@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:alhadiqa/const.dart';
 import 'package:alhadiqa/widgets/bottom_bar.dart';
+import 'package:alhadiqa/widgets/background_color.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -15,21 +16,17 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(
-          child: Text(
-            'الحديقة',
-            style: kHeading1Text.copyWith(color: Color(0xffc0fcf9)),
-          ),
-        ),
+        title: Center(child: Text('الحديقة', style: kHeading1TextDark)),
         leading: null,
         automaticallyImplyLeading: false,
-        backgroundColor: Color(0xFF13505B),
+        backgroundColor: Color(0xFF0288D1),
         toolbarHeight: 50,
       ),
       bottomNavigationBar: BottomBar(),
-      backgroundColor: Color(0x6613505B),
+      backgroundColor: Color(0xFF03A9F4),
       body: Stack(
         children: [
+          BackgroundColor(begin: Alignment.topLeft, end: Alignment.centerRight),
           SafeArea(
             child: SingleChildScrollView(
               child: Column(
@@ -42,7 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       height: 225,
                       width: 400,
                       decoration: BoxDecoration(
-                        color: Color(0xffc0fcf9),
+                        color: Color(0xFFFFFFFF),
                         borderRadius: BorderRadius.circular(30),
                       ),
                     ),
@@ -52,7 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Container(
                       // التسميع اليومي
                       decoration: BoxDecoration(
-                        color: Color(0xffc0fcf9),
+                        color: Color(0xFFFFFFFF),
                         borderRadius: BorderRadius.circular(30),
                       ),
                       height: 225,
@@ -64,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Container(
                       // التسميع منذ انشاء التطبيق
                       decoration: BoxDecoration(
-                        color: Color(0xffc0fcf9),
+                        color: Color(0xFFFFFFFF),
                         borderRadius: BorderRadius.circular(30),
                       ),
                       height: 225,

@@ -15,10 +15,11 @@ class RoundedButton extends StatelessWidget {
   final bool isPrimary;
   final bool isDisabled;
 
-  static const primaryBase = Color(0xFF119DA4);
-  static const primaryReflection = Color(0xFF11F7A3);
-  static const secondaryBase = Color(0xFF0C7489);
-  static const disabledColor = Color(0x6613505B);
+  static const primaryColor = Color(0xFF03A9F4);
+  static const accentColor = Color(0xFFFFEB3B);
+  static const disabledColor = Color(0xFFB3E5FC);
+  static const whiteColor = Color(0xFFFFFFFF);
+  static const grayTextColor = Color(0xFF757575);
 
   @override
   Widget build(BuildContext context) {
@@ -41,25 +42,18 @@ class RoundedButton extends StatelessWidget {
         height: 50,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(30),
-          gradient:
+          color:
               isDisabled
-                  ? null
-                  : LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      isPrimary ? primaryReflection : Color(0x33FFFFFF),
-                      isPrimary ? primaryBase : secondaryBase,
-                    ],
-                    stops: const [0.0, 0.7],
-                  ),
-          color: isDisabled ? disabledColor : null,
+                  ? disabledColor
+                  : isPrimary
+                  ? primaryColor
+                  : accentColor,
         ),
         child: Center(
           child: Text(
             buttonText,
             style: TextStyle(
-              color: Colors.white,
+              color: isDisabled ? grayTextColor : whiteColor,
               fontSize: 16,
               fontWeight: FontWeight.w600,
             ),

@@ -13,29 +13,34 @@ class WelcomeScreen extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          BackgroundColor(),
+          BackgroundColor(
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+          ),
           SafeArea(
             child: Center(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  SizedBox(height: 50),
-                  CircleAvatar(radius: 150, backgroundColor: Color(0xFF119DA4)),
-                  SizedBox(height: 90),
-                  Text('! مرحبا بكم في الحديقة', style: kHeading1Text),
+                  SizedBox(height: 10),
+                  // Image.asset('images/example.jpeg', height: 100, width: 100),
+                  SizedBox(height: 10),
+                  Text('! مرحبا بكم في الحديقة', style: kHeading1TextDark),
                   SizedBox(height: 20),
-                  Text('نسال اللله حفظ القران', style: kHeading2Text),
-                  SizedBox(height: 70),
+                  Text(
+                    'نسأل الله أن يحفظ القرآن في قلوبنا وأعمالنا',
+                    style: kBodyRegularTextDark,
+                  ),
+                  SizedBox(height: 50),
                   RoundedButton(
                     route: LoginScreen.id,
                     buttonText: 'تسجيل دخول',
-                    isPrimary: true,
                   ),
                   SizedBox(height: 20),
                   RoundedButton(
-                    isPrimary: false,
                     buttonText: 'إنشاء حساب جديد',
                     route: RegisterScreen.id,
+                    isPrimary: false,
                   ),
                 ],
               ),
