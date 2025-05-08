@@ -21,7 +21,7 @@ class _MenuScreenState extends State<MenuScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(child: Text('القائمة', style: kHeading1TextDark)),
+        title: Center(child: Text('القائمة', style: kHeading1Text)),
         leading: null,
         automaticallyImplyLeading: false,
         backgroundColor: kDarkPrimaryColor,
