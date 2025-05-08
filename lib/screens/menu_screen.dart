@@ -26,7 +26,7 @@ class _MenuScreenState extends State<MenuScreen> {
         automaticallyImplyLeading: false,
         backgroundColor: kDarkPrimaryColor,
       ),
-      bottomNavigationBar: BottomBar(),
+      bottomNavigationBar: BottomBar(selectedIndex: 2),
       backgroundColor: Colors.white,
       body: SafeArea(
         child: Column(

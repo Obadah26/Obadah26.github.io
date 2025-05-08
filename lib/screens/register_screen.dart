@@ -3,7 +3,6 @@ import 'package:alhadiqa/widgets/rounded_text_field.dart';
 import 'package:alhadiqa/widgets/rounded_button.dart';
 import 'package:alhadiqa/screens/login_screen.dart';
 import 'package:alhadiqa/screens/home_screen.dart';
-import 'package:alhadiqa/widgets/background_color.dart';
 import 'package:alhadiqa/const.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_storage/get_storage.dart';
@@ -48,28 +47,61 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        toolbarHeight: 100,
+        title: Align(
+          alignment: Alignment.centerRight,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Icon(Icons.person_outlined, size: 35),
+                  SizedBox(width: 10),
+                  Text(
+                    'إنشاء حساب جديد',
+                    style: kHeading1Text.copyWith(fontSize: 25),
+                  ),
+                ],
+              ),
+              Text('! مرحبا بك في تطبيق الحديقة', style: kBodyRegularText),
+            ],
+          ),
+        ),
+        leading: null,
+        backgroundColor: Colors.transparent,
+      ),
       resizeToAvoidBottomInset: true,
+      backgroundColor: Colors.white,
       body: ModalProgressHUD(
         inAsyncCall: showSpinner,
         child: Stack(
           children: [
-            BackgroundColor(),
+            //BackgroundColor(),
             SafeArea(
               child: SingleChildScrollView(
                 child: Column(
                   children: [
                     SizedBox(height: 50),
-                    Center(child: Text('إنشاء حساب', style: kHeading1TextDark)),
+                    Center(
+                      child: Text(
+                        'الحديقة',
+                        style: kHeading1Text.copyWith(
+                          fontWeight: FontWeight.w900,
+                          color: kDarkPrimaryColor,
+                        ),
+                      ),
+                    ),
                     SizedBox(height: 50),
                     RoundedTextField(
-                      backgroundWhite: false,
                       obscure: false,
-                      textColor: kPrimaryTextDark,
+                      textColor: kPrimaryTextLight,
                       controller: emailController,
                       icon: Icons.person,
                       textHint: 'name@email.com',
                       keyboardType: TextInputType.emailAddress,
-                      hintColor: kPrimaryTextDark.withValues(
+                      hintColor: kPrimaryTextLight.withValues(
                         alpha: (0.199 * 255),
                       ),
                       onChanged: (value) {
@@ -78,14 +110,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     SizedBox(height: 50),
                     RoundedTextField(
-                      backgroundWhite: false,
                       obscure: true,
-                      textColor: kPrimaryTextDark,
+                      textColor: kPrimaryTextLight,
                       controller: passwordController,
                       textHint: 'password',
                       icon: Icons.lock,
                       keyboardType: TextInputType.visiblePassword,
-                      hintColor: kPrimaryTextDark.withValues(
+                      hintColor: kPrimaryTextLight.withValues(
                         alpha: (0.199 * 255),
                       ),
                       onChanged: (value) {
@@ -99,7 +130,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       children: [
                         Text(
                           'تذكرني',
-                          style: kBodySmallTextDark.copyWith(
+                          style: kBodySmallText.copyWith(
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -107,21 +138,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           padding: const EdgeInsets.only(right: 8),
                           child: Checkbox(
                             value: _rememberMe,
-                            activeColor: Color(0xFFB3E5FC),
-                            checkColor: Color(0xFF03A9F4),
+                            activeColor: kLightPrimaryColor,
+                            checkColor: Colors.white,
                             fillColor: WidgetStateProperty.resolveWith<Color>((
                               states,
                             ) {
                               if (states.contains(WidgetState.selected)) {
-                                return Color(0xFFB3E5FC);
+                                return kLightPrimaryColor;
                               }
                               return Colors.transparent;
                             }),
                             side: BorderSide(
                               color:
                                   _rememberMe
-                                      ? Color(0xFF03A9F4)
-                                      : Color(0xFFB3E5FC),
+                                      ? kPrimaryColor
+                                      : kLightPrimaryColor,
                               width: 1.5,
                             ),
                             shape: RoundedRectangleBorder(
@@ -136,7 +167,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 40),
+                    SizedBox(height: 10),
                     RoundedButton(
                       onPressed: () async {
                         setState(() {
@@ -187,14 +218,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       },
                       buttonText: 'إنشاء حساب',
                     ),
-                    SizedBox(height: 50),
+                    SizedBox(height: 40),
                     Center(
                       child: Text(
-                        'هل لديك حساب من قبل؟',
-                        style: kHeading2TextDark,
+                        'هل لديك حساب من قبل ؟',
+                        style: kBodyLargeText,
                       ),
                     ),
-                    SizedBox(height: 50),
+                    SizedBox(height: 40),
                     RoundedButton(
                       onPressed: () {
                         Navigator.pushNamed(context, LoginScreen.id);

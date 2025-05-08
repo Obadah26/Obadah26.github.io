@@ -1,4 +1,5 @@
 import 'package:alhadiqa/const.dart';
+import 'package:alhadiqa/screens/home_screen.dart';
 import 'package:alhadiqa/widgets/bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:alhadiqa/widgets/rounded_text_field.dart';
@@ -16,23 +17,48 @@ class _IjazahRecitationScreenState extends State<IjazahRecitationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(
-          child: Text(
-            'تسميع الاجازة',
-            style: kHeading1Text.copyWith(fontSize: 25),
+        title: Align(
+          alignment: Alignment.centerRight,
+          child: Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: Icon(Icons.person_outline, size: 50, color: Colors.white),
           ),
         ),
-        leading: null,
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 8),
+          child: IconButton(
+            onPressed: () {
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                HomeScreen.id,
+                (route) => false,
+              );
+            },
+            icon: Icon(
+              Icons.arrow_back_rounded,
+              color: Color(0xFFa1aab6),
+              size: 35,
+            ),
+          ),
+        ),
         automaticallyImplyLeading: false,
-        backgroundColor: kPrimaryColor,
+        backgroundColor: Colors.transparent,
+        toolbarHeight: 100,
       ),
-      bottomNavigationBar: BottomBar(),
+      bottomNavigationBar: BottomBar(selectedIndex: 2),
       backgroundColor: Colors.white,
       body: Stack(
         children: [
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
+              Align(
+                alignment: Alignment.centerRight,
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 8),
+                  child: Text('تسميع الاجازة', style: kHeading2Text),
+                ),
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
@@ -56,7 +82,6 @@ class _IjazahRecitationScreenState extends State<IjazahRecitationScreen> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   RoundedTextField(
-                    backgroundWhite: true,
                     obscure: false,
                     textColor: kPrimaryTextLight,
                     textHint: '312',
@@ -82,7 +107,6 @@ class _IjazahRecitationScreenState extends State<IjazahRecitationScreen> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   RoundedTextField(
-                    backgroundWhite: true,
                     obscure: false,
                     textColor: kPrimaryTextLight,
                     textHint: '330',
@@ -114,7 +138,9 @@ class _IjazahRecitationScreenState extends State<IjazahRecitationScreen> {
                       color: kPrimaryColor,
                       borderRadius: BorderRadius.circular(30),
                     ),
-                    child: Center(child: Text('حفظ', style: kBodyLargeText)),
+                    child: Center(
+                      child: Text('حفظ', style: kBodyLargeTextDark),
+                    ),
                   ),
                 ),
               ),

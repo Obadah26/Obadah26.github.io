@@ -1,3 +1,4 @@
+import 'package:alhadiqa/screens/menu_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:alhadiqa/const.dart';
 import 'package:alhadiqa/widgets/bottom_bar.dart';
@@ -40,18 +41,47 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(child: Text('الحديقة', style: kHeading1Text)),
-        leading: null,
+        title: Align(
+          alignment: Alignment.centerRight,
+          child: Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: IconButton(
+              onPressed: () {
+                Navigator.pushNamed(context, MenuScreen.id);
+              },
+              icon: Icon(Icons.menu, size: 50, color: Color(0xFFa1aab6)),
+            ),
+          ),
+        ),
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 8),
+          child: Icon(Icons.person_outline, color: Colors.white, size: 35),
+        ),
         automaticallyImplyLeading: false,
-        backgroundColor: kDarkPrimaryColor,
+        backgroundColor: Colors.transparent,
+        toolbarHeight: 100,
       ),
-      bottomNavigationBar: BottomBar(auth: _auth),
+      bottomNavigationBar: BottomBar(auth: _auth, selectedIndex: 1),
       backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              Align(
+                alignment: Alignment.centerRight,
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 8),
+                  child: Text('أهلاً، فلان', style: kHeading2Text),
+                ),
+              ),
+              Align(
+                alignment: Alignment.centerRight,
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 8),
+                  child: Text('الخميس، 8 مايو', style: kBodySmallText),
+                ),
+              ),
               SizedBox(height: 30),
               Center(
                 child: Container(
@@ -59,26 +89,55 @@ class _HomeScreenState extends State<HomeScreen> {
                   height: 225,
                   width: 400,
                   decoration: BoxDecoration(
-                    color: kPrimaryColor,
+                    color: Color(0xFFe6f2f6),
                     borderRadius: BorderRadius.circular(30),
+                    border: Border.all(color: kDarkPrimaryColor, width: 2),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          'أفضل 5 مسمعين خلال الشهر الماضي',
-                          style: kBodyLargeTextDark.copyWith(
-                            fontWeight: FontWeight.bold,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            'أفضل 5 مسمعين خلال الشهر الماضي',
+                            style: kBodyLargeTextDark.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: kDarkPrimaryColor,
+                            ),
                           ),
-                        ),
-                        Text('1. فلان', style: kBodyRegularTextDark),
-                        Text('2. فلان', style: kBodyRegularTextDark),
-                        Text('3. فلان', style: kBodyRegularTextDark),
-                        Text('4. فلان', style: kBodyRegularTextDark),
-                        Text('5. فلان', style: kBodyRegularTextDark),
-                      ],
+                          Text(
+                            '1. فلان',
+                            style: kBodyRegularTextDark.copyWith(
+                              color: kDarkPrimaryColor,
+                            ),
+                          ),
+                          Text(
+                            '2. فلان',
+                            style: kBodyRegularTextDark.copyWith(
+                              color: kDarkPrimaryColor,
+                            ),
+                          ),
+                          Text(
+                            '3. فلان',
+                            style: kBodyRegularTextDark.copyWith(
+                              color: kDarkPrimaryColor,
+                            ),
+                          ),
+                          Text(
+                            '4. فلان',
+                            style: kBodyRegularTextDark.copyWith(
+                              color: kDarkPrimaryColor,
+                            ),
+                          ),
+                          Text(
+                            '5. فلان',
+                            style: kBodyRegularTextDark.copyWith(
+                              color: kDarkPrimaryColor,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -96,7 +155,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Center(
                     child: Text(
                       'إِنَّا نَحْنُ نَزَّلْنَا الذِّكْرَ وَإِنَّا لَهُ لَحَافِظُونَ',
-                      style: kHeading2Text,
+                      style: kHeading2TextDark.copyWith(
+                        fontWeight: FontWeight.w900,
+                      ),
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -107,8 +168,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Container(
                   // التسميع منذ انشاء التطبيق
                   decoration: BoxDecoration(
-                    color: kPrimaryColor,
+                    color: Color(0xFFe6f2f6),
                     borderRadius: BorderRadius.circular(30),
+                    border: Border.all(color: kDarkPrimaryColor, width: 2),
                   ),
                   height: 225,
                   width: 400,

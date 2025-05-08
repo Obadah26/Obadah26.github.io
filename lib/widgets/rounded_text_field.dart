@@ -7,7 +7,7 @@ class RoundedTextField extends StatefulWidget {
     required this.textHint,
     this.icon,
     required this.keyboardType,
-    this.width,
+    this.width = 400,
     this.height,
     required this.hintColor,
     this.onChanged,
@@ -16,7 +16,6 @@ class RoundedTextField extends StatefulWidget {
     this.suffixIcon,
     this.onPressedIcon,
     required this.obscure,
-    required this.backgroundWhite,
   });
 
   final String textHint;
@@ -31,7 +30,6 @@ class RoundedTextField extends StatefulWidget {
   final Function()? onPressedIcon;
   final TextEditingController? controller;
   final bool obscure;
-  final bool backgroundWhite;
 
   @override
   State<RoundedTextField> createState() => _RoundedTextFieldState();
@@ -41,7 +39,6 @@ class _RoundedTextFieldState extends State<RoundedTextField> {
   late bool _obscureText;
   late IconData _suffixIcon;
   late bool _showSuffixIcon;
-  late bool _backgroundWhite;
 
   @override
   void initState() {
@@ -49,7 +46,6 @@ class _RoundedTextFieldState extends State<RoundedTextField> {
     _obscureText = widget.obscure;
     _suffixIcon = widget.obscure ? Icons.visibility_off : Icons.visibility;
     _showSuffixIcon = widget.keyboardType == TextInputType.visiblePassword;
-    _backgroundWhite = widget.backgroundWhite;
   }
 
   void _toggleVisibility() {
@@ -75,8 +71,7 @@ class _RoundedTextFieldState extends State<RoundedTextField> {
           style: TextStyle(color: widget.textColor),
           decoration: InputDecoration(
             filled: true,
-            fillColor:
-                _backgroundWhite ? Colors.white : const Color(0x0D03A9F4),
+            fillColor: Colors.white,
             enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(color: kPrimaryColor, width: 1.5),
               borderRadius: BorderRadius.circular(8.0),
@@ -87,7 +82,7 @@ class _RoundedTextFieldState extends State<RoundedTextField> {
             ),
             icon: Padding(
               padding: const EdgeInsets.only(left: 8),
-              child: Icon(widget.icon, color: Colors.white),
+              child: Icon(widget.icon, color: kDarkPrimaryColor),
             ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8.0),
@@ -102,7 +97,7 @@ class _RoundedTextFieldState extends State<RoundedTextField> {
             suffixIcon:
                 _showSuffixIcon
                     ? IconButton(
-                      icon: Icon(_suffixIcon, color: Colors.white),
+                      icon: Icon(_suffixIcon, color: kDarkPrimaryColor),
                       onPressed: _toggleVisibility,
                     )
                     : null,

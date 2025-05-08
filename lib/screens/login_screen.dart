@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:alhadiqa/widgets/rounded_text_field.dart';
 import 'package:alhadiqa/widgets/rounded_button.dart';
 import 'package:alhadiqa/screens/home_screen.dart';
-import 'package:alhadiqa/widgets/background_color.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:get_storage/get_storage.dart';
@@ -52,28 +51,61 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        toolbarHeight: 100,
+        title: Align(
+          alignment: Alignment.centerRight,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Icon(Icons.person_outlined, size: 35),
+                  SizedBox(width: 10),
+                  Text(
+                    'تسجيل دخول',
+                    style: kHeading1Text.copyWith(fontSize: 25),
+                  ),
+                ],
+              ),
+              Text('! مرحبا بك من جديد', style: kBodyRegularText),
+            ],
+          ),
+        ),
+        leading: null,
+        backgroundColor: Colors.transparent,
+      ),
+      backgroundColor: Colors.white,
       resizeToAvoidBottomInset: true,
       body: ModalProgressHUD(
         inAsyncCall: showSpinner,
         child: Stack(
           children: [
-            BackgroundColor(),
+            //BackgroundColor(),
             SafeArea(
               child: SingleChildScrollView(
                 child: Column(
                   children: [
                     SizedBox(height: 50),
-                    Center(child: Text('تسجيل دخول', style: kHeading1TextDark)),
+                    Center(
+                      child: Text(
+                        'الحديقة',
+                        style: kHeading1Text.copyWith(
+                          fontWeight: FontWeight.w900,
+                          color: kDarkPrimaryColor,
+                        ),
+                      ),
+                    ),
                     SizedBox(height: 50),
                     RoundedTextField(
-                      backgroundWhite: false,
                       obscure: false,
-                      textColor: kPrimaryTextDark,
+                      textColor: kPrimaryTextLight,
                       controller: emailController,
                       icon: Icons.person,
                       textHint: 'name@email.com',
                       keyboardType: TextInputType.emailAddress,
-                      hintColor: kPrimaryTextDark.withValues(
+                      hintColor: kPrimaryTextLight.withValues(
                         alpha: (0.199 * 255),
                       ),
                       onChanged: (value) {
@@ -82,14 +114,13 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     SizedBox(height: 50),
                     RoundedTextField(
-                      backgroundWhite: false,
                       obscure: true,
-                      textColor: kPrimaryTextDark,
+                      textColor: kPrimaryTextLight,
                       controller: passwordController,
                       textHint: 'password',
                       icon: Icons.lock,
                       keyboardType: TextInputType.visiblePassword,
-                      hintColor: kPrimaryTextDark.withValues(
+                      hintColor: kPrimaryTextLight.withValues(
                         alpha: (0.199 * 255),
                       ),
                       onChanged: (value) {
@@ -103,7 +134,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       children: [
                         Text(
                           'تذكرني',
-                          style: kBodySmallTextDark.copyWith(
+                          style: kBodySmallText.copyWith(
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -111,21 +142,21 @@ class _LoginScreenState extends State<LoginScreen> {
                           padding: const EdgeInsets.only(right: 8),
                           child: Checkbox(
                             value: _rememberMe,
-                            activeColor: Color(0xFFB3E5FC),
-                            checkColor: Color(0xFF03A9F4),
+                            activeColor: kLightPrimaryColor,
+                            checkColor: Colors.white,
                             fillColor: WidgetStateProperty.resolveWith<Color>((
                               states,
                             ) {
                               if (states.contains(WidgetState.selected)) {
-                                return Color(0xFFB3E5FC);
+                                return kLightPrimaryColor;
                               }
                               return Colors.transparent;
                             }),
                             side: BorderSide(
                               color:
                                   _rememberMe
-                                      ? Color(0xFF03A9F4)
-                                      : Color(0xFFB3E5FC),
+                                      ? kPrimaryColor
+                                      : kLightPrimaryColor,
                               width: 1.5,
                             ),
                             shape: RoundedRectangleBorder(
@@ -193,7 +224,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       buttonText: 'تسجيل دخول',
                     ),
                     SizedBox(height: 40),
-                    Center(child: Text('او', style: kHeading2TextDark)),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [Text('لم تسجل بعد ؟', style: kBodyLargeText)],
+                    ),
                     SizedBox(height: 40),
                     RoundedButton(
                       onPressed: () {

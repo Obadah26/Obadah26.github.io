@@ -1,4 +1,5 @@
 import 'package:alhadiqa/const.dart';
+import 'package:alhadiqa/screens/home_screen.dart';
 import 'package:alhadiqa/widgets/bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:alhadiqa/names.dart';
@@ -19,23 +20,48 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(
-          child: Text(
-            'التسميع اليومي',
-            style: kHeading1Text.copyWith(fontSize: 25),
+        title: Align(
+          alignment: Alignment.centerRight,
+          child: Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: Icon(Icons.group_outlined, size: 50, color: Colors.white),
           ),
         ),
-        leading: null,
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 8),
+          child: IconButton(
+            onPressed: () {
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                HomeScreen.id,
+                (route) => false,
+              );
+            },
+            icon: Icon(
+              Icons.arrow_back_rounded,
+              color: Color(0xFFa1aab6),
+              size: 35,
+            ),
+          ),
+        ),
         automaticallyImplyLeading: false,
-        backgroundColor: kPrimaryColor,
+        backgroundColor: Colors.transparent,
+        toolbarHeight: 100,
       ),
-      bottomNavigationBar: BottomBar(),
+      bottomNavigationBar: BottomBar(selectedIndex: 0),
       backgroundColor: Colors.white,
       body: Stack(
         children: [
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
+              Align(
+                alignment: Alignment.centerRight,
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 8),
+                  child: Text('التسميع اليومي', style: kHeading2Text),
+                ),
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
@@ -110,7 +136,6 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   RoundedTextField(
-                    backgroundWhite: true,
                     obscure: false,
                     textColor: kPrimaryTextLight,
                     textHint: '312',
@@ -136,7 +161,6 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   RoundedTextField(
-                    backgroundWhite: true,
                     obscure: false,
                     textColor: kPrimaryTextLight,
                     textHint: '330',
@@ -168,7 +192,9 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
                       color: kPrimaryColor,
                       borderRadius: BorderRadius.circular(30),
                     ),
-                    child: Center(child: Text('حفظ', style: kBodyLargeText)),
+                    child: Center(
+                      child: Text('حفظ', style: kBodyLargeTextDark),
+                    ),
                   ),
                 ),
               ),
