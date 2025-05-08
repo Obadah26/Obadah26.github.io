@@ -5,7 +5,7 @@ import 'package:alhadiqa/widgets/rounded_text_field.dart';
 
 class IjazahRecitationScreen extends StatefulWidget {
   const IjazahRecitationScreen({super.key});
-  static String id = 'daily_recitation_screen';
+  static String id = 'ijazah_recitation_screen';
 
   @override
   State<IjazahRecitationScreen> createState() => _IjazahRecitationScreenState();
