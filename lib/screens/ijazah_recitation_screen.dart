@@ -1,27 +1,24 @@
 import 'package:alhadiqa/const.dart';
 import 'package:alhadiqa/widgets/bottom_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:alhadiqa/names.dart';
 import 'package:alhadiqa/widgets/rounded_text_field.dart';
 
-class DailyRecitationScreen extends StatefulWidget {
-  const DailyRecitationScreen({super.key});
+class IjazahRecitationScreen extends StatefulWidget {
+  const IjazahRecitationScreen({super.key});
   static String id = 'daily_recitation_screen';
 
   @override
-  State<DailyRecitationScreen> createState() => _DailyRecitationScreenState();
+  State<IjazahRecitationScreen> createState() => _IjazahRecitationScreenState();
 }
 
-class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
-  String selectedName = 'أحمد';
-
+class _IjazahRecitationScreenState extends State<IjazahRecitationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Center(
           child: Text(
-            'التسميع اليومي',
+            'تسميع الاجازة',
             style: kHeading1Text.copyWith(fontSize: 25),
           ),
         ),
@@ -55,57 +52,6 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
                 ],
               ),
               SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Container(
-                    width: 250,
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: kDarkPrimaryColor, width: 1.5),
-                    ),
-                    child: DropdownButton<String>(
-                      isExpanded: true,
-                      value: selectedName,
-                      icon: const Icon(
-                        Icons.arrow_drop_down,
-                        color: kDarkPrimaryColor,
-                      ),
-                      iconSize: 24,
-                      elevation: 4,
-                      style: kBodyRegularText.copyWith(fontSize: 20),
-                      underline: Container(),
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          selectedName = newValue!;
-                        });
-                      },
-                      dropdownColor: Colors.white,
-                      items:
-                          names.map<DropdownMenuItem<String>>((String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Align(
-                                alignment: Alignment.center,
-                                child: Text(value),
-                              ),
-                            );
-                          }).toList(),
-                    ),
-                  ),
-                  SizedBox(width: 10),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      'سمعت مع',
-                      style: kBodyRegularText.copyWith(fontSize: 20),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 40),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [

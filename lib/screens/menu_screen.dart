@@ -1,12 +1,16 @@
 import 'package:alhadiqa/screens/daily_recitation_screen.dart';
 import 'package:alhadiqa/screens/home_screen.dart';
+import 'package:alhadiqa/screens/welcome_screen.dart';
+import 'package:alhadiqa/screens/ijazah_recitation_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:alhadiqa/const.dart';
 import 'package:alhadiqa/widgets/bottom_bar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class MenuScreen extends StatefulWidget {
-  const MenuScreen({super.key});
+  const MenuScreen({super.key, this.auth});
   static String id = 'menu_screen';
+  final FirebaseAuth? auth;
 
   @override
   State<MenuScreen> createState() => _MenuScreenState();
@@ -60,10 +64,10 @@ class _MenuScreenState extends State<MenuScreen> {
                     backgroundColor: kLightPrimaryColor,
                     child: IconButton(
                       onPressed: () {
-                        //Navigator.pushNamed(context, HomeScreen.id);
+                        Navigator.pushNamed(context, DailyRecitationScreen.id);
                       },
                       color: kDarkPrimaryColor,
-                      icon: Icon(Icons.menu_book),
+                      icon: Icon(Icons.group),
                     ),
                   ),
                 ),
@@ -84,16 +88,16 @@ class _MenuScreenState extends State<MenuScreen> {
                     backgroundColor: kLightPrimaryColor,
                     child: IconButton(
                       onPressed: () {
-                        //Navigator.pushNamed(context, HomeScreen.id);
+                        Navigator.pushNamed(context, IjazahRecitationScreen.id);
                       },
                       color: kDarkPrimaryColor,
-                      icon: Icon(Icons.menu_book),
+                      icon: Icon(Icons.person),
                     ),
                   ),
                 ),
                 GestureDetector(
                   onTap: () {
-                    // Navigator.pushNamed(context, HomeScreen.id);
+                    Navigator.pushNamed(context, IjazahRecitationScreen.id);
                   },
                   child: Text('تسميع الاجازة', style: kHeading2Text),
                 ),
@@ -111,7 +115,7 @@ class _MenuScreenState extends State<MenuScreen> {
                         //Navigator.pushNamed(context, HomeScreen.id);
                       },
                       color: kDarkPrimaryColor,
-                      icon: Icon(Icons.menu_book),
+                      icon: Icon(Icons.dark_mode),
                     ),
                   ),
                 ),
@@ -131,8 +135,17 @@ class _MenuScreenState extends State<MenuScreen> {
                   child: CircleAvatar(
                     backgroundColor: kLightPrimaryColor,
                     child: IconButton(
-                      onPressed: () {
-                        //Navigator.pushNamed(context, HomeScreen.id);
+                      onPressed: () async {
+                        if (widget.auth != null) {
+                          await widget.auth!.signOut();
+                          Navigator.pushNamedAndRemoveUntil(
+                            context,
+                            WelcomeScreen.id,
+                            (route) => false,
+                          );
+                        } else {
+                          print("Auth instance is null");
+                        }
                       },
                       color: kDarkPrimaryColor,
                       icon: Icon(Icons.logout),
@@ -140,8 +153,17 @@ class _MenuScreenState extends State<MenuScreen> {
                   ),
                 ),
                 GestureDetector(
-                  onTap: () {
-                    //Navigator.pushNamed(context, HomeScreen.id);
+                  onTap: () async {
+                    if (widget.auth != null) {
+                      await widget.auth!.signOut();
+                      Navigator.pushNamedAndRemoveUntil(
+                        context,
+                        WelcomeScreen.id,
+                        (route) => false,
+                      );
+                    } else {
+                      print("Auth instance is null");
+                    }
                   },
                   child: Text('تسجيل خروج', style: kHeading2Text),
                 ),

@@ -30,13 +30,17 @@ class WelcomeScreen extends StatelessWidget {
                   ),
                   SizedBox(height: 50),
                   RoundedButton(
-                    route: LoginScreen.id,
+                    onPressed: () {
+                      Navigator.pushNamed(context, LoginScreen.id);
+                    },
                     buttonText: 'تسجيل دخول',
                   ),
                   SizedBox(height: 20),
                   RoundedButton(
                     buttonText: 'إنشاء حساب جديد',
-                    route: RegisterScreen.id,
+                    onPressed: () {
+                      Navigator.pushNamed(context, RegisterScreen.id);
+                    },
                     isPrimary: false,
                   ),
                 ],

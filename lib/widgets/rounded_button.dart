@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:alhadiqa/screens/welcome_screen.dart';
 
 class RoundedButton extends StatelessWidget {
   const RoundedButton({
     super.key,
-    required this.route,
+    required this.onPressed,
     required this.buttonText,
     this.isPrimary = true,
     this.isDisabled = false,
   });
 
-  final String route;
+  final Function()? onPressed;
   final String buttonText;
   final bool isPrimary;
   final bool isDisabled;
@@ -25,15 +24,7 @@ class RoundedButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      onPressed:
-          isDisabled
-              ? null
-              : () => Navigator.pushNamedAndRemoveUntil(
-                context,
-                route,
-                (Route<dynamic> route) =>
-                    route.settings.name == WelcomeScreen.id,
-              ),
+      onPressed: onPressed,
       style: TextButton.styleFrom(
         padding: EdgeInsets.zero,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
