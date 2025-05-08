@@ -2,10 +2,12 @@ import 'package:alhadiqa/screens/daily_recitation_screen.dart';
 import 'package:alhadiqa/screens/home_screen.dart';
 import 'package:alhadiqa/screens/welcome_screen.dart';
 import 'package:alhadiqa/screens/ijazah_recitation_screen.dart';
+import 'package:alhadiqa/widgets/menu_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:alhadiqa/const.dart';
 import 'package:alhadiqa/widgets/bottom_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:adaptive_dialog/adaptive_dialog.dart';
 
 class MenuScreen extends StatefulWidget {
   const MenuScreen({super.key, this.auth});
@@ -20,157 +22,130 @@ class _MenuScreenState extends State<MenuScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: Center(child: Text('القائمة', style: kHeading1Text)),
-        leading: null,
+        title: Align(
+          alignment: Alignment.centerRight,
+          child: Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: Icon(Icons.menu, color: Colors.white, size: 50),
+          ),
+        ),
         automaticallyImplyLeading: false,
-        backgroundColor: kDarkPrimaryColor,
+        backgroundColor: Colors.transparent,
+        toolbarHeight: 100,
       ),
       bottomNavigationBar: BottomBar(selectedIndex: 2),
       backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Column(
-          children: [
-            SizedBox(height: 10),
-            Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: CircleAvatar(
-                    backgroundColor: kLightPrimaryColor,
-                    child: IconButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, HomeScreen.id);
-                      },
-                      color: kDarkPrimaryColor,
-                      icon: Icon(Icons.home),
+      body: Stack(
+        children: [
+          Positioned(
+            top: -35,
+            right: -75,
+            child: Container(
+              width: 250,
+              height: 225,
+              decoration: BoxDecoration(
+                color: Color(0xFF087ea2),
+                shape: BoxShape.circle,
+              ),
+            ),
+          ),
+          SafeArea(
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 8),
+                      child: Text('القائمة', style: kHeading1Text),
                     ),
                   ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pushNamed(context, HomeScreen.id);
-                  },
-                  child: Text('الرئيسية', style: kHeading2Text),
-                ),
-              ],
-            ),
-            SizedBox(height: 10),
-            Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: CircleAvatar(
-                    backgroundColor: kLightPrimaryColor,
-                    child: IconButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, DailyRecitationScreen.id);
-                      },
-                      color: kDarkPrimaryColor,
-                      icon: Icon(Icons.group),
-                    ),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pushNamed(context, DailyRecitationScreen.id);
-                  },
-                  child: Text('التسميع اليومي', style: kHeading2Text),
-                ),
-              ],
-            ),
-            SizedBox(height: 10),
-            Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: CircleAvatar(
-                    backgroundColor: kLightPrimaryColor,
-                    child: IconButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, IjazahRecitationScreen.id);
-                      },
-                      color: kDarkPrimaryColor,
-                      icon: Icon(Icons.person),
-                    ),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pushNamed(context, IjazahRecitationScreen.id);
-                  },
-                  child: Text('تسميع الاجازة', style: kHeading2Text),
-                ),
-              ],
-            ),
-            SizedBox(height: 10),
-            Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: CircleAvatar(
-                    backgroundColor: kLightPrimaryColor,
-                    child: IconButton(
-                      onPressed: () {
-                        //Navigator.pushNamed(context, HomeScreen.id);
-                      },
-                      color: kDarkPrimaryColor,
-                      icon: Icon(Icons.dark_mode),
-                    ),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    //Navigator.pushNamed(context, HomeScreen.id);
-                  },
-                  child: Text('رمضان', style: kHeading2Text),
-                ),
-              ],
-            ),
-            SizedBox(height: 10),
-            Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: CircleAvatar(
-                    backgroundColor: kLightPrimaryColor,
-                    child: IconButton(
-                      onPressed: () async {
-                        if (widget.auth != null) {
-                          await widget.auth!.signOut();
+                  SizedBox(height: 30),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      MenuButtons(
+                        icon: Icons.home,
+                        text: 'الرئيسية',
+                        onPressed: () {
                           Navigator.pushNamedAndRemoveUntil(
                             context,
-                            WelcomeScreen.id,
+                            HomeScreen.id,
                             (route) => false,
                           );
-                        } else {
-                          print("Auth instance is null");
-                        }
-                      },
-                      color: kDarkPrimaryColor,
-                      icon: Icon(Icons.logout),
-                    ),
+                        },
+                      ),
+                      SizedBox(width: 50),
+                      MenuButtons(
+                        icon: Icons.group,
+                        text: 'التسميع اليومي',
+                        size: 12,
+                        onPressed: () {
+                          Navigator.pushNamedAndRemoveUntil(
+                            context,
+                            DailyRecitationScreen.id,
+                            (route) => false,
+                          );
+                        },
+                      ),
+                    ],
                   ),
-                ),
-                GestureDetector(
-                  onTap: () async {
-                    if (widget.auth != null) {
-                      await widget.auth!.signOut();
-                      Navigator.pushNamedAndRemoveUntil(
-                        context,
-                        WelcomeScreen.id,
-                        (route) => false,
-                      );
-                    } else {
-                      print("Auth instance is null");
-                    }
-                  },
-                  child: Text('تسجيل خروج', style: kHeading2Text),
-                ),
-              ],
+                  SizedBox(height: 50),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      MenuButtons(
+                        icon: Icons.person,
+                        text: 'تسميع الاجازة',
+                        onPressed: () {
+                          Navigator.pushNamedAndRemoveUntil(
+                            context,
+                            IjazahRecitationScreen.id,
+                            (route) => false,
+                          );
+                        },
+                      ),
+                      SizedBox(width: 50),
+                      MenuButtons(
+                        icon: Icons.dark_mode,
+                        text: 'رمضان',
+                        onPressed: () {
+                          //Navigator.pushNamedAndRemoveUntil(context, route, (route) => false);
+                          showOkAlertDialog(
+                            context: context,
+                            title: 'رمضان',
+                            message: 'يتفعل خلال رمضان فقط',
+                            okLabel: 'حسناً',
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 50),
+                  MenuButtons(
+                    icon: Icons.logout,
+                    text: 'تسجيل خروج',
+                    onPressed: () async {
+                      if (widget.auth != null) {
+                        await widget.auth!.signOut();
+                        Navigator.pushNamedAndRemoveUntil(
+                          context,
+                          WelcomeScreen.id,
+                          (route) => false,
+                        );
+                      } else {
+                        print("Auth instance is null");
+                      }
+                    },
+                  ),
+                ],
+              ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

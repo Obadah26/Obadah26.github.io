@@ -47,7 +47,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         toolbarHeight: 100,
         title: Align(
           alignment: Alignment.centerRight,
@@ -78,7 +80,30 @@ class _RegisterScreenState extends State<RegisterScreen> {
         inAsyncCall: showSpinner,
         child: Stack(
           children: [
-            //BackgroundColor(),
+            Positioned(
+              top: -200,
+              left: -200,
+              child: Container(
+                width: 500,
+                height: 475,
+                decoration: BoxDecoration(
+                  color: Color(0xffcce3ea),
+                  shape: BoxShape.circle,
+                ),
+              ),
+            ),
+            Positioned(
+              top: -100,
+              right: -100,
+              child: Container(
+                width: 350,
+                height: 325,
+                decoration: BoxDecoration(
+                  color: Color(0xffa3cdd9),
+                  shape: BoxShape.circle,
+                ),
+              ),
+            ),
             SafeArea(
               child: SingleChildScrollView(
                 child: Column(

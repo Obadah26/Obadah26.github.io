@@ -40,6 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
         title: Align(
           alignment: Alignment.centerRight,
@@ -54,8 +55,8 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         leading: Padding(
-          padding: const EdgeInsets.only(left: 8),
-          child: Icon(Icons.person_outline, color: Colors.white, size: 35),
+          padding: const EdgeInsets.only(left: 50),
+          child: Icon(Icons.person_outline, color: Colors.white, size: 50),
         ),
         automaticallyImplyLeading: false,
         backgroundColor: Colors.transparent,
@@ -63,123 +64,139 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       bottomNavigationBar: BottomBar(auth: _auth, selectedIndex: 1),
       backgroundColor: Colors.white,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Align(
-                alignment: Alignment.centerRight,
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 8),
-                  child: Text('أهلاً، فلان', style: kHeading2Text),
-                ),
+      body: Stack(
+        children: [
+          Positioned(
+            top: -35,
+            left: -75,
+            child: Container(
+              width: 250,
+              height: 225,
+              decoration: BoxDecoration(
+                color: Color(0xFF087ea2),
+                shape: BoxShape.circle,
               ),
-              Align(
-                alignment: Alignment.centerRight,
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 8),
-                  child: Text('الخميس، 8 مايو', style: kBodySmallText),
-                ),
-              ),
-              SizedBox(height: 30),
-              Center(
-                child: Container(
-                  // أفضل 5 المسميعين خلال الشهر
-                  height: 225,
-                  width: 400,
-                  decoration: BoxDecoration(
-                    color: Color(0xFFe6f2f6),
-                    borderRadius: BorderRadius.circular(30),
-                    border: Border.all(color: kDarkPrimaryColor, width: 2),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            'أفضل 5 مسمعين خلال الشهر الماضي',
-                            style: kBodyLargeTextDark.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: kDarkPrimaryColor,
-                            ),
-                          ),
-                          Text(
-                            '1. فلان',
-                            style: kBodyRegularTextDark.copyWith(
-                              color: kDarkPrimaryColor,
-                            ),
-                          ),
-                          Text(
-                            '2. فلان',
-                            style: kBodyRegularTextDark.copyWith(
-                              color: kDarkPrimaryColor,
-                            ),
-                          ),
-                          Text(
-                            '3. فلان',
-                            style: kBodyRegularTextDark.copyWith(
-                              color: kDarkPrimaryColor,
-                            ),
-                          ),
-                          Text(
-                            '4. فلان',
-                            style: kBodyRegularTextDark.copyWith(
-                              color: kDarkPrimaryColor,
-                            ),
-                          ),
-                          Text(
-                            '5. فلان',
-                            style: kBodyRegularTextDark.copyWith(
-                              color: kDarkPrimaryColor,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(height: 30),
-              Center(
-                child: Container(
-                  // اية او نصيحة
-                  decoration: BoxDecoration(
-                    color: kLightPrimaryColor,
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  height: 225,
-                  width: 400,
-                  child: Center(
-                    child: Text(
-                      'إِنَّا نَحْنُ نَزَّلْنَا الذِّكْرَ وَإِنَّا لَهُ لَحَافِظُونَ',
-                      style: kHeading2TextDark.copyWith(
-                        fontWeight: FontWeight.w900,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(height: 30),
-              Center(
-                child: Container(
-                  // التسميع منذ انشاء التطبيق
-                  decoration: BoxDecoration(
-                    color: Color(0xFFe6f2f6),
-                    borderRadius: BorderRadius.circular(30),
-                    border: Border.all(color: kDarkPrimaryColor, width: 2),
-                  ),
-                  height: 225,
-                  width: 400,
-                ),
-              ),
-              SizedBox(height: 30),
-            ],
+            ),
           ),
-        ),
+          SafeArea(
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 8),
+                      child: Text('أهلاً، فلان', style: kHeading2Text),
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 8),
+                      child: Text('الخميس، 8 مايو', style: kBodySmallText),
+                    ),
+                  ),
+                  SizedBox(height: 30),
+                  Center(
+                    child: Container(
+                      // أفضل 5 المسميعين خلال الشهر
+                      height: 225,
+                      width: 400,
+                      decoration: BoxDecoration(
+                        color: Color(0xFFe6f2f6),
+                        borderRadius: BorderRadius.circular(30),
+                        border: Border.all(color: kDarkPrimaryColor, width: 2),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: SingleChildScrollView(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                'أفضل 5 مسمعين خلال الشهر الماضي',
+                                style: kBodyLargeTextDark.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: kDarkPrimaryColor,
+                                ),
+                              ),
+                              Text(
+                                '1. فلان',
+                                style: kBodyRegularTextDark.copyWith(
+                                  color: kDarkPrimaryColor,
+                                ),
+                              ),
+                              Text(
+                                '2. فلان',
+                                style: kBodyRegularTextDark.copyWith(
+                                  color: kDarkPrimaryColor,
+                                ),
+                              ),
+                              Text(
+                                '3. فلان',
+                                style: kBodyRegularTextDark.copyWith(
+                                  color: kDarkPrimaryColor,
+                                ),
+                              ),
+                              Text(
+                                '4. فلان',
+                                style: kBodyRegularTextDark.copyWith(
+                                  color: kDarkPrimaryColor,
+                                ),
+                              ),
+                              Text(
+                                '5. فلان',
+                                style: kBodyRegularTextDark.copyWith(
+                                  color: kDarkPrimaryColor,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 30),
+                  Center(
+                    child: Container(
+                      // اية او نصيحة
+                      decoration: BoxDecoration(
+                        color: kLightPrimaryColor,
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      height: 225,
+                      width: 400,
+                      child: Center(
+                        child: Text(
+                          'إِنَّا نَحْنُ نَزَّلْنَا الذِّكْرَ وَإِنَّا لَهُ لَحَافِظُونَ',
+                          style: kHeading2TextDark.copyWith(
+                            fontWeight: FontWeight.w900,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 30),
+                  Center(
+                    child: Container(
+                      // التسميع منذ انشاء التطبيق
+                      decoration: BoxDecoration(
+                        color: Color(0xFFe6f2f6),
+                        borderRadius: BorderRadius.circular(30),
+                        border: Border.all(color: kDarkPrimaryColor, width: 2),
+                      ),
+                      height: 225,
+                      width: 400,
+                    ),
+                  ),
+                  SizedBox(height: 30),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

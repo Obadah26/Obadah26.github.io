@@ -14,25 +14,25 @@ class WelcomeScreen extends StatelessWidget {
       body: Stack(
         children: [
           Positioned(
-            top: 20,
-            right: 20,
+            top: -200,
+            left: -200,
             child: Container(
-              width: 300,
-              height: 300,
+              width: 500,
+              height: 475,
               decoration: BoxDecoration(
-                color: Color(0xFF087ea2), // First circle color
+                color: Color(0xffcce3ea),
                 shape: BoxShape.circle,
               ),
             ),
           ),
           Positioned(
-            top: 50,
-            right: 50,
+            top: -100,
+            right: -100,
             child: Container(
-              width: 300,
-              height: 300,
+              width: 350,
+              height: 325,
               decoration: BoxDecoration(
-                color: Color(0xFF05a7be), // Second circle color
+                color: Color(0xffa3cdd9),
                 shape: BoxShape.circle,
               ),
             ),
