@@ -26,7 +26,7 @@ void main() async {
     MyApp(
       initialRoute:
           (rememberMe && user != null) ? HomeScreen.id : WelcomeScreen.id,
-      // initialRoute: HomeScreen.id,
+      // initialRoute: WelcomeScreen.id,
     ),
   );
 }

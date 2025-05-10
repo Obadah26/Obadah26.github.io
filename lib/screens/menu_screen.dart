@@ -10,6 +10,7 @@ import 'package:alhadiqa/const.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class MenuScreen extends StatefulWidget {
   const MenuScreen({super.key, this.auth});
@@ -59,7 +60,7 @@ class _MenuScreenState extends State<MenuScreen> {
               width: 250,
               height: 225,
               decoration: BoxDecoration(
-                color: kSecondaryColor,
+                color: kLightPrimaryColor,
                 shape: BoxShape.circle,
               ),
             ),
@@ -69,7 +70,12 @@ class _MenuScreenState extends State<MenuScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(height: 70),
-                Center(child: Text('القائمة', style: kHeading1Text)),
+                Center(
+                  child: Text(
+                    'القائمة',
+                    style: GoogleFonts.elMessiri(textStyle: kHeading1Text),
+                  ),
+                ),
                 SizedBox(height: 30),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,

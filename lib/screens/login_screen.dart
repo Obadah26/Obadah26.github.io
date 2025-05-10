@@ -1,3 +1,4 @@
+import 'package:alhadiqa/circle_painter.dart';
 import 'package:alhadiqa/const.dart';
 import 'package:alhadiqa/screens/register_screen.dart';
 import 'package:flutter/material.dart';
@@ -5,6 +6,7 @@ import 'package:alhadiqa/widgets/rounded_text_field.dart';
 import 'package:alhadiqa/widgets/rounded_button.dart';
 import 'package:alhadiqa/screens/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:get_storage/get_storage.dart';
 
@@ -56,11 +58,16 @@ class _LoginScreenState extends State<LoginScreen> {
                   SizedBox(width: 10),
                   Text(
                     'تسجيل دخول',
-                    style: kHeading1Text.copyWith(fontSize: 25),
+                    style: GoogleFonts.cairo(
+                      textStyle: kHeading1Text.copyWith(fontSize: 25),
+                    ),
                   ),
                 ],
               ),
-              Text('! مرحبا بك من جديد', style: kBodyRegularText),
+              Text(
+                '! مرحبا بك من جديد',
+                style: GoogleFonts.cairo(textStyle: kBodyRegularText),
+              ),
             ],
           ),
         ),
@@ -73,41 +80,23 @@ class _LoginScreenState extends State<LoginScreen> {
         inAsyncCall: showSpinner,
         child: Stack(
           children: [
-            Positioned(
-              top: -200,
-              left: -200,
-              child: Container(
-                width: 500,
-                height: 475,
-                decoration: BoxDecoration(
-                  color: Color(0xffdbefdc),
-                  shape: BoxShape.circle,
-                ),
-              ),
-            ),
-            Positioned(
-              top: -100,
-              right: -100,
-              child: Container(
-                width: 350,
-                height: 325,
-                decoration: BoxDecoration(
-                  color: Color(0xffbee2c0),
-                  shape: BoxShape.circle,
-                ),
-              ),
+            CustomPaint(
+              painter: CircleIntersectionPainter(),
+              size: Size(400, 400),
             ),
             SafeArea(
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    SizedBox(height: 50),
+                    SizedBox(height: 70),
                     Center(
                       child: Text(
                         'الحديقة',
-                        style: kHeading1Text.copyWith(
-                          fontWeight: FontWeight.w900,
-                          color: kSecondaryColor,
+                        style: GoogleFonts.elMessiri(
+                          textStyle: kHeading1Text.copyWith(
+                            color: kLightPrimaryColor,
+                            fontSize: 40,
+                          ),
                         ),
                       ),
                     ),
@@ -117,7 +106,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       textColor: kPrimaryTextLight,
                       controller: emailController,
                       icon: Icons.person,
-                      textHint: 'name@email.com',
+                      textHint: 'الايميل',
                       keyboardType: TextInputType.emailAddress,
                       hintColor: kPrimaryTextLight.withValues(
                         alpha: (0.199 * 255),
@@ -131,7 +120,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       obscure: true,
                       textColor: kPrimaryTextLight,
                       controller: passwordController,
-                      textHint: 'password',
+                      textHint: 'كلمة المرور',
                       icon: Icons.lock,
                       keyboardType: TextInputType.visiblePassword,
                       hintColor: kPrimaryTextLight.withValues(
@@ -141,15 +130,15 @@ class _LoginScreenState extends State<LoginScreen> {
                         password = value;
                       },
                     ),
-                    SizedBox(height: 20),
+                    SizedBox(height: 10),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Text(
                           'تذكرني',
-                          style: kBodySmallText.copyWith(
-                            fontWeight: FontWeight.bold,
+                          style: GoogleFonts.cairo(
+                            textStyle: kBodySmallText.copyWith(),
                           ),
                         ),
                         Padding(
@@ -236,12 +225,17 @@ class _LoginScreenState extends State<LoginScreen> {
                       },
                       buttonText: 'تسجيل دخول',
                     ),
-                    SizedBox(height: 40),
+                    SizedBox(height: 20),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: [Text('لم تسجل بعد ؟', style: kBodyLargeText)],
+                      children: [
+                        Text(
+                          'لم تسجل بعد ؟',
+                          style: GoogleFonts.cairo(textStyle: kBodySmallText),
+                        ),
+                      ],
                     ),
-                    SizedBox(height: 40),
+                    SizedBox(height: 20),
                     RoundedButton(
                       onPressed: () {
                         Navigator.pushNamed(context, RegisterScreen.id);

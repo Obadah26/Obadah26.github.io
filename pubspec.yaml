@@ -19,6 +19,7 @@ dependencies:
   get_storage: ^2.1.1
   adaptive_dialog: ^2.4.1
   intl: ^0.18.1
+  google_fonts: 
 
 dev_dependencies:
   flutter_test:
@@ -33,10 +34,5 @@ flutter:
   assets:
     - images/
   
-  fonts:
-    - family: Marhey
-      fonts:
-        - asset: fonts/Marhey-VariableFont_wght.ttf
-    - family: Oi
-      fonts:
-        - asset: fonts/Oi-Regular.ttf
+  #fonts:
+    

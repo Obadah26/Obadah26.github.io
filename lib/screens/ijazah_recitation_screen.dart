@@ -3,6 +3,7 @@ import 'package:alhadiqa/screens/home_screen.dart';
 import 'package:alhadiqa/widgets/rounded_button.dart';
 import 'package:flutter/material.dart';
 import 'package:alhadiqa/widgets/rounded_text_field.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class IjazahRecitationScreen extends StatefulWidget {
   const IjazahRecitationScreen({super.key});
@@ -38,11 +39,7 @@ class _IjazahRecitationScreenState extends State<IjazahRecitationScreen> {
                 (route) => false,
               );
             },
-            icon: Icon(
-              Icons.arrow_back_rounded,
-              color: kLightPrimaryColor,
-              size: 50,
-            ),
+            icon: Icon(Icons.arrow_back_rounded, size: 50),
           ),
         ),
       ),
@@ -79,21 +76,30 @@ class _IjazahRecitationScreenState extends State<IjazahRecitationScreen> {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   SizedBox(height: 100),
-                  Center(child: Text('تسميع الاجازة', style: kHeading2Text)),
+                  Center(
+                    child: Text(
+                      'تسميع الاجازة',
+                      style: GoogleFonts.elMessiri(textStyle: kHeading2Text),
+                    ),
+                  ),
+                  SizedBox(height: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Text(
                         ':',
-                        style: kBodyRegularText.copyWith(fontSize: 20),
+                        style: GoogleFonts.cairo(
+                          textStyle: kBodyRegularText.copyWith(fontSize: 20),
+                        ),
                         textAlign: TextAlign.right,
                       ),
                       Padding(
                         padding: const EdgeInsets.all(10),
                         child: Text(
                           'اضافة تسميع',
-                          style: kBodyRegularText.copyWith(fontSize: 20),
-                          textAlign: TextAlign.right,
+                          style: GoogleFonts.cairo(
+                            textStyle: kBodyRegularText.copyWith(fontSize: 20),
+                          ),
                         ),
                       ),
                     ],
@@ -117,7 +123,9 @@ class _IjazahRecitationScreenState extends State<IjazahRecitationScreen> {
                         padding: const EdgeInsets.all(10),
                         child: Text(
                           'من صفحة',
-                          style: kBodyRegularText.copyWith(fontSize: 20),
+                          style: GoogleFonts.cairo(
+                            textStyle: kBodyRegularText.copyWith(),
+                          ),
                         ),
                       ),
                     ],
@@ -141,7 +149,9 @@ class _IjazahRecitationScreenState extends State<IjazahRecitationScreen> {
                         padding: const EdgeInsets.all(10),
                         child: Text(
                           'الى صفحة',
-                          style: kBodyRegularText.copyWith(fontSize: 20),
+                          style: GoogleFonts.cairo(
+                            textStyle: kBodyRegularText.copyWith(),
+                          ),
                         ),
                       ),
                     ],

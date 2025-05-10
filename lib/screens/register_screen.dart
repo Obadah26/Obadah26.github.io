@@ -1,3 +1,4 @@
+import 'package:alhadiqa/circle_painter.dart';
 import 'package:flutter/material.dart';
 import 'package:alhadiqa/widgets/rounded_text_field.dart';
 import 'package:alhadiqa/widgets/rounded_button.dart';
@@ -5,7 +6,7 @@ import 'package:alhadiqa/screens/login_screen.dart';
 import 'package:alhadiqa/screens/home_screen.dart';
 import 'package:alhadiqa/const.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:get_storage/get_storage.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -44,11 +45,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   SizedBox(width: 10),
                   Text(
                     'إنشاء حساب جديد',
-                    style: kHeading1Text.copyWith(fontSize: 25),
+                    style: GoogleFonts.cairo(
+                      textStyle: kHeading1Text.copyWith(fontSize: 25),
+                    ),
                   ),
                 ],
               ),
-              Text('! مرحبا بك في تطبيق الحديقة', style: kBodyRegularText),
+              Text(
+                '! مرحبا بك في تطبيق الحديقة',
+                style: GoogleFonts.cairo(textStyle: kBodyRegularText),
+              ),
             ],
           ),
         ),
@@ -61,41 +67,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
         inAsyncCall: showSpinner,
         child: Stack(
           children: [
-            Positioned(
-              top: -200,
-              left: -200,
-              child: Container(
-                width: 500,
-                height: 475,
-                decoration: BoxDecoration(
-                  color: Color(0xffdbefdc),
-                  shape: BoxShape.circle,
-                ),
-              ),
-            ),
-            Positioned(
-              top: -100,
-              right: -100,
-              child: Container(
-                width: 350,
-                height: 325,
-                decoration: BoxDecoration(
-                  color: Color(0xffbee2c0),
-                  shape: BoxShape.circle,
-                ),
-              ),
+            CustomPaint(
+              painter: CircleIntersectionPainter(),
+              size: Size(400, 400), // Adjust size as needed
             ),
             SafeArea(
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    SizedBox(height: 50),
+                    SizedBox(height: 70),
                     Center(
                       child: Text(
                         'الحديقة',
-                        style: kHeading1Text.copyWith(
-                          fontWeight: FontWeight.w900,
-                          color: kSecondaryColor,
+                        style: GoogleFonts.elMessiri(
+                          textStyle: kHeading1Text.copyWith(
+                            color: kLightPrimaryColor,
+                            fontSize: 40,
+                          ),
                         ),
                       ),
                     ),
@@ -105,7 +93,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       textColor: kPrimaryTextLight,
                       controller: emailController,
                       icon: Icons.person,
-                      textHint: 'name@email.com',
+                      textHint: 'الايميل',
                       keyboardType: TextInputType.emailAddress,
                       hintColor: kPrimaryTextLight.withValues(
                         alpha: (0.199 * 255),
@@ -119,7 +107,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       obscure: true,
                       textColor: kPrimaryTextLight,
                       controller: passwordController,
-                      textHint: 'password',
+                      textHint: 'كلمة المرور',
                       icon: Icons.lock,
                       keyboardType: TextInputType.visiblePassword,
                       hintColor: kPrimaryTextLight.withValues(
@@ -129,7 +117,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         password = value;
                       },
                     ),
-                    SizedBox(height: 30),
+                    SizedBox(height: 50),
                     RoundedButton(
                       onPressed: () async {
                         setState(() {
@@ -171,14 +159,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       },
                       buttonText: 'إنشاء حساب',
                     ),
-                    SizedBox(height: 40),
+                    SizedBox(height: 20),
                     Center(
                       child: Text(
                         'هل لديك حساب من قبل ؟',
-                        style: kBodyLargeText,
+                        style: GoogleFonts.cairo(textStyle: kBodySmallText),
                       ),
                     ),
-                    SizedBox(height: 40),
+                    SizedBox(height: 20),
                     RoundedButton(
                       onPressed: () {
                         Navigator.pushNamed(context, LoginScreen.id);

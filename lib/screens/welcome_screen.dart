@@ -1,8 +1,10 @@
+import 'package:alhadiqa/circle_painter.dart';
 import 'package:flutter/material.dart';
 import 'package:alhadiqa/screens/login_screen.dart';
 import 'package:alhadiqa/screens/register_screen.dart';
 import 'package:alhadiqa/widgets/rounded_button.dart';
 import 'package:alhadiqa/const.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
@@ -13,45 +15,31 @@ class WelcomeScreen extends StatelessWidget {
       backgroundColor: Colors.white,
       body: Stack(
         children: [
-          Positioned(
-            top: -200,
-            left: -200,
-            child: Container(
-              width: 500,
-              height: 475,
-              decoration: BoxDecoration(
-                color: Color(0xffdbefdc),
-                shape: BoxShape.circle,
-              ),
-            ),
-          ),
-          Positioned(
-            top: -100,
-            right: -100,
-            child: Container(
-              width: 350,
-              height: 325,
-              decoration: BoxDecoration(
-                color: Color(0xffbee2c0),
-                shape: BoxShape.circle,
-              ),
-            ),
+          CustomPaint(
+            painter: CircleIntersectionPainter(),
+            size: Size(400, 400),
           ),
           SafeArea(
             child: Center(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Image.asset('images/example1.png'),
-                  SizedBox(height: 10),
+                  SizedBox(height: 50),
+                  Image.asset('images/example2.png'),
                   Text.rich(
                     TextSpan(
                       text: '! مرحبا بكم في ',
-                      style: kHeading1Text,
+                      style: GoogleFonts.elMessiri(
+                        textStyle: kHeading1Text.copyWith(fontSize: 20),
+                      ),
                       children: [
                         TextSpan(
                           text: 'الحديقة',
-                          style: kHeading1Text.copyWith(color: kSecondaryColor),
+                          style: GoogleFonts.elMessiri(
+                            textStyle: kHeading1Text.copyWith(
+                              color: kSecondaryColor,
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -59,7 +47,7 @@ class WelcomeScreen extends StatelessWidget {
                   SizedBox(height: 20),
                   Text(
                     'نسأل الله أن يحفظ القرآن في قلوبنا وأعمالنا',
-                    style: kBodyRegularText,
+                    style: GoogleFonts.cairo(textStyle: kBodyRegularText),
                   ),
                   SizedBox(height: 50),
                   RoundedButton(

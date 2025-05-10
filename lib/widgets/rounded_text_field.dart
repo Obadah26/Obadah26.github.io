@@ -1,5 +1,6 @@
 import 'package:alhadiqa/const.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class RoundedTextField extends StatefulWidget {
   const RoundedTextField({
@@ -7,7 +8,7 @@ class RoundedTextField extends StatefulWidget {
     required this.textHint,
     this.icon,
     required this.keyboardType,
-    this.width = 400,
+    this.width = 375,
     this.height,
     required this.hintColor,
     this.onChanged,
@@ -68,7 +69,9 @@ class _RoundedTextFieldState extends State<RoundedTextField> {
           onChanged: widget.onChanged,
           textAlign: TextAlign.center,
           keyboardType: widget.keyboardType,
-          style: TextStyle(color: widget.textColor),
+          style: GoogleFonts.cairo(
+            textStyle: TextStyle(color: widget.textColor),
+          ),
           decoration: InputDecoration(
             filled: true,
             fillColor: Colors.white,
@@ -82,14 +85,16 @@ class _RoundedTextFieldState extends State<RoundedTextField> {
             ),
             icon: Padding(
               padding: const EdgeInsets.only(left: 8),
-              child: Icon(widget.icon, color: kSecondaryColor),
+              child: Icon(widget.icon, color: kLightPrimaryColor),
             ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8.0),
               borderSide: BorderSide.none,
             ),
             hintText: widget.textHint,
-            hintStyle: TextStyle(color: widget.hintColor),
+            hintStyle: GoogleFonts.cairo(
+              textStyle: TextStyle(color: widget.hintColor),
+            ),
             contentPadding: const EdgeInsets.symmetric(
               vertical: 16,
               horizontal: 12,
@@ -97,7 +102,7 @@ class _RoundedTextFieldState extends State<RoundedTextField> {
             suffixIcon:
                 _showSuffixIcon
                     ? IconButton(
-                      icon: Icon(_suffixIcon, color: kSecondaryColor),
+                      icon: Icon(_suffixIcon, color: kLightPrimaryColor),
                       onPressed: _toggleVisibility,
                     )
                     : null,

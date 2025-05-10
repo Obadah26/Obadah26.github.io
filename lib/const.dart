@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 // Text Colors
 const Color kPrimaryTextLight = Color(0xFF212121); // Almost black

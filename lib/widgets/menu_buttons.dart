@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:alhadiqa/const.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class MenuButtons extends StatelessWidget {
   const MenuButtons({
@@ -18,7 +19,7 @@ class MenuButtons extends StatelessWidget {
       height: 100,
       width: 100,
       decoration: BoxDecoration(
-        color: Color(0xFFe5f6f1),
+        color: Color(0xFFe8f6f2),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(color: kLightPrimaryColor, width: 2),
       ),
@@ -28,16 +29,24 @@ class MenuButtons extends StatelessWidget {
           IconButton(
             onPressed: onPressed,
             color: Colors.white,
-            icon: Icon(icon, size: 50, color: kSecondaryColor),
+            icon: Icon(icon, size: 50, color: kLightPrimaryColor),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4.0),
             child: FittedBox(
               fit: BoxFit.scaleDown,
-              child: Text(
-                text,
-                style: kBodySmallText.copyWith(color: kSecondaryColor),
-                maxLines: 1,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 3),
+                child: Text(
+                  text,
+                  style: GoogleFonts.cairo(
+                    textStyle: kBodySmallText.copyWith(
+                      color: kLightPrimaryColor,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  maxLines: 1,
+                ),
               ),
             ),
           ),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:alhadiqa/const.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
@@ -59,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
               onPressed: () {
                 Navigator.pushNamed(context, MenuScreen.id);
               },
-              icon: Icon(Icons.menu, size: 50, color: kLightPrimaryColor),
+              icon: Icon(Icons.menu, size: 50),
             ),
           ),
         ),
@@ -71,7 +72,6 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Colors.transparent,
         toolbarHeight: 100,
       ),
-      // bottomNavigationBar: BottomBar(auth: _auth, selectedIndex: 1),
       backgroundColor: Colors.white,
       body: Stack(
         children: [
@@ -109,13 +109,23 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Text.rich(
                       TextSpan(
                         text: 'أهلاً',
-                        style: kHeading1Text,
+                        style: GoogleFonts.cairo(
+                          color: kPrimaryTextLight,
+                          fontSize: 32,
+                          fontWeight: FontWeight.w700,
+                          height: 1.2,
+                        ),
                         children: [
-                          TextSpan(text: '،', style: kHeading1Text),
+                          TextSpan(
+                            text: '،',
+                            style: GoogleFonts.cairo(textStyle: kHeading1Text),
+                          ),
                           TextSpan(
                             text: ' عبادة',
-                            style: kHeading1Text.copyWith(
-                              color: kSecondaryColor,
+                            style: GoogleFonts.cairo(
+                              textStyle: kHeading1Text.copyWith(
+                                color: kSecondaryColor,
+                              ),
                             ),
                           ),
                         ],
@@ -126,7 +136,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     alignment: Alignment.centerRight,
                     child: Padding(
                       padding: const EdgeInsets.only(right: 8),
-                      child: Text(arabicDate, style: kBodySmallText),
+                      child: Text(
+                        arabicDate,
+                        style: GoogleFonts.elMessiri(textStyle: kBodySmallText),
+                      ),
                     ),
                   ),
                   SizedBox(height: 30),
@@ -136,7 +149,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       height: 225,
                       width: 350,
                       decoration: BoxDecoration(
-                        color: Color(0xFFe5f6f1),
+                        color: Color(0xFFecf6ec),
                         borderRadius: BorderRadius.circular(16),
                         border: Border.all(color: kSecondaryColor, width: 2),
                       ),
@@ -148,39 +161,67 @@ class _HomeScreenState extends State<HomeScreen> {
                             children: [
                               Text(
                                 'أفضل 5 مسمعين خلال الشهر الماضي',
-                                style: kBodyLargeTextDark.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: kLightPrimaryColor,
+                                style: GoogleFonts.elMessiri(
+                                  textStyle: kBodyLargeTextDark.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: kSecondaryColor,
+                                    fontSize: 15,
+                                  ),
                                 ),
                               ),
-                              Text(
-                                '1. فلان',
-                                style: kBodyRegularTextDark.copyWith(
-                                  color: kLightPrimaryColor,
+                              Padding(
+                                padding: const EdgeInsets.all(2),
+                                child: Text(
+                                  '1. فلان',
+                                  style: GoogleFonts.elMessiri(
+                                    textStyle: kBodyRegularTextDark.copyWith(
+                                      color: kSecondaryColor,
+                                    ),
+                                  ),
                                 ),
                               ),
-                              Text(
-                                '2. فلان',
-                                style: kBodyRegularTextDark.copyWith(
-                                  color: kLightPrimaryColor,
+                              Padding(
+                                padding: const EdgeInsets.all(2),
+                                child: Text(
+                                  '2. فلان',
+                                  style: GoogleFonts.elMessiri(
+                                    textStyle: kBodyRegularTextDark.copyWith(
+                                      color: kSecondaryColor,
+                                    ),
+                                  ),
                                 ),
                               ),
-                              Text(
-                                '3. فلان',
-                                style: kBodyRegularTextDark.copyWith(
-                                  color: kLightPrimaryColor,
+                              Padding(
+                                padding: const EdgeInsets.all(2),
+                                child: Text(
+                                  '3. فلان',
+                                  style: GoogleFonts.elMessiri(
+                                    textStyle: kBodyRegularTextDark.copyWith(
+                                      color: kSecondaryColor,
+                                    ),
+                                  ),
                                 ),
                               ),
-                              Text(
-                                '4. فلان',
-                                style: kBodyRegularTextDark.copyWith(
-                                  color: kLightPrimaryColor,
+                              Padding(
+                                padding: const EdgeInsets.all(2),
+                                child: Text(
+                                  '4. فلان',
+                                  style: GoogleFonts.elMessiri(
+                                    textStyle: kBodyRegularTextDark.copyWith(
+                                      color: kSecondaryColor,
+                                    ),
+                                  ),
                                 ),
                               ),
-                              Text(
-                                '5. فلان',
-                                style: kBodyRegularTextDark.copyWith(
-                                  color: kLightPrimaryColor,
+                              Padding(
+                                padding: const EdgeInsets.all(2),
+                                child: Text(
+                                  '5. فلان',
+                                  style: GoogleFonts.elMessiri(
+                                    textStyle: kBodyRegularTextDark.copyWith(
+                                      color: kSecondaryColor,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ],
@@ -202,8 +243,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Center(
                         child: Text(
                           'إِنَّا نَحْنُ نَزَّلْنَا الذِّكْرَ وَإِنَّا لَهُ لَحَافِظُونَ',
-                          style: kHeading2TextDark.copyWith(
-                            fontWeight: FontWeight.w900,
+                          style: GoogleFonts.notoKufiArabic(
+                            textStyle: kHeading2TextDark.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                           textAlign: TextAlign.center,
                         ),

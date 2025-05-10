@@ -4,6 +4,7 @@ import 'package:alhadiqa/widgets/rounded_button.dart';
 import 'package:flutter/material.dart';
 import 'package:alhadiqa/names.dart';
 import 'package:alhadiqa/widgets/rounded_text_field.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class DailyRecitationScreen extends StatefulWidget {
   const DailyRecitationScreen({super.key});
@@ -16,7 +17,7 @@ class DailyRecitationScreen extends StatefulWidget {
 class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
   String selectedName = 'أحمد';
   int? selectedButtonIndex;
-  List<String> buttonTexts = ['مع نفسي', 'مع شخص اخر', 'لشخص اخر'];
+  List<String> buttonTexts = ['مع نفسي', 'مع شخص', 'لشخص'];
   bool withVisible = false;
   bool toVisible = false;
   bool inputVisible = false;
@@ -46,11 +47,7 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
                 (route) => false,
               );
             },
-            icon: Icon(
-              Icons.arrow_back_rounded,
-              color: kLightPrimaryColor,
-              size: 50,
-            ),
+            icon: Icon(Icons.arrow_back_rounded, size: 50),
           ),
         ),
       ),
@@ -87,21 +84,30 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   SizedBox(height: 60),
-                  Center(child: Text('التسميع اليومي', style: kHeading2Text)),
+                  Center(
+                    child: Text(
+                      'التسميع اليومي',
+                      style: GoogleFonts.elMessiri(textStyle: kHeading2Text),
+                    ),
+                  ),
+                  SizedBox(height: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Text(
                         ':',
-                        style: kBodyRegularText.copyWith(fontSize: 20),
+                        style: GoogleFonts.cairo(
+                          textStyle: kBodyRegularText.copyWith(fontSize: 20),
+                        ),
                         textAlign: TextAlign.right,
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
-                          'اضافة تسميع',
-                          style: kBodyRegularText.copyWith(fontSize: 20),
-                          textAlign: TextAlign.right,
+                          'قمت بالتسميع',
+                          style: GoogleFonts.cairo(
+                            textStyle: kBodyRegularText.copyWith(fontSize: 20),
+                          ),
                         ),
                       ),
                     ],
@@ -126,10 +132,10 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
                               borderRadius: BorderRadius.circular(16),
                               color:
                                   selectedButtonIndex == index
-                                      ? kSecondaryColor
+                                      ? kLightPrimaryColor
                                       : Colors.transparent,
                               border: Border.all(
-                                color: kSecondaryColor,
+                                color: kLightPrimaryColor,
                                 width: 2,
                               ),
                             ),
@@ -137,11 +143,14 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
                             width: 105,
                             child: Text(
                               buttonTexts[index],
-                              style: kBodySmallTextDark.copyWith(
-                                color:
-                                    selectedButtonIndex == index
-                                        ? Colors.white
-                                        : kSecondaryColor,
+                              style: GoogleFonts.cairo(
+                                textStyle: kBodySmallTextDark.copyWith(
+                                  color:
+                                      selectedButtonIndex == index
+                                          ? Colors.white
+                                          : kLightPrimaryColor,
+                                  fontSize: 12,
+                                ),
                               ),
                               textAlign: TextAlign.center,
                             ),
@@ -176,7 +185,9 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
                             ),
                             iconSize: 24,
                             elevation: 4,
-                            style: kBodyRegularText.copyWith(fontSize: 20),
+                            style: GoogleFonts.cairo(
+                              textStyle: kBodyRegularText.copyWith(),
+                            ),
                             underline: Container(),
                             onChanged: (String? newValue) {
                               setState(() {
@@ -203,7 +214,9 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
                           padding: const EdgeInsets.all(8.0),
                           child: Text(
                             'سمعت مع',
-                            style: kBodyRegularText.copyWith(fontSize: 20),
+                            style: GoogleFonts.cairo(
+                              textStyle: kBodyRegularText.copyWith(),
+                            ),
                           ),
                         ),
                       ],
@@ -234,7 +247,9 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
                             ),
                             iconSize: 24,
                             elevation: 4,
-                            style: kBodyRegularText.copyWith(fontSize: 20),
+                            style: GoogleFonts.cairo(
+                              textStyle: kBodyRegularText.copyWith(),
+                            ),
                             underline: Container(),
                             onChanged: (String? newValue) {
                               setState(() {
@@ -261,7 +276,9 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
                           padding: const EdgeInsets.all(8.0),
                           child: Text(
                             'سمعت ل',
-                            style: kBodyRegularText.copyWith(fontSize: 20),
+                            style: GoogleFonts.cairo(
+                              textStyle: kBodyRegularText.copyWith(),
+                            ),
                           ),
                         ),
                       ],
@@ -288,7 +305,9 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
                           padding: const EdgeInsets.all(8.0),
                           child: Text(
                             'من صفحة',
-                            style: kBodyRegularText.copyWith(fontSize: 20),
+                            style: GoogleFonts.cairo(
+                              textStyle: kBodyRegularText.copyWith(),
+                            ),
                           ),
                         ),
                       ],
@@ -315,7 +334,9 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
                           padding: const EdgeInsets.all(8.0),
                           child: Text(
                             'الى صفحة',
-                            style: kBodyRegularText.copyWith(fontSize: 20),
+                            style: GoogleFonts.cairo(
+                              textStyle: kBodyRegularText.copyWith(),
+                            ),
                           ),
                         ),
                       ],
