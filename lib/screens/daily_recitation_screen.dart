@@ -17,7 +17,7 @@ class DailyRecitationScreen extends StatefulWidget {
 class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
   String selectedName = 'أحمد';
   int? selectedButtonIndex;
-  List<String> buttonTexts = ['مع نفسي', 'مع شخص', 'لشخص'];
+  List<String> buttonTexts = ['مع شخص', 'لشخص'];
   bool withVisible = false;
   bool toVisible = false;
   bool inputVisible = false;
@@ -113,6 +113,7 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
                     ],
                   ),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: List.generate(buttonTexts.length, (index) {
                       return Padding(
                         padding: EdgeInsets.only(right: 8),
@@ -121,8 +122,8 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
                             setState(() {
                               if (selectedButtonIndex != index) {
                                 selectedButtonIndex = index;
-                                withVisible = (index == 1);
-                                toVisible = (index == 2);
+                                withVisible = (index == 0);
+                                toVisible = (index == 1);
                                 inputVisible = true;
                               }
                             });
@@ -196,7 +197,7 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
                             },
                             dropdownColor: Colors.white,
                             items:
-                                names.map<DropdownMenuItem<String>>((
+                                withNames.map<DropdownMenuItem<String>>((
                                   String value,
                                 ) {
                                   return DropdownMenuItem<String>(
@@ -258,7 +259,7 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
                             },
                             dropdownColor: Colors.white,
                             items:
-                                names.map<DropdownMenuItem<String>>((
+                                toNames.map<DropdownMenuItem<String>>((
                                   String value,
                                 ) {
                                   return DropdownMenuItem<String>(
