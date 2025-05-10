@@ -73,16 +73,16 @@ class _RoundedTextFieldState extends State<RoundedTextField> {
             filled: true,
             fillColor: Colors.white,
             enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: kPrimaryColor, width: 1.5),
+              borderSide: BorderSide(color: kLightPrimaryColor, width: 1.5),
               borderRadius: BorderRadius.circular(8.0),
             ),
             focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: kPrimaryColor, width: 2),
+              borderSide: BorderSide(color: kLightPrimaryColor, width: 2),
               borderRadius: BorderRadius.circular(8.0),
             ),
             icon: Padding(
               padding: const EdgeInsets.only(left: 8),
-              child: Icon(widget.icon, color: kDarkPrimaryColor),
+              child: Icon(widget.icon, color: kSecondaryColor),
             ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8.0),
@@ -97,7 +97,7 @@ class _RoundedTextFieldState extends State<RoundedTextField> {
             suffixIcon:
                 _showSuffixIcon
                     ? IconButton(
-                      icon: Icon(_suffixIcon, color: kDarkPrimaryColor),
+                      icon: Icon(_suffixIcon, color: kSecondaryColor),
                       onPressed: _toggleVisibility,
                     )
                     : null,

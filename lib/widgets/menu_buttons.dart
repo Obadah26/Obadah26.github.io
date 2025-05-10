@@ -7,34 +7,38 @@ class MenuButtons extends StatelessWidget {
     required this.icon,
     required this.text,
     required this.onPressed,
-    this.size,
   });
   final IconData icon;
   final String text;
   final Function() onPressed;
-  final double? size;
+
   @override
   Widget build(BuildContext context) {
     return Container(
       height: 100,
       width: 100,
       decoration: BoxDecoration(
-        color: Color(0xFFe6f2f6),
+        color: Color(0xFFe5f6f1),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: kDarkPrimaryColor, width: 2),
+        border: Border.all(color: kLightPrimaryColor, width: 2),
       ),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           IconButton(
             onPressed: onPressed,
             color: Colors.white,
-            icon: Icon(icon, size: 50, color: kDarkPrimaryColor),
+            icon: Icon(icon, size: 50, color: kSecondaryColor),
           ),
-          Text(
-            text,
-            style: kBodySmallText.copyWith(
-              fontSize: size,
-              color: kDarkPrimaryColor,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4.0),
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                text,
+                style: kBodySmallText.copyWith(color: kSecondaryColor),
+                maxLines: 1,
+              ),
             ),
           ),
         ],

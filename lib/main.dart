@@ -10,33 +10,25 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_storage/get_storage.dart';
 import 'firebase_options.dart';
+import 'package:alhadiqa/screens/ijazah_leaderboard.dart';
+import 'package:alhadiqa/screens/recitation_leaderboard.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await GetStorage.init();
-  final _storage = GetStorage();
-  User? user = FirebaseAuth.instance.currentUser;
 
-  if (user == null) {
-    String? savedEmail = _storage.read('email');
-    String? savedPassword = _storage.read('password');
-    bool rememberMe = _storage.read('remember_me') ?? false;
+  final box = GetStorage();
+  final bool rememberMe = box.read('rememberMe') ?? false;
+  final User? user = FirebaseAuth.instance.currentUser;
 
-    if (savedEmail != null && savedPassword != null && rememberMe) {
-      try {
-        await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: savedEmail,
-          password: savedPassword,
-        );
-        user = FirebaseAuth.instance.currentUser;
-      } catch (e) {
-        print("Auto-login failed: $e");
-      }
-    }
-  }
-
-  runApp(MyApp(initialRoute: user != null ? HomeScreen.id : WelcomeScreen.id));
+  runApp(
+    MyApp(
+      initialRoute:
+          (rememberMe && user != null) ? HomeScreen.id : WelcomeScreen.id,
+      // initialRoute: HomeScreen.id,
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -56,6 +48,9 @@ class MyApp extends StatelessWidget {
         MenuScreen.id: (context) => MenuScreen(),
         DailyRecitationScreen.id: (context) => DailyRecitationScreen(),
         IjazahRecitationScreen.id: (context) => IjazahRecitationScreen(),
+        RecitationLeaderboardScreen.id:
+            (context) => RecitationLeaderboardScreen(),
+        IjazahLeaderboardScreen.id: (context) => IjazahLeaderboardScreen(),
       },
     );
   }

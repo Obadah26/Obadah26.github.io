@@ -1,9 +1,10 @@
 import 'package:alhadiqa/screens/menu_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:alhadiqa/const.dart';
-import 'package:alhadiqa/widgets/bottom_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 final _firestore = FirebaseFirestore.instance;
 late User loggedInUser;
@@ -18,12 +19,13 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final _auth = FirebaseAuth.instance;
+  String arabicDate = '';
 
   @override
   void initState() {
     super.initState();
-
     getCurrentUser();
+    _loadArabicDate();
   }
 
   void getCurrentUser() async {
@@ -35,6 +37,13 @@ class _HomeScreenState extends State<HomeScreen> {
     } catch (e) {
       print(e);
     }
+  }
+
+  Future<void> _loadArabicDate() async {
+    await initializeDateFormatting('ar', null); // Initialize Arabic locale
+    setState(() {
+      arabicDate = DateFormat('EEEE، d MMMM', 'ar').format(DateTime.now());
+    });
   }
 
   @override
@@ -50,7 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
               onPressed: () {
                 Navigator.pushNamed(context, MenuScreen.id);
               },
-              icon: Icon(Icons.menu, size: 50, color: Color(0xFFa1aab6)),
+              icon: Icon(Icons.menu, size: 50, color: kLightPrimaryColor),
             ),
           ),
         ),
@@ -62,7 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Colors.transparent,
         toolbarHeight: 100,
       ),
-      bottomNavigationBar: BottomBar(auth: _auth, selectedIndex: 1),
+      // bottomNavigationBar: BottomBar(auth: _auth, selectedIndex: 1),
       backgroundColor: Colors.white,
       body: Stack(
         children: [
@@ -73,7 +82,19 @@ class _HomeScreenState extends State<HomeScreen> {
               width: 250,
               height: 225,
               decoration: BoxDecoration(
-                color: Color(0xFF087ea2),
+                color: kSecondaryColor,
+                shape: BoxShape.circle,
+              ),
+            ),
+          ),
+          Positioned(
+            bottom: -55,
+            right: -75,
+            child: Container(
+              width: 250,
+              height: 225,
+              decoration: BoxDecoration(
+                color: kSecondaryColor,
                 shape: BoxShape.circle,
               ),
             ),
@@ -85,16 +106,27 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   Align(
                     alignment: Alignment.centerRight,
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 8),
-                      child: Text('أهلاً، فلان', style: kHeading2Text),
+                    child: Text.rich(
+                      TextSpan(
+                        text: 'أهلاً',
+                        style: kHeading1Text,
+                        children: [
+                          TextSpan(text: '،', style: kHeading1Text),
+                          TextSpan(
+                            text: ' عبادة',
+                            style: kHeading1Text.copyWith(
+                              color: kSecondaryColor,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   Align(
                     alignment: Alignment.centerRight,
                     child: Padding(
                       padding: const EdgeInsets.only(right: 8),
-                      child: Text('الخميس، 8 مايو', style: kBodySmallText),
+                      child: Text(arabicDate, style: kBodySmallText),
                     ),
                   ),
                   SizedBox(height: 30),
@@ -102,11 +134,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Container(
                       // أفضل 5 المسميعين خلال الشهر
                       height: 225,
-                      width: 400,
+                      width: 350,
                       decoration: BoxDecoration(
-                        color: Color(0xFFe6f2f6),
-                        borderRadius: BorderRadius.circular(30),
-                        border: Border.all(color: kDarkPrimaryColor, width: 2),
+                        color: Color(0xFFe5f6f1),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: kSecondaryColor, width: 2),
                       ),
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -118,37 +150,37 @@ class _HomeScreenState extends State<HomeScreen> {
                                 'أفضل 5 مسمعين خلال الشهر الماضي',
                                 style: kBodyLargeTextDark.copyWith(
                                   fontWeight: FontWeight.bold,
-                                  color: kDarkPrimaryColor,
+                                  color: kLightPrimaryColor,
                                 ),
                               ),
                               Text(
                                 '1. فلان',
                                 style: kBodyRegularTextDark.copyWith(
-                                  color: kDarkPrimaryColor,
+                                  color: kLightPrimaryColor,
                                 ),
                               ),
                               Text(
                                 '2. فلان',
                                 style: kBodyRegularTextDark.copyWith(
-                                  color: kDarkPrimaryColor,
+                                  color: kLightPrimaryColor,
                                 ),
                               ),
                               Text(
                                 '3. فلان',
                                 style: kBodyRegularTextDark.copyWith(
-                                  color: kDarkPrimaryColor,
+                                  color: kLightPrimaryColor,
                                 ),
                               ),
                               Text(
                                 '4. فلان',
                                 style: kBodyRegularTextDark.copyWith(
-                                  color: kDarkPrimaryColor,
+                                  color: kLightPrimaryColor,
                                 ),
                               ),
                               Text(
                                 '5. فلان',
                                 style: kBodyRegularTextDark.copyWith(
-                                  color: kDarkPrimaryColor,
+                                  color: kLightPrimaryColor,
                                 ),
                               ),
                             ],
@@ -162,11 +194,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Container(
                       // اية او نصيحة
                       decoration: BoxDecoration(
-                        color: kLightPrimaryColor,
-                        borderRadius: BorderRadius.circular(30),
+                        color: kSecondaryColor,
+                        borderRadius: BorderRadius.circular(16),
                       ),
                       height: 225,
-                      width: 400,
+                      width: 350,
                       child: Center(
                         child: Text(
                           'إِنَّا نَحْنُ نَزَّلْنَا الذِّكْرَ وَإِنَّا لَهُ لَحَافِظُونَ',
@@ -183,12 +215,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Container(
                       // التسميع منذ انشاء التطبيق
                       decoration: BoxDecoration(
-                        color: Color(0xFFe6f2f6),
-                        borderRadius: BorderRadius.circular(30),
-                        border: Border.all(color: kDarkPrimaryColor, width: 2),
+                        color: Colors.green.shade100,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: kSecondaryColor, width: 2),
                       ),
                       height: 225,
-                      width: 400,
+                      width: 350,
                     ),
                   ),
                   SizedBox(height: 30),

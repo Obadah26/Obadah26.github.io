@@ -20,7 +20,7 @@ class WelcomeScreen extends StatelessWidget {
               width: 500,
               height: 475,
               decoration: BoxDecoration(
-                color: Color(0xffcce3ea),
+                color: Color(0xffdbefdc),
                 shape: BoxShape.circle,
               ),
             ),
@@ -32,7 +32,7 @@ class WelcomeScreen extends StatelessWidget {
               width: 350,
               height: 325,
               decoration: BoxDecoration(
-                color: Color(0xffa3cdd9),
+                color: Color(0xffbee2c0),
                 shape: BoxShape.circle,
               ),
             ),
@@ -42,10 +42,20 @@ class WelcomeScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  SizedBox(height: 300),
-                  // Image.asset('images/example.jpeg', height: 100, width: 100),
+                  Image.asset('images/example1.png'),
                   SizedBox(height: 10),
-                  Text('! مرحبا بكم في الحديقة', style: kHeading1Text),
+                  Text.rich(
+                    TextSpan(
+                      text: '! مرحبا بكم في ',
+                      style: kHeading1Text,
+                      children: [
+                        TextSpan(
+                          text: 'الحديقة',
+                          style: kHeading1Text.copyWith(color: kSecondaryColor),
+                        ),
+                      ],
+                    ),
+                  ),
                   SizedBox(height: 20),
                   Text(
                     'نسأل الله أن يحفظ القرآن في قلوبنا وأعمالنا',

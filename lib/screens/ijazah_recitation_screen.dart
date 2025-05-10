@@ -1,6 +1,6 @@
 import 'package:alhadiqa/const.dart';
 import 'package:alhadiqa/screens/home_screen.dart';
-import 'package:alhadiqa/widgets/bottom_bar.dart';
+import 'package:alhadiqa/widgets/rounded_button.dart';
 import 'package:flutter/material.dart';
 import 'package:alhadiqa/widgets/rounded_text_field.dart';
 
@@ -25,8 +25,11 @@ class _IjazahRecitationScreenState extends State<IjazahRecitationScreen> {
             child: Icon(Icons.person_outline, size: 50, color: Colors.white),
           ),
         ),
+        automaticallyImplyLeading: false,
+        backgroundColor: Colors.transparent,
+        toolbarHeight: 100,
         leading: Padding(
-          padding: const EdgeInsets.only(left: 8),
+          padding: const EdgeInsets.only(left: 15),
           child: IconButton(
             onPressed: () {
               Navigator.pushNamedAndRemoveUntil(
@@ -37,16 +40,12 @@ class _IjazahRecitationScreenState extends State<IjazahRecitationScreen> {
             },
             icon: Icon(
               Icons.arrow_back_rounded,
-              color: Color(0xFFa1aab6),
-              size: 35,
+              color: kLightPrimaryColor,
+              size: 50,
             ),
           ),
         ),
-        automaticallyImplyLeading: false,
-        backgroundColor: Colors.transparent,
-        toolbarHeight: 100,
       ),
-      bottomNavigationBar: BottomBar(selectedIndex: 2),
       backgroundColor: Colors.white,
       body: Stack(
         children: [
@@ -57,24 +56,30 @@ class _IjazahRecitationScreenState extends State<IjazahRecitationScreen> {
               width: 225,
               height: 200,
               decoration: BoxDecoration(
-                color: Color(0xFF087ea2),
+                color: kSecondaryColor,
                 shape: BoxShape.circle,
               ),
             ),
           ),
-          SafeArea(
-            child: SingleChildScrollView(
+          Positioned(
+            bottom: -35,
+            left: -75,
+            child: Container(
+              width: 225,
+              height: 200,
+              decoration: BoxDecoration(
+                color: kLightPrimaryColor,
+                shape: BoxShape.circle,
+              ),
+            ),
+          ),
+          SingleChildScrollView(
+            child: SafeArea(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  SizedBox(height: 10),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 8),
-                      child: Text('تسميع الاجازة', style: kHeading2Text),
-                    ),
-                  ),
+                  SizedBox(height: 100),
+                  Center(child: Text('تسميع الاجازة', style: kHeading2Text)),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
@@ -84,7 +89,7 @@ class _IjazahRecitationScreenState extends State<IjazahRecitationScreen> {
                         textAlign: TextAlign.right,
                       ),
                       Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding: const EdgeInsets.all(10),
                         child: Text(
                           'اضافة تسميع',
                           style: kBodyRegularText.copyWith(fontSize: 20),
@@ -101,7 +106,6 @@ class _IjazahRecitationScreenState extends State<IjazahRecitationScreen> {
                         obscure: false,
                         textColor: kPrimaryTextLight,
                         textHint: '312',
-                        icon: Icons.numbers,
                         keyboardType: TextInputType.number,
                         width: 150,
                         height: 50,
@@ -110,7 +114,7 @@ class _IjazahRecitationScreenState extends State<IjazahRecitationScreen> {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding: const EdgeInsets.all(10),
                         child: Text(
                           'من صفحة',
                           style: kBodyRegularText.copyWith(fontSize: 20),
@@ -126,7 +130,6 @@ class _IjazahRecitationScreenState extends State<IjazahRecitationScreen> {
                         obscure: false,
                         textColor: kPrimaryTextLight,
                         textHint: '330',
-                        icon: Icons.numbers,
                         keyboardType: TextInputType.number,
                         width: 150,
                         height: 50,
@@ -135,7 +138,7 @@ class _IjazahRecitationScreenState extends State<IjazahRecitationScreen> {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding: const EdgeInsets.all(10),
                         child: Text(
                           'الى صفحة',
                           style: kBodyRegularText.copyWith(fontSize: 20),
@@ -145,21 +148,13 @@ class _IjazahRecitationScreenState extends State<IjazahRecitationScreen> {
                   ),
                   SizedBox(height: 50),
                   Center(
-                    child: TextButton(
+                    child: RoundedButton(
+                      buttonText: 'حفظ',
+                      isPrimary: false,
                       onPressed: () {},
-                      child: Container(
-                        width: 250,
-                        height: 50,
-                        decoration: BoxDecoration(
-                          color: kPrimaryColor,
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        child: Center(
-                          child: Text('حفظ', style: kBodyLargeTextDark),
-                        ),
-                      ),
                     ),
                   ),
+                  SizedBox(height: 300),
                 ],
               ),
             ),

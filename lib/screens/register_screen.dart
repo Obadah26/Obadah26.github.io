@@ -18,31 +18,12 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final _auth = FirebaseAuth.instance;
-  final _storage = GetStorage();
   String email = '';
   String password = '';
-  bool _rememberMe = false;
   bool showSpinner = false;
 
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    _loadRememberedUser();
-  }
-
-  // Load saved credentials from GetStorage
-  void _loadRememberedUser() {
-    String? storedEmail = _storage.read('email');
-    String? storedPassword = _storage.read('password');
-    setState(() {
-      email = storedEmail ?? '';
-      password = storedPassword ?? '';
-      _rememberMe = email.isNotEmpty && password.isNotEmpty;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +68,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 width: 500,
                 height: 475,
                 decoration: BoxDecoration(
-                  color: Color(0xffcce3ea),
+                  color: Color(0xffdbefdc),
                   shape: BoxShape.circle,
                 ),
               ),
@@ -99,7 +80,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 width: 350,
                 height: 325,
                 decoration: BoxDecoration(
-                  color: Color(0xffa3cdd9),
+                  color: Color(0xffbee2c0),
                   shape: BoxShape.circle,
                 ),
               ),
@@ -114,7 +95,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         'الحديقة',
                         style: kHeading1Text.copyWith(
                           fontWeight: FontWeight.w900,
-                          color: kDarkPrimaryColor,
+                          color: kSecondaryColor,
                         ),
                       ),
                     ),
@@ -148,51 +129,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         password = value;
                       },
                     ),
-                    SizedBox(height: 20),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Text(
-                          'تذكرني',
-                          style: kBodySmallText.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 8),
-                          child: Checkbox(
-                            value: _rememberMe,
-                            activeColor: kLightPrimaryColor,
-                            checkColor: Colors.white,
-                            fillColor: WidgetStateProperty.resolveWith<Color>((
-                              states,
-                            ) {
-                              if (states.contains(WidgetState.selected)) {
-                                return kLightPrimaryColor;
-                              }
-                              return Colors.transparent;
-                            }),
-                            side: BorderSide(
-                              color:
-                                  _rememberMe
-                                      ? kPrimaryColor
-                                      : kLightPrimaryColor,
-                              width: 1.5,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(4),
-                            ),
-                            onChanged: (bool? value) {
-                              setState(() {
-                                _rememberMe = value ?? false;
-                              });
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 10),
+                    SizedBox(height: 30),
                     RoundedButton(
                       onPressed: () async {
                         setState(() {
@@ -205,15 +142,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 password: password,
                               );
                           if (user != null) {
-                            if (_rememberMe) {
-                              _storage.write('email', email);
-                              _storage.write('password', password);
-                              _storage.write('remember_me', true);
-                            } else {
-                              _storage.remove('email');
-                              _storage.remove('password');
-                              _storage.remove('remember_me');
-                            }
                             Navigator.pushNamedAndRemoveUntil(
                               context,
                               HomeScreen.id,

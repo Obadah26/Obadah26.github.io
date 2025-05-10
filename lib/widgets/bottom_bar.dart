@@ -78,7 +78,7 @@ class BottomBarIcons extends StatelessWidget {
       onPressed: onPressed,
       icon: Icon(
         isSelected ? icon : _getOutlinedVariant(icon),
-        color: isSelected ? kPrimaryColor : Colors.black,
+        color: isSelected ? kSecondaryColor : Colors.black,
       ),
     );
   }

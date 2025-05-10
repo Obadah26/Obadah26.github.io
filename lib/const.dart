@@ -6,11 +6,10 @@ const Color kSecondaryTextLight = Color(0xFF757575); // Gray
 const Color kPrimaryTextDark = Color(0xFFFFFFFF); // White on dark backgrounds
 
 // UI Colors
-const Color kLightPrimaryColor = Color(0xFF05a7be);
-const Color kPrimaryColor = Color(0xFF087ea2);
-const Color kDarkPrimaryColor = Color(0xFF017598);
-const Color kSecondaryColorDark = Color(0xFF18c4b8);
-const Color kSecondaryColor = Color(0xFF1ed7cd);
+const Color kLightPrimaryColor = Color(0xFF00a674);
+const Color kPrimaryColor = Color(0xFF009995);
+const Color kDarkPrimaryColor = Color(0xFF008aad);
+const Color kSecondaryColor = Color(0xFF4caf50);
 const Color kBottomBarIconsColor = Colors.transparent;
 
 const TextStyle kHeading1Text = TextStyle(

@@ -18,35 +18,25 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _auth = FirebaseAuth.instance;
-  final _storage = GetStorage();
+  final box = GetStorage();
   String email = '';
   String password = '';
   bool _rememberMe = false;
   bool showSpinner = false;
 
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-
   @override
   void initState() {
     super.initState();
-    _loadRememberedUser();
-
-    if (!_rememberMe && FirebaseAuth.instance.currentUser != null) {
-      FirebaseAuth.instance.signOut();
+    // Load saved email and remember me state
+    _rememberMe = box.read('rememberMe') ?? false;
+    if (_rememberMe) {
+      email = box.read('email') ?? '';
+      emailController.text = email;
     }
   }
 
-  // Load saved credentials from GetStorage
-  void _loadRememberedUser() {
-    String? storedEmail = _storage.read('email');
-    String? storedPassword = _storage.read('password');
-    setState(() {
-      email = storedEmail ?? '';
-      password = storedPassword ?? '';
-      _rememberMe = email.isNotEmpty && password.isNotEmpty;
-    });
-  }
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +80,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 width: 500,
                 height: 475,
                 decoration: BoxDecoration(
-                  color: Color(0xffcce3ea),
+                  color: Color(0xffdbefdc),
                   shape: BoxShape.circle,
                 ),
               ),
@@ -102,7 +92,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 width: 350,
                 height: 325,
                 decoration: BoxDecoration(
-                  color: Color(0xffa3cdd9),
+                  color: Color(0xffbee2c0),
                   shape: BoxShape.circle,
                 ),
               ),
@@ -117,7 +107,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         'الحديقة',
                         style: kHeading1Text.copyWith(
                           fontWeight: FontWeight.w900,
-                          color: kDarkPrimaryColor,
+                          color: kSecondaryColor,
                         ),
                       ),
                     ),
@@ -207,15 +197,15 @@ class _LoginScreenState extends State<LoginScreen> {
                             password: password,
                           );
                           if (user != null) {
+                            // Save or clear email based on remember me choice
                             if (_rememberMe) {
-                              _storage.write('email', email);
-                              _storage.write('password', password);
-                              _storage.write('remember_me', true);
+                              box.write('rememberMe', true);
+                              box.write('email', email);
                             } else {
-                              _storage.remove('email');
-                              _storage.remove('password');
-                              _storage.remove('remember_me');
+                              box.remove('rememberMe');
+                              box.remove('email');
                             }
+
                             Navigator.pushNamedAndRemoveUntil(
                               context,
                               HomeScreen.id,
@@ -244,7 +234,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         emailController.clear();
                         passwordController.clear();
                       },
-
                       buttonText: 'تسجيل دخول',
                     ),
                     SizedBox(height: 40),
