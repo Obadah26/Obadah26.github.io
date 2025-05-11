@@ -85,30 +85,6 @@ class _IjazahRecitationScreenState extends State<IjazahRecitationScreen> {
       backgroundColor: Colors.white,
       body: Stack(
         children: [
-          Positioned(
-            top: -35,
-            right: -75,
-            child: Container(
-              width: 225,
-              height: 200,
-              decoration: BoxDecoration(
-                color: kSecondaryColor,
-                shape: BoxShape.circle,
-              ),
-            ),
-          ),
-          Positioned(
-            bottom: -35,
-            left: -75,
-            child: Container(
-              width: 225,
-              height: 200,
-              decoration: BoxDecoration(
-                color: kLightPrimaryColor,
-                shape: BoxShape.circle,
-              ),
-            ),
-          ),
           SingleChildScrollView(
             child: SafeArea(
               child: Column(

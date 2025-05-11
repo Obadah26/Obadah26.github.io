@@ -3,7 +3,6 @@ import 'package:alhadiqa/screens/home_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
 
 class RecitationLeaderboardScreen extends StatefulWidget {
   const RecitationLeaderboardScreen({super.key, this.userName});
@@ -36,13 +35,13 @@ class _RecitationLeaderboardScreenState
     'زيد',
   ];
 
-  String selectedFilter = 'الكل';
+  String selectedFilter = 'الأسبوع';
   final List<String> timeFilters = [
-    'الكل',
+    'منذ انشاء التطبيق',
     'اليوم',
     'الأسبوع',
     'الشهر',
-    '3 أشهر',
+    'ثلاثة أشهر',
     'السنة',
   ];
 
@@ -55,7 +54,11 @@ class _RecitationLeaderboardScreenState
           alignment: Alignment.centerRight,
           child: Padding(
             padding: const EdgeInsets.only(right: 8),
-            child: Icon(Icons.person_outline, size: 50, color: Colors.white),
+            child: Icon(
+              Icons.group_outlined,
+              size: 50,
+              color: kLightPrimaryColor,
+            ),
           ),
         ),
         automaticallyImplyLeading: false,
@@ -78,30 +81,6 @@ class _RecitationLeaderboardScreenState
       backgroundColor: Colors.white,
       body: Stack(
         children: [
-          Positioned(
-            top: -100,
-            right: -100,
-            child: Container(
-              width: 225,
-              height: 200,
-              decoration: BoxDecoration(
-                color: kSecondaryColor,
-                shape: BoxShape.circle,
-              ),
-            ),
-          ),
-          Positioned(
-            bottom: -100,
-            left: -100,
-            child: Container(
-              width: 225,
-              height: 200,
-              decoration: BoxDecoration(
-                color: kLightPrimaryColor,
-                shape: BoxShape.circle,
-              ),
-            ),
-          ),
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),

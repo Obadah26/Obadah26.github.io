@@ -43,7 +43,11 @@ class _IjazahLeaderboardScreenState extends State<IjazahLeaderboardScreen> {
           alignment: Alignment.centerRight,
           child: Padding(
             padding: const EdgeInsets.only(right: 8),
-            child: Icon(Icons.person_outline, size: 50, color: Colors.white),
+            child: Icon(
+              Icons.person_outline,
+              size: 50,
+              color: kLightPrimaryColor,
+            ),
           ),
         ),
         automaticallyImplyLeading: false,
@@ -66,30 +70,6 @@ class _IjazahLeaderboardScreenState extends State<IjazahLeaderboardScreen> {
       backgroundColor: Colors.white,
       body: Stack(
         children: [
-          Positioned(
-            top: -35,
-            right: -75,
-            child: Container(
-              width: 225,
-              height: 200,
-              decoration: BoxDecoration(
-                color: kSecondaryColor,
-                shape: BoxShape.circle,
-              ),
-            ),
-          ),
-          Positioned(
-            bottom: -35,
-            left: -75,
-            child: Container(
-              width: 225,
-              height: 200,
-              decoration: BoxDecoration(
-                color: kLightPrimaryColor,
-                shape: BoxShape.circle,
-              ),
-            ),
-          ),
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -205,7 +185,7 @@ class _IjazahLeaderboardScreenState extends State<IjazahLeaderboardScreen> {
                                         fontSize: 18,
                                       ),
                                     ),
-                                    textAlign: TextAlign.right,
+                                    textAlign: TextAlign.left,
                                   ),
                                   trailing: Text(
                                     completed

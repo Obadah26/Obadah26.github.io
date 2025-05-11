@@ -185,15 +185,18 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                'إِنَّا نَحْنُ نَزَّلْنَا الذِّكْرَ وَإِنَّا لَهُ لَحَافِظُونَ',
-                                style: GoogleFonts.notoKufiArabic(
-                                  textStyle: kHeading2Text.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    color: kLightPrimaryColor,
+                              child: Align(
+                                alignment: Alignment.center,
+                                child: Text(
+                                  'إِنَّا نَحْنُ نَزَّلْنَا الذِّكْرَ وَإِنَّا لَهُ لَحَافِظُونَ',
+                                  style: GoogleFonts.notoKufiArabic(
+                                    textStyle: kHeading2Text.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: kLightPrimaryColor,
+                                    ),
                                   ),
+                                  textAlign: TextAlign.center,
                                 ),
-                                textAlign: TextAlign.center,
                               ),
                             ),
                             Padding(
@@ -273,8 +276,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                 Text(
                                   'تم انجاز $totalPages صفحة من اصل 40 صفحة',
                                   style: GoogleFonts.cairo(
-                                    textStyle: kBodyLargeText,
+                                    textStyle: kBodyRegularText,
                                   ),
+                                  textAlign: TextAlign.center,
                                 ),
                                 SizedBox(height: 15),
                                 SizedBox(
@@ -314,8 +318,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                       ? 'بقيت خطوات قليلة'
                                       : 'مبارك! لقد أتممت الهدف',
                                   style: GoogleFonts.cairo(
-                                    textStyle: kBodyRegularText,
+                                    textStyle: kBodySmallText,
                                   ),
+                                  textAlign: TextAlign.center,
                                 ),
                               ],
                             ),
@@ -347,9 +352,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                   icon: Icons.group,
                                   text: 'التسميع اليومي',
                                   onPressed: () {
-                                    Navigator.pushNamed(
+                                    Navigator.push(
                                       context,
-                                      DailyRecitationScreen.id,
+                                      MaterialPageRoute(
+                                        builder:
+                                            (context) => DailyRecitationScreen(
+                                              userName: _userName,
+                                            ),
+                                      ),
                                     );
                                   },
                                 ),
@@ -357,9 +367,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                   icon: Icons.person,
                                   text: 'الاجازة',
                                   onPressed: () {
-                                    Navigator.pushNamed(
+                                    Navigator.push(
                                       context,
-                                      IjazahRecitationScreen.id,
+                                      MaterialPageRoute(
+                                        builder:
+                                            (context) => IjazahRecitationScreen(
+                                              userName: _userName,
+                                            ),
+                                      ),
                                     );
                                   },
                                 ),
@@ -382,9 +397,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                   icon: Icons.leaderboard,
                                   text: 'نتائج التسميع',
                                   onPressed: () {
-                                    Navigator.pushNamed(
+                                    Navigator.push(
                                       context,
-                                      RecitationLeaderboardScreen.id,
+                                      MaterialPageRoute(
+                                        builder:
+                                            (context) =>
+                                                RecitationLeaderboardScreen(
+                                                  userName: _userName,
+                                                ),
+                                      ),
                                     );
                                   },
                                 ),
@@ -392,9 +413,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                   icon: Icons.leaderboard,
                                   text: 'نتائج الاجازة',
                                   onPressed: () {
-                                    Navigator.pushNamed(
+                                    Navigator.push(
                                       context,
-                                      IjazahLeaderboardScreen.id,
+                                      MaterialPageRoute(
+                                        builder:
+                                            (context) =>
+                                                IjazahLeaderboardScreen(
+                                                  userName: _userName,
+                                                ),
+                                      ),
                                     );
                                   },
                                 ),
