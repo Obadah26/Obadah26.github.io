@@ -13,9 +13,10 @@ import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class MenuScreen extends StatefulWidget {
-  const MenuScreen({super.key, this.auth});
+  const MenuScreen({super.key, this.auth, this.userName});
   static String id = 'menu_screen';
   final FirebaseAuth? auth;
+  final String? userName;
 
   @override
   State<MenuScreen> createState() => _MenuScreenState();
@@ -96,10 +97,14 @@ class _MenuScreenState extends State<MenuScreen> {
                       icon: Icons.group,
                       text: 'التسميع اليومي',
                       onPressed: () {
-                        Navigator.pushNamedAndRemoveUntil(
+                        Navigator.push(
                           context,
-                          DailyRecitationScreen.id,
-                          (route) => false,
+                          MaterialPageRoute(
+                            builder:
+                                (context) => DailyRecitationScreen(
+                                  userName: widget.userName,
+                                ),
+                          ),
                         );
                       },
                     ),
@@ -125,10 +130,14 @@ class _MenuScreenState extends State<MenuScreen> {
                       icon: Icons.person,
                       text: 'الاجازة',
                       onPressed: () {
-                        Navigator.pushNamedAndRemoveUntil(
+                        Navigator.push(
                           context,
-                          IjazahRecitationScreen.id,
-                          (route) => false,
+                          MaterialPageRoute(
+                            builder:
+                                (context) => IjazahRecitationScreen(
+                                  userName: widget.userName,
+                                ),
+                          ),
                         );
                       },
                     ),
@@ -149,7 +158,6 @@ class _MenuScreenState extends State<MenuScreen> {
                       icon: Icons.dark_mode,
                       text: 'رمضان',
                       onPressed: () {
-                        //Navigator.pushNamedAndRemoveUntil(context, route, (route) => false);
                         showOkAlertDialog(
                           context: context,
                           title: 'غير فعال',
@@ -161,22 +169,6 @@ class _MenuScreenState extends State<MenuScreen> {
                   ],
                 ),
                 SizedBox(height: 50),
-                // MenuButtons(
-                //   icon: Icons.logout,
-                //   text: 'تسجيل خروج',
-                //   onPressed: () async {
-                //     if (widget.auth != null) {
-                //       await widget.auth!.signOut();
-                //       Navigator.pushNamedAndRemoveUntil(
-                //         context,
-                //         WelcomeScreen.id,
-                //         (route) => false,
-                //       );
-                //     } else {
-                //       print("Auth instance is null");
-                //     }
-                //   },
-                // ),
                 MenuButtons(
                   icon: Icons.logout,
                   text: 'تسجيل خروج',

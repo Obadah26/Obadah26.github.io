@@ -105,7 +105,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       obscure: false,
                       textColor: kPrimaryTextLight,
                       controller: emailController,
-                      icon: Icons.person,
+                      icon: Icons.email,
                       textHint: 'الايميل',
                       keyboardType: TextInputType.emailAddress,
                       hintColor: kPrimaryTextLight.withValues(

@@ -5,11 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:alhadiqa/names.dart';
 import 'package:alhadiqa/widgets/rounded_text_field.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DailyRecitationScreen extends StatefulWidget {
-  const DailyRecitationScreen({super.key});
+  const DailyRecitationScreen({super.key, this.userName});
   static String id = 'daily_recitation_screen';
-
+  final String? userName;
   @override
   State<DailyRecitationScreen> createState() => _DailyRecitationScreenState();
 }
@@ -21,6 +22,45 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
   bool withVisible = false;
   bool toVisible = false;
   bool inputVisible = false;
+
+  final TextEditingController firstPageController = TextEditingController();
+  final TextEditingController secondPageController = TextEditingController();
+
+  void saveData() async {
+    String? userName = widget.userName;
+    String otherUser = selectedName;
+    String firstPage = firstPageController.text;
+    String secondPage = secondPageController.text;
+
+    if (userName == null || firstPage.isEmpty || secondPage.isEmpty) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Please fill all fields')));
+      return;
+    }
+
+    try {
+      await FirebaseFirestore.instance.collection('daily_recitation').add({
+        'user': userName,
+        'other_User': otherUser,
+        'first_page': firstPage,
+        'second_page': secondPage,
+      });
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Data saved successfully!')));
+
+      // You can clear the input fields or navigate to another screen after saving
+      firstPageController.clear();
+      secondPageController.clear();
+    } catch (e) {
+      // Handle error if any
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Failed to save data: $e')));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -292,6 +332,7 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         RoundedTextField(
+                          controller: firstPageController,
                           obscure: false,
                           textColor: kPrimaryTextLight,
                           textHint: '312',
@@ -321,6 +362,7 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         RoundedTextField(
+                          controller: secondPageController,
                           obscure: false,
                           textColor: kPrimaryTextLight,
                           textHint: '330',
@@ -348,7 +390,7 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
                     child: RoundedButton(
                       buttonText: 'حفظ',
                       isPrimary: false,
-                      onPressed: () {},
+                      onPressed: saveData,
                     ),
                   ),
                   SizedBox(height: 450),

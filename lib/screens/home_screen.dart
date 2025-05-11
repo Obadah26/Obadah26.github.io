@@ -21,6 +21,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final _auth = FirebaseAuth.instance;
   String arabicDate = '';
+  String _userName = '';
 
   @override
   void initState() {
@@ -33,7 +34,9 @@ class _HomeScreenState extends State<HomeScreen> {
     try {
       final user = await _auth.currentUser;
       if (user != null) {
-        loggedInUser = user;
+        setState(() {
+          _userName = user.displayName ?? "User";
+        });
       }
     } catch (e) {
       print(e);
@@ -41,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _loadArabicDate() async {
-    await initializeDateFormatting('ar', null); // Initialize Arabic locale
+    await initializeDateFormatting('ar', null);
     setState(() {
       arabicDate = DateFormat('EEEE، d MMMM', 'ar').format(DateTime.now());
     });
@@ -58,14 +61,21 @@ class _HomeScreenState extends State<HomeScreen> {
             padding: const EdgeInsets.only(right: 8),
             child: IconButton(
               onPressed: () {
-                Navigator.pushNamed(context, MenuScreen.id);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder:
+                        (context) =>
+                            MenuScreen(auth: _auth, userName: _userName),
+                  ),
+                );
               },
               icon: Icon(Icons.menu, size: 50),
             ),
           ),
         ),
         leading: Padding(
-          padding: const EdgeInsets.only(left: 50),
+          padding: const EdgeInsets.only(left: 30),
           child: Icon(Icons.person_outline, color: Colors.white, size: 50),
         ),
         automaticallyImplyLeading: false,
@@ -76,20 +86,8 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Stack(
         children: [
           Positioned(
-            top: -35,
-            left: -75,
-            child: Container(
-              width: 250,
-              height: 225,
-              decoration: BoxDecoration(
-                color: kSecondaryColor,
-                shape: BoxShape.circle,
-              ),
-            ),
-          ),
-          Positioned(
-            bottom: -55,
-            right: -75,
+            top: -100,
+            left: -100,
             child: Container(
               width: 250,
               height: 225,
@@ -105,37 +103,44 @@ class _HomeScreenState extends State<HomeScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Align(
+                    // Hi Text
                     alignment: Alignment.centerRight,
-                    child: Text.rich(
-                      TextSpan(
-                        text: 'أهلاً',
-                        style: GoogleFonts.cairo(
-                          color: kPrimaryTextLight,
-                          fontSize: 32,
-                          fontWeight: FontWeight.w700,
-                          height: 1.2,
-                        ),
-                        children: [
-                          TextSpan(
-                            text: '،',
-                            style: GoogleFonts.cairo(textStyle: kHeading1Text),
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 8),
+                      child: Text.rich(
+                        TextSpan(
+                          text: 'أهلاً',
+                          style: GoogleFonts.cairo(
+                            color: kPrimaryTextLight,
+                            fontSize: 32,
+                            fontWeight: FontWeight.w700,
+                            height: 1.2,
                           ),
-                          TextSpan(
-                            text: ' عبادة',
-                            style: GoogleFonts.cairo(
-                              textStyle: kHeading1Text.copyWith(
-                                color: kSecondaryColor,
+                          children: [
+                            TextSpan(
+                              text: '،',
+                              style: GoogleFonts.cairo(
+                                textStyle: kHeading1Text,
                               ),
                             ),
-                          ),
-                        ],
+                            TextSpan(
+                              text: ' $_userName',
+                              style: GoogleFonts.cairo(
+                                textStyle: kHeading1Text.copyWith(
+                                  color: kSecondaryColor,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
                   Align(
+                    // Date
                     alignment: Alignment.centerRight,
                     child: Padding(
-                      padding: const EdgeInsets.only(right: 8),
+                      padding: const EdgeInsets.only(right: 12),
                       child: Text(
                         arabicDate,
                         style: GoogleFonts.elMessiri(textStyle: kBodySmallText),
@@ -144,135 +149,157 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   SizedBox(height: 30),
                   Center(
+                    // Ayah
                     child: Container(
-                      // أفضل 5 المسميعين خلال الشهر
-                      height: 225,
-                      width: 350,
                       decoration: BoxDecoration(
-                        color: Color(0xFFecf6ec),
+                        color: Colors.transparent,
                         borderRadius: BorderRadius.circular(16),
                         border: Border.all(color: kSecondaryColor, width: 2),
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: SingleChildScrollView(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text(
-                                'أفضل 5 مسمعين خلال الشهر الماضي',
-                                style: GoogleFonts.elMessiri(
-                                  textStyle: kBodyLargeTextDark.copyWith(
+                      height: 150,
+                      width: 300,
+                      child: Center(
+                        child: Column(
+                          children: [
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8),
+                                child: Text(
+                                  'اية يومية',
+                                  style: GoogleFonts.elMessiri(
+                                    textStyle: kBodyLargeText,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                              ),
+                              child: Text(
+                                'إِنَّا نَحْنُ نَزَّلْنَا الذِّكْرَ وَإِنَّا لَهُ لَحَافِظُونَ',
+                                style: GoogleFonts.notoKufiArabic(
+                                  textStyle: kHeading2Text.copyWith(
                                     fontWeight: FontWeight.bold,
-                                    color: kSecondaryColor,
-                                    fontSize: 15,
                                   ),
                                 ),
+                                textAlign: TextAlign.center,
                               ),
-                              Padding(
-                                padding: const EdgeInsets.all(2),
-                                child: Text(
-                                  '1. فلان',
-                                  style: GoogleFonts.elMessiri(
-                                    textStyle: kBodyRegularTextDark.copyWith(
-                                      color: kSecondaryColor,
-                                    ),
-                                  ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 8),
+                              child: Text(
+                                '[الحجر: 9]',
+                                style: GoogleFonts.notoKufiArabic(
+                                  textStyle: kBodySmallText.copyWith(),
                                 ),
+                                textAlign: TextAlign.center,
                               ),
-                              Padding(
-                                padding: const EdgeInsets.all(2),
-                                child: Text(
-                                  '2. فلان',
-                                  style: GoogleFonts.elMessiri(
-                                    textStyle: kBodyRegularTextDark.copyWith(
-                                      color: kSecondaryColor,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(2),
-                                child: Text(
-                                  '3. فلان',
-                                  style: GoogleFonts.elMessiri(
-                                    textStyle: kBodyRegularTextDark.copyWith(
-                                      color: kSecondaryColor,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(2),
-                                child: Text(
-                                  '4. فلان',
-                                  style: GoogleFonts.elMessiri(
-                                    textStyle: kBodyRegularTextDark.copyWith(
-                                      color: kSecondaryColor,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(2),
-                                child: Text(
-                                  '5. فلان',
-                                  style: GoogleFonts.elMessiri(
-                                    textStyle: kBodyRegularTextDark.copyWith(
-                                      color: kSecondaryColor,
-                                    ),
-                                  ),
-                                ),
-                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 30),
+                  Center(
+                    // Weekly Target
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.transparent,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: kSecondaryColor, width: 2),
+                      ),
+                      height: 150,
+                      width: 300,
+                      child: Column(
+                        children: [
+                          Text('الهدف الاسبوعي'),
+                          Text('تم انجاز 5 صفحات من اصل 40 صفحة'),
+                          //Progress bar
+                          Text('لم يتبقى الكثير'),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 30),
+                  Center(
+                    // Buttons
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.transparent,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: kSecondaryColor, width: 2),
+                      ),
+                      height: 250,
+                      width: 300,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              HomeButton(),
+                              HomeButton(),
+                              HomeButton(),
                             ],
                           ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 30),
-                  Center(
-                    child: Container(
-                      // اية او نصيحة
-                      decoration: BoxDecoration(
-                        color: kSecondaryColor,
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      height: 225,
-                      width: 350,
-                      child: Center(
-                        child: Text(
-                          'إِنَّا نَحْنُ نَزَّلْنَا الذِّكْرَ وَإِنَّا لَهُ لَحَافِظُونَ',
-                          style: GoogleFonts.notoKufiArabic(
-                            textStyle: kHeading2TextDark.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              HomeButton(),
+                              HomeButton(),
+                              HomeButton(),
+                            ],
                           ),
-                          textAlign: TextAlign.center,
-                        ),
+                        ],
                       ),
                     ),
                   ),
-                  SizedBox(height: 30),
-                  Center(
-                    child: Container(
-                      // التسميع منذ انشاء التطبيق
-                      decoration: BoxDecoration(
-                        color: Colors.green.shade100,
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: kSecondaryColor, width: 2),
-                      ),
-                      height: 225,
-                      width: 350,
-                    ),
-                  ),
-                  SizedBox(height: 30),
                 ],
               ),
             ),
           ),
         ],
       ),
+    );
+  }
+}
+
+class HomeButton extends StatelessWidget {
+  const HomeButton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        IconButton(
+          onPressed: () {},
+          color: Colors.white,
+          icon: Icon(Icons.book, size: 50, color: kLightPrimaryColor),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4.0),
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 3),
+              child: Text(
+                'زر',
+                style: GoogleFonts.cairo(
+                  textStyle: kBodySmallText.copyWith(
+                    color: kLightPrimaryColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                maxLines: 1,
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

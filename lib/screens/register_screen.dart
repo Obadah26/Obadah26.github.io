@@ -19,10 +19,12 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final _auth = FirebaseAuth.instance;
+  String userName = '';
   String email = '';
   String password = '';
   bool showSpinner = false;
 
+  TextEditingController userNameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
@@ -87,12 +89,27 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 50),
+                    SizedBox(height: 30),
+                    RoundedTextField(
+                      obscure: false,
+                      textColor: kPrimaryTextLight,
+                      controller: userNameController,
+                      icon: Icons.person,
+                      textHint: 'اسم المستخدم',
+                      keyboardType: TextInputType.name,
+                      hintColor: kPrimaryTextLight.withValues(
+                        alpha: (0.199 * 255),
+                      ),
+                      onChanged: (value) {
+                        userName = value;
+                      },
+                    ),
+                    SizedBox(height: 30),
                     RoundedTextField(
                       obscure: false,
                       textColor: kPrimaryTextLight,
                       controller: emailController,
-                      icon: Icons.person,
+                      icon: Icons.mail,
                       textHint: 'الايميل',
                       keyboardType: TextInputType.emailAddress,
                       hintColor: kPrimaryTextLight.withValues(
@@ -102,7 +119,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         email = value;
                       },
                     ),
-                    SizedBox(height: 50),
+                    SizedBox(height: 30),
                     RoundedTextField(
                       obscure: true,
                       textColor: kPrimaryTextLight,
@@ -130,6 +147,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 password: password,
                               );
                           if (user != null) {
+                            await user.user?.updateProfile(
+                              displayName: userName,
+                            );
                             Navigator.pushNamedAndRemoveUntil(
                               context,
                               HomeScreen.id,
@@ -154,6 +174,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         setState(() {
                           showSpinner = false;
                         });
+                        userNameController.clear();
                         emailController.clear();
                         passwordController.clear();
                       },
