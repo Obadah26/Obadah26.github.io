@@ -19,7 +19,7 @@ class MenuButtons extends StatelessWidget {
       height: 100,
       width: 100,
       decoration: BoxDecoration(
-        color: Color(0xFFe8f6f2),
+        color: Colors.transparent,
         borderRadius: BorderRadius.circular(8),
         border: Border.all(color: kLightPrimaryColor, width: 2),
       ),

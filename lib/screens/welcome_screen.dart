@@ -37,7 +37,7 @@ class WelcomeScreen extends StatelessWidget {
                           text: 'الحديقة',
                           style: GoogleFonts.elMessiri(
                             textStyle: kHeading1Text.copyWith(
-                              color: kSecondaryColor,
+                              color: kLightPrimaryColor,
                             ),
                           ),
                         ),

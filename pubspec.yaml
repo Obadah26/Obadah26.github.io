@@ -20,6 +20,7 @@ dependencies:
   adaptive_dialog: ^2.4.1
   intl: ^0.18.1
   google_fonts: 
+  linear_progress_bar: ^1.2.0
 
 dev_dependencies:
   flutter_test:

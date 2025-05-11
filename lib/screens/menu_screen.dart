@@ -85,11 +85,7 @@ class _MenuScreenState extends State<MenuScreen> {
                       icon: Icons.home,
                       text: 'الرئيسية',
                       onPressed: () {
-                        Navigator.pushNamedAndRemoveUntil(
-                          context,
-                          HomeScreen.id,
-                          (route) => false,
-                        );
+                        Navigator.popAndPushNamed(context, HomeScreen.id);
                       },
                     ),
                     SizedBox(width: 30),
@@ -113,10 +109,14 @@ class _MenuScreenState extends State<MenuScreen> {
                       icon: Icons.leaderboard,
                       text: 'نتائج التسميع',
                       onPressed: () {
-                        Navigator.pushNamedAndRemoveUntil(
+                        Navigator.push(
                           context,
-                          RecitationLeaderboardScreen.id,
-                          (route) => false,
+                          MaterialPageRoute(
+                            builder:
+                                (context) => RecitationLeaderboardScreen(
+                                  userName: widget.userName,
+                                ),
+                          ),
                         );
                       },
                     ),
@@ -146,10 +146,9 @@ class _MenuScreenState extends State<MenuScreen> {
                       icon: Icons.leaderboard,
                       text: 'نتائج الاجازة',
                       onPressed: () {
-                        Navigator.pushNamedAndRemoveUntil(
+                        Navigator.popAndPushNamed(
                           context,
                           IjazahLeaderboardScreen.id,
-                          (route) => false,
                         );
                       },
                     ),

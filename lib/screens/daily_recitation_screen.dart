@@ -33,32 +33,54 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
     String secondPage = secondPageController.text;
 
     if (userName == null || firstPage.isEmpty || secondPage.isEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Please fill all fields')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('الرجاء ملء جميع الحقول', textAlign: TextAlign.right),
+        ),
+      );
       return;
     }
 
     try {
-      await FirebaseFirestore.instance.collection('daily_recitation').add({
+      Map<String, dynamic> data = {
         'user': userName,
-        'other_User': otherUser,
-        'first_page': firstPage,
-        'second_page': secondPage,
-      });
+        'first_page': int.tryParse(firstPage) ?? 0,
+        'second_page': int.tryParse(secondPage) ?? 0,
+        'timestamp': FieldValue.serverTimestamp(),
+      };
 
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Data saved successfully!')));
+      // إذا كان "مع شخص" نضيف اسم الشخص الآخر
+      if (selectedButtonIndex == 0) {
+        data['other_User'] = otherUser;
+        data['recitation_type'] = 'with';
+      }
+      // إذا كان "لشخص" نضيف نوع التسميع فقط
+      else if (selectedButtonIndex == 1) {
+        data['recitation_type'] = 'to';
+      }
 
-      // You can clear the input fields or navigate to another screen after saving
+      await FirebaseFirestore.instance.collection('daily_recitation').add(data);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('تم حفظ البيانات بنجاح!', textAlign: TextAlign.right),
+        ),
+      );
+
       firstPageController.clear();
       secondPageController.clear();
+      setState(() {
+        selectedButtonIndex = null;
+        withVisible = false;
+        toVisible = false;
+        inputVisible = false;
+      });
     } catch (e) {
-      // Handle error if any
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Failed to save data: $e')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('فشل في حفظ البيانات: $e', textAlign: TextAlign.right),
+        ),
+      );
     }
   }
 
