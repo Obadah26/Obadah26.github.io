@@ -3,6 +3,7 @@ import 'package:alhadiqa/screens/home_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 
 class IjazahLeaderboardScreen extends StatefulWidget {
   const IjazahLeaderboardScreen({super.key, this.userName});
@@ -86,12 +87,12 @@ class _IjazahLeaderboardScreenState extends State<IjazahLeaderboardScreen> {
                   Expanded(
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.8),
+                        color: Color.fromRGBO(255, 255, 255, 0.8),
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(color: kLightPrimaryColor, width: 2),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.grey.withOpacity(0.3),
+                            color: Color.fromRGBO(158, 158, 158, 0.3),
                             spreadRadius: 2,
                             blurRadius: 5,
                             offset: Offset(0, 3),
@@ -126,11 +127,19 @@ class _IjazahLeaderboardScreenState extends State<IjazahLeaderboardScreen> {
                             );
                           }
 
-                          // Calculate pages for each name
                           Map<String, int> pagesPerName = {};
+                          Map<String, DateTime?> completionDates = {};
+
+                          Map<String, DateTime> manuallyCompleted = {
+                            'أويس': DateTime(2024, 3, 15),
+                            'عمرو': DateTime(2024, 3, 29),
+                            'عبدالرحمن أبو سعدة': DateTime(2024, 2, 27),
+                            'سارية': DateTime(2025, 2, 24),
+                          };
+
                           for (var name in withNames) {
-                            pagesPerName[name] =
-                                0; // Initialize all names with 0
+                            pagesPerName[name] = 0;
+                            completionDates[name] = null;
                           }
 
                           for (var doc in snapshot.data!.docs) {
@@ -152,9 +161,29 @@ class _IjazahLeaderboardScreenState extends State<IjazahLeaderboardScreen> {
                                   (value) => value + pages,
                                   ifAbsent: () => pages,
                                 );
+
+                                if (pagesPerName[user]! >= 604 &&
+                                    completionDates[user] == null) {
+                                  Timestamp? timestamp =
+                                      doc['timestamp'] as Timestamp?;
+                                  if (timestamp != null) {
+                                    completionDates[user] = timestamp.toDate();
+                                  }
+                                }
                               }
                             }
                           }
+
+                          manuallyCompleted.forEach((name, date) {
+                            pagesPerName[name] = 604;
+                            completionDates[name] = date;
+                          });
+
+                          withNames.sort(
+                            (a, b) => (pagesPerName[b] ?? 0).compareTo(
+                              pagesPerName[a] ?? 0,
+                            ),
+                          );
 
                           return ListView.builder(
                             padding: EdgeInsets.all(10),
@@ -163,6 +192,7 @@ class _IjazahLeaderboardScreenState extends State<IjazahLeaderboardScreen> {
                               String name = withNames[index];
                               int totalPages = pagesPerName[name] ?? 0;
                               bool completed = totalPages >= 604;
+                              DateTime? completionDate = completionDates[name];
 
                               return Card(
                                 elevation: 2,
@@ -187,6 +217,22 @@ class _IjazahLeaderboardScreenState extends State<IjazahLeaderboardScreen> {
                                     ),
                                     textAlign: TextAlign.left,
                                   ),
+                                  subtitle:
+                                      completed && completionDate != null
+                                          ? Text(
+                                            DateFormat(
+                                              'EEEE، d MMMM y',
+                                              'ar',
+                                            ).format(completionDate),
+                                            style: GoogleFonts.cairo(
+                                              textStyle: kBodySmallTextDark
+                                                  .copyWith(
+                                                    fontSize: 14,
+                                                    color: Colors.green,
+                                                  ),
+                                            ),
+                                          )
+                                          : null,
                                   trailing: Text(
                                     completed
                                         ? 'تم إنهاء الإجازة'

@@ -10,7 +10,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import 'package:intl/date_symbol_data_local.dart';
 import 'package:linear_progress_bar/linear_progress_bar.dart';
 
 final _firestore = FirebaseFirestore.instance;
@@ -51,7 +50,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _loadArabicDate() async {
-    await initializeDateFormatting('ar', null);
     setState(() {
       arabicDate = DateFormat('EEEE، d MMMM', 'ar').format(DateTime.now());
     });

@@ -16,40 +16,48 @@ class IjazahRecitationScreen extends StatefulWidget {
 }
 
 class _IjazahRecitationScreenState extends State<IjazahRecitationScreen> {
-  final TextEditingController firstPageController = TextEditingController();
-  final TextEditingController secondPageController = TextEditingController();
+  final TextEditingController _firstPageController = TextEditingController();
+  final TextEditingController _secondPageController = TextEditingController();
+
+  @override
+  void dispose() {
+    _firstPageController.dispose();
+    _secondPageController.dispose();
+    super.dispose();
+  }
 
   void saveData() async {
     String? userName = widget.userName;
-    String firstPage = firstPageController.text;
-    String secondPage = secondPageController.text;
+    String firstPage = _firstPageController.text;
+    String secondPage = _secondPageController.text;
 
     if (userName == null || firstPage.isEmpty || secondPage.isEmpty) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text('Please fill all fields')));
+      ).showSnackBar(SnackBar(content: Text('الرجاء ملء جميع الحقول')));
       return;
     }
 
     try {
-      await FirebaseFirestore.instance.collection('ijazah_recitation').add({
+      Map<String, dynamic> data = {
         'user': userName,
-        'first_page': firstPage,
-        'second_page': secondPage,
-      });
+        'first_page': int.tryParse(firstPage) ?? 0,
+        'second_page': int.tryParse(secondPage) ?? 0,
+        'timestamp': FieldValue.serverTimestamp(),
+      };
+
+      await FirebaseFirestore.instance.collection('daily_recitation').add(data);
 
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text('Data saved successfully!')));
+      ).showSnackBar(SnackBar(content: Text('تم حفظ البيانات بنجاح!')));
 
-      // You can clear the input fields or navigate to another screen after saving
-      firstPageController.clear();
-      secondPageController.clear();
+      _firstPageController.clear();
+      _secondPageController.clear();
     } catch (e) {
-      // Handle error if any
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text('Failed to save data: $e')));
+      ).showSnackBar(SnackBar(content: Text('فشل في حفظ البيانات: $e')));
     }
   }
 
@@ -62,7 +70,11 @@ class _IjazahRecitationScreenState extends State<IjazahRecitationScreen> {
           alignment: Alignment.centerRight,
           child: Padding(
             padding: const EdgeInsets.only(right: 8),
-            child: Icon(Icons.person_outline, size: 50, color: Colors.white),
+            child: Icon(
+              Icons.person_outline,
+              size: 50,
+              color: kLightPrimaryColor,
+            ),
           ),
         ),
         automaticallyImplyLeading: false,
@@ -124,7 +136,7 @@ class _IjazahRecitationScreenState extends State<IjazahRecitationScreen> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       RoundedTextField(
-                        controller: firstPageController,
+                        controller: _firstPageController,
                         obscure: false,
                         textColor: kPrimaryTextLight,
                         textHint: '312',
@@ -151,7 +163,7 @@ class _IjazahRecitationScreenState extends State<IjazahRecitationScreen> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       RoundedTextField(
-                        controller: secondPageController,
+                        controller: _secondPageController,
                         obscure: false,
                         textColor: kPrimaryTextLight,
                         textHint: '330',

@@ -32,7 +32,13 @@ class _MenuScreenState extends State<MenuScreen> {
           alignment: Alignment.centerRight,
           child: Padding(
             padding: const EdgeInsets.only(right: 8),
-            child: Icon(Icons.menu, color: Colors.white, size: 50),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Icon(Icons.notifications_outlined, size: 30),
+                Icon(Icons.menu, size: 50),
+              ],
+            ),
           ),
         ),
         automaticallyImplyLeading: false,
@@ -42,30 +48,6 @@ class _MenuScreenState extends State<MenuScreen> {
       backgroundColor: Colors.white,
       body: Stack(
         children: [
-          Positioned(
-            top: -35,
-            right: -75,
-            child: Container(
-              width: 250,
-              height: 225,
-              decoration: BoxDecoration(
-                color: kSecondaryColor,
-                shape: BoxShape.circle,
-              ),
-            ),
-          ),
-          Positioned(
-            bottom: -35,
-            left: -75,
-            child: Container(
-              width: 250,
-              height: 225,
-              decoration: BoxDecoration(
-                color: kLightPrimaryColor,
-                shape: BoxShape.circle,
-              ),
-            ),
-          ),
           SafeArea(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,

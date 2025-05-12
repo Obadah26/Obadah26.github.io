@@ -1,5 +1,6 @@
 import 'package:alhadiqa/const.dart';
 import 'package:alhadiqa/screens/home_screen.dart';
+import 'package:alhadiqa/screens/user_detials_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -44,6 +45,12 @@ class _RecitationLeaderboardScreenState
     'ثلاثة أشهر',
     'السنة',
   ];
+
+  void sortWithNames(Map<String, int> pagesPerName) {
+    withNames.sort(
+      (a, b) => (pagesPerName[b] ?? 0).compareTo(pagesPerName[a] ?? 0),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -94,7 +101,6 @@ class _RecitationLeaderboardScreenState
                     textAlign: TextAlign.right,
                   ),
                   SizedBox(height: 10),
-                  // Time filter dropdown
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 12),
                     decoration: BoxDecoration(
@@ -130,12 +136,12 @@ class _RecitationLeaderboardScreenState
                   Expanded(
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.8),
+                        color: Color.fromRGBO(255, 255, 255, 0.8),
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(color: kLightPrimaryColor, width: 2),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.grey.withOpacity(0.3),
+                            color: Color.fromRGBO(158, 158, 158, 0.3),
                             spreadRadius: 2,
                             blurRadius: 5,
                             offset: Offset(0, 3),
@@ -172,7 +178,6 @@ class _RecitationLeaderboardScreenState
                             );
                           }
 
-                          // Filter by selected time period
                           final now = DateTime.now();
                           final filteredDocs =
                               snapshot.data!.docs.where((doc) {
@@ -204,11 +209,10 @@ class _RecitationLeaderboardScreenState
                                       now.subtract(Duration(days: 365)),
                                     );
                                   default:
-                                    return true; // 'الكل'
+                                    return true;
                                 }
                               }).toList();
 
-                          // Calculate pages for each name
                           Map<String, int> pagesPerName = {};
                           int totalUserPages = 0;
 
@@ -238,47 +242,91 @@ class _RecitationLeaderboardScreenState
                             }
                           }
 
+                          Map<String, List<Timestamp>> recitationDates = {};
+
+                          for (var doc in filteredDocs) {
+                            int firstPage =
+                                doc['first_page'] is String
+                                    ? int.tryParse(doc['first_page']) ?? 0
+                                    : (doc['first_page'] as int? ?? 0);
+                            int secondPage =
+                                doc['second_page'] is String
+                                    ? int.tryParse(doc['second_page']) ?? 0
+                                    : (doc['second_page'] as int? ?? 0);
+                            int pages = secondPage - firstPage;
+
+                            if (pages > 0) {
+                              if ((doc['recitation_type'] ?? '') == 'with' &&
+                                  doc['other_User'] != null) {
+                                String otherUser = doc['other_User'];
+                                Timestamp time = doc['timestamp'];
+
+                                pagesPerName.update(
+                                  otherUser,
+                                  (v) => v + pages,
+                                  ifAbsent: () => pages,
+                                );
+                                recitationDates
+                                    .putIfAbsent(otherUser, () => [])
+                                    .add(time);
+                              }
+                            }
+                          }
+
+                          sortWithNames(pagesPerName);
+
                           return Column(
                             children: [
-                              // User's total recitations
-                              Card(
-                                elevation: 3,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  side: BorderSide(
-                                    color: kPrimaryColor,
-                                    width: 2,
-                                  ),
-                                ),
-                                child: ListTile(
-                                  contentPadding: EdgeInsets.symmetric(
-                                    horizontal: 16,
-                                    vertical: 12,
-                                  ),
-                                  title: Text(
-                                    'إجمالي تسميعاتك (${selectedFilter})',
-                                    style: GoogleFonts.cairo(
-                                      textStyle: kBodyRegularText.copyWith(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder:
+                                          (context) => UserDetailsScreen(
+                                            userName: widget.userName,
+                                          ),
                                     ),
-                                    textAlign: TextAlign.right,
+                                  );
+                                },
+                                child: Card(
+                                  elevation: 3,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    side: BorderSide(
+                                      color: kPrimaryColor,
+                                      width: 2,
+                                    ),
                                   ),
-                                  trailing: Text(
-                                    '$totalUserPages صفحة',
-                                    style: GoogleFonts.cairo(
-                                      textStyle: kBodySmallTextDark.copyWith(
-                                        fontSize: 16,
-                                        color: kPrimaryColor,
-                                        fontWeight: FontWeight.bold,
+                                  child: ListTile(
+                                    contentPadding: EdgeInsets.symmetric(
+                                      horizontal: 16,
+                                      vertical: 12,
+                                    ),
+                                    title: Text(
+                                      'إجمالي تسميعاتك',
+                                      style: GoogleFonts.cairo(
+                                        textStyle: kBodyRegularText.copyWith(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      textAlign: TextAlign.right,
+                                    ),
+                                    trailing: Text(
+                                      '$totalUserPages صفحة',
+                                      style: GoogleFonts.cairo(
+                                        textStyle: kBodySmallTextDark.copyWith(
+                                          fontSize: 16,
+                                          color: kPrimaryColor,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
                               ),
                               SizedBox(height: 10),
-                              // List of names with pages
                               Expanded(
                                 child: ListView.builder(
                                   padding: EdgeInsets.all(10),
@@ -287,40 +335,57 @@ class _RecitationLeaderboardScreenState
                                     String name = withNames[index];
                                     int totalPages = pagesPerName[name] ?? 0;
 
-                                    if (totalPages == 0)
+                                    if (totalPages == 0) {
                                       return SizedBox.shrink();
+                                    }
 
-                                    return Card(
-                                      elevation: 2,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(12),
-                                        side: BorderSide(
-                                          color: kLightPrimaryColor,
-                                          width: 1,
-                                        ),
-                                      ),
-                                      child: ListTile(
-                                        contentPadding: EdgeInsets.symmetric(
-                                          horizontal: 16,
-                                          vertical: 12,
-                                        ),
-                                        title: Text(
-                                          name,
-                                          style: GoogleFonts.cairo(
-                                            textStyle: kBodyRegularText
-                                                .copyWith(fontSize: 18),
-                                          ),
-                                          textAlign: TextAlign.right,
-                                        ),
-                                        trailing: Text(
-                                          '$totalPages صفحة',
-                                          style: GoogleFonts.cairo(
-                                            textStyle: kBodySmallTextDark
-                                                .copyWith(
-                                                  fontSize: 16,
-                                                  color: kPrimaryColor,
-                                                  fontWeight: FontWeight.bold,
+                                    return GestureDetector(
+                                      onTap: () {
+                                        String selectedUser = name;
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder:
+                                                (context) => UserDetailsScreen(
+                                                  userName: selectedUser,
                                                 ),
+                                          ),
+                                        );
+                                      },
+                                      child: Card(
+                                        elevation: 2,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
+                                          side: BorderSide(
+                                            color: kLightPrimaryColor,
+                                            width: 1,
+                                          ),
+                                        ),
+                                        child: ListTile(
+                                          contentPadding: EdgeInsets.symmetric(
+                                            horizontal: 16,
+                                            vertical: 12,
+                                          ),
+                                          title: Text(
+                                            name,
+                                            style: GoogleFonts.cairo(
+                                              textStyle: kBodyRegularText
+                                                  .copyWith(fontSize: 18),
+                                            ),
+                                            textAlign: TextAlign.right,
+                                          ),
+                                          trailing: Text(
+                                            '$totalPages صفحة',
+                                            style: GoogleFonts.cairo(
+                                              textStyle: kBodySmallTextDark
+                                                  .copyWith(
+                                                    fontSize: 16,
+                                                    color: kPrimaryColor,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                            ),
                                           ),
                                         ),
                                       ),

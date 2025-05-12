@@ -49,13 +49,10 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
         'timestamp': FieldValue.serverTimestamp(),
       };
 
-      // إذا كان "مع شخص" نضيف اسم الشخص الآخر
       if (selectedButtonIndex == 0) {
         data['other_User'] = otherUser;
         data['recitation_type'] = 'with';
-      }
-      // إذا كان "لشخص" نضيف نوع التسميع فقط
-      else if (selectedButtonIndex == 1) {
+      } else if (selectedButtonIndex == 1) {
         data['recitation_type'] = 'to';
       }
 
@@ -93,7 +90,11 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
           alignment: Alignment.centerRight,
           child: Padding(
             padding: const EdgeInsets.only(right: 8),
-            child: Icon(Icons.group_outlined, size: 50, color: Colors.white),
+            child: Icon(
+              Icons.group_outlined,
+              size: 50,
+              color: kLightPrimaryColor,
+            ),
           ),
         ),
         automaticallyImplyLeading: false,
