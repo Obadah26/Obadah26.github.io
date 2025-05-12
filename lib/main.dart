@@ -1,3 +1,4 @@
+import 'package:alhadiqa/screens/azkar_screen.dart';
 import 'package:alhadiqa/screens/user_detials_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:alhadiqa/screens/welcome_screen.dart';
@@ -55,6 +56,7 @@ class MyApp extends StatelessWidget {
             (context) => RecitationLeaderboardScreen(),
         IjazahLeaderboardScreen.id: (context) => IjazahLeaderboardScreen(),
         UserDetailsScreen.id: (context) => UserDetailsScreen(),
+        AzkarScreen.id: (context) => AzkarScreen(),
       },
     );
   }

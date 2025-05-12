@@ -1,4 +1,5 @@
 import 'package:alhadiqa/const.dart';
+import 'package:alhadiqa/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -13,62 +14,59 @@ class _AzkarScreenState extends State<AzkarScreen> {
   final Map<String, Map<String, dynamic>> azkarAsbah = {
     'آية الكرسي': {
       'النص':
-          'اللّهُ لاَ إِلَـهَ إِلاَّ هُوَ الْحَيُّ الْقَيُّومُ لاَ تَأْخُذُهُ سِنَةٌ وَلاَ نَوْمٌ لَّهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الأَرْضِ مَن ذَا الَّذِي يَشْفَعُ عِندَهُ إِلاَّ بِإِذْنِهِ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ وَلاَ يُحِيطُونَ بِشَيْءٍ مِّنْ عِلْمِهِ إِلاَّ بِمَا شَاء وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالأَرْضَ وَلاَ يَؤُودُهُ حِفْظُهُمَا وَهُوَ الْعَلِيُّ الْعَظِيمُ. [آية الكرسى - البقرة 255]',
+          'الله لا إله إلا هو الحي القيوم لا تأخذه سنة ولا نوم له ما في السماوات وما في الأرض من ذا الذي يشفع عنده إلا بإذنه يعلم ما بين أيديهم وما خلفهم ولا يحيطون بشيء من علمه إلا بما شاء وسع كرسيه السماوات والأرض ولا يؤوده حفظهما وهو العلي العظيم. [آية الكرسى - البقرة 255]',
       'عدد التكرارات': 1,
     },
     'سورة الإخلاص': {
       'النص':
-          'بِسْمِ اللهِ الرَّحْمنِ الرَّحِيم\nقُلْ هُوَ ٱللَّهُ أَحَدٌ، ٱللَّهُ ٱلصَّمَدُ، لَمْ يَلِدْ وَلَمْ يُولَدْ، وَلَمْ يَكُن لَّهُۥ كُفُوًا أَحَدٌۢ.',
+          'بسم الله الرحمن الرحيم\nقل هو الله أحد، الله الصمد، لم يلد ولم يولد، ولم يكن لهۥ كفوا أحدۢ.',
       'عدد التكرارات': 3,
     },
     'سورة الفلق': {
       'النص':
-          'بِسْمِ اللهِ الرَّحْمنِ الرَّحِيم\nقُلْ أَعُوذُ بِرَبِّ ٱلْفَلَقِ، مِن شَرِّ مَا خَلَقَ، وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ، وَمِن شَرِّ ٱلنَّفَّٰثَٰتِ فِى ٱلْعُقَدِ، وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ.',
+          'بسم الله الرحمن الرحيم\nقل أعوذ برب الفلق، من شر ما خلق، ومن شر غاسق إذا وقب، ومن شر النفثت فى العقد، ومن شر حاسد إذا حسد.',
       'عدد التكرارات': 3,
     },
     'سورة الناس': {
       'النص':
-          'بِسْمِ اللهِ الرَّحْمنِ الرَّحِيم\nقُلْ أَعُوذُ بِرَبِّ ٱلنَّاسِ، مَلِكِ ٱلنَّاسِ، إِلَٰهِ ٱلنَّاسِ، مِن شَرِّ ٱلْوَسْوَاسِ ٱلْخَنَّاسِ، ٱلَّذِى يُوَسْوِسُ فِى صُدُورِ ٱلنَّاسِ، مِنَ ٱلْجِنَّةِ وَٱلنَّاسِ.',
+          'بسم الله الرحمن الرحيم\nقل أعوذ برب الناس، ملك الناس، إله الناس، من شر الوسواس الخناس، الذى يوسوس فى صدور الناس، من الجنة والناس.',
       'عدد التكرارات': 3,
     },
     'الحديث رقم 1': {
       'النص':
-          'أَصْبَحْنا وَأَصْبَحَ المُـلْكُ لله وَالحَمدُ لله ، لا إلهَ إلاّ اللّهُ وَحدَهُ لا شَريكَ لهُ، لهُ المُـلكُ ولهُ الحَمْـد، وهُوَ على كلّ شَيءٍ قدير ، رَبِّ أسْـأَلُـكَ خَـيرَ ما في هـذا اليوم وَخَـيرَ ما بَعْـدَه ، وَأَعـوذُ بِكَ مِنْ شَـرِّ ما في هـذا اليوم وَشَرِّ ما بَعْـدَه، رَبِّ أَعـوذُبِكَ مِنْ الْكَسَـلِ وَسـوءِ الْكِـبَر ، رَبِّ أَعـوذُ بِكَ مِنْ عَـذابٍ في النّـارِ وَعَـذابٍ في القَـبْر.',
+          'أصبحنا وأصبح الملك لله والحمد لله ، لا إله إلا الله وحده لا شريك له، له الملك وله الحمد، وهو على كل شيء قدير ، رب أسألك خير ما في هذا اليوم وخير ما بعده ، وأعوذ بك من شر ما في هذا اليوم وشر ما بعده، رب أعوذبك من الكسل وسوء الكبر ، رب أعوذ بك من عذاب في النار وعذاب في القبر.',
       'عدد التكرارات': 1,
     },
     'الحديث رقم 2': {
       'النص':
-          'اللّهُـمَّ أَنْتَ رَبِّـي لا إلهَ إلاّ أَنْتَ ، خَلَقْتَنـي وَأَنا عَبْـدُك ، وَأَنا عَلـى عَهْـدِكَ وَوَعْـدِكَ ما اسْتَـطَعْـت ، أَعـوذُبِكَ مِنْ شَـرِّ ما صَنَـعْت ، أَبـوءُ لَـكَ بِنِعْـمَتِـكَ عَلَـيَّ وَأَبـوءُ بِذَنْـبي فَاغْفـِرْ لي فَإِنَّـهُ لا يَغْـفِرُ الذُّنـوبَ إِلاّ أَنْتَ .',
+          'اللهم أنت ربي لا إله إلا أنت ، خلقتني وأنا عبدك ، وأنا على عهدك ووعدك ما استطعت ، أعوذبك من شر ما صنعت ، أبوء لك بنعمتك علي وأبوء بذنبي فاغفر لي فإنه لا يغفر الذنوب إلا أنت .',
       'عدد التكرارات': 1,
     },
     'الحديث رقم 3': {
-      'النص':
-          'رَضيـتُ بِاللهِ رَبَّـاً وَبِالإسْلامِ ديـناً وَبِمُحَـمَّدٍ صلى الله عليه وسلم نَبِيّـاً.',
+      'النص': 'رضيت بالله ربا وبالإسلام دينا وبمحمد صلى الله عليه وسلم نبيا.',
       'عدد التكرارات': 3,
     },
     'الحديث رقم 4': {
       'النص':
-          'اللّهُـمَّ إِنِّـي أَصْبَـحْتُ أُشْـهِدُك ، وَأُشْـهِدُ حَمَلَـةَ عَـرْشِـك ، وَمَلَائِكَتَكَ ، وَجَمـيعَ خَلْـقِك ، أَنَّـكَ أَنْـتَ اللهُ لا إلهَ إلاّ أَنْـتَ وَحْـدَكَ لا شَريكَ لَـك ، وَأَنَّ ُ مُحَمّـداً عَبْـدُكَ وَرَسـولُـك.',
+          'اللهم إني أصبحت أشهدك ، وأشهد حملة عرشك ، وملائكتك ، وجميع خلقك ، أنك أنت الله لا إله إلا أنت وحدك لا شريك لك ، وأن  محمدا عبدك ورسولك.',
       'عدد التكرارات': 4,
     },
     'الحديث رقم 5': {
       'النص':
-          'اللّهُـمَّ ما أَصْبَـَحَ بي مِـنْ نِعْـمَةٍ أَو بِأَحَـدٍ مِـنْ خَلْـقِك ، فَمِـنْكَ وَحْـدَكَ لا شريكَ لَـك ، فَلَـكَ الْحَمْـدُ وَلَـكَ الشُّكْـر.',
+          'اللهم إني أصبحت أشهدك ، وأشهد حملة عرشك ، وملائكتك ، وجميع خلقك ، أنك أنت الله لا إله إلا أنت وحدك لا شريك لك ، وأن  محمدا عبدك ورسولك.',
       'عدد التكرارات': 1,
     },
     'الحديث رقم 6': {
-      'النص':
-          'حَسْبِـيَ اللّهُ لا إلهَ إلاّ هُوَ عَلَـيهِ تَوَكَّـلتُ وَهُوَ رَبُّ العَرْشِ العَظـيم.',
+      'النص': 'حسبي الله لا إله إلا هو عليه توكلت وهو رب العرش العظيم.',
       'عدد التكرارات': 7,
     },
     'الحديث رقم 7': {
       'النص':
-          'بِسـمِ اللهِ الذي لا يَضُـرُّ مَعَ اسمِـهِ شَيءٌ في الأرْضِ وَلا في السّمـاءِ وَهـوَ السّمـيعُ العَلـيم.',
+          'بسم الله الذي لا يضر مع اسمه شيء في الأرض ولا في السماء وهو السميع العليم.',
       'عدد التكرارات': 3,
     },
     'الحديث رقم 8': {
-      'النص':
-          'اللّهُـمَّ بِكَ أَصْـبَحْنا وَبِكَ أَمْسَـينا ، وَبِكَ نَحْـيا وَبِكَ نَحْـيَا وَإِلَـيْكَ النُّـشُور.',
+      'النص': 'اللهم بك أصبحنا وبك أمسينا ، وبك نحيا وبك نحيا وإليك النشور.',
       'عدد التكرارات': 1,
     },
   };
@@ -81,6 +79,12 @@ class _AzkarScreenState extends State<AzkarScreen> {
     });
   }
 
+  void _beforeZikr() {
+    setState(() {
+      _currentIndex = (_currentIndex - 1) % azkarAsbah.length;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     String title = azkarAsbah.keys.elementAt(_currentIndex);
@@ -88,57 +92,122 @@ class _AzkarScreenState extends State<AzkarScreen> {
     int repeats = azkarAsbah[title]?['عدد التكرارات'] ?? 0;
 
     return Scaffold(
-      appBar: AppBar(title: Text('أذكار الصباح')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'أذكار الصباح',
-              style: GoogleFonts.elMessiri(
-                textStyle: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-            ),
-            SizedBox(height: 20),
-            Text(
-              title,
-              style: GoogleFonts.cairo(
-                textStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: Align(
+          alignment: Alignment.centerLeft,
+          child: Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: IconButton(
+              onPressed: () {
+                Navigator.popAndPushNamed(context, HomeScreen.id);
+              },
+              icon: Icon(
+                Icons.arrow_back_rounded,
+                size: 50,
                 color: kLightPrimaryColor,
               ),
             ),
-            SizedBox(height: 10),
-            Expanded(
-              child: SingleChildScrollView(
+          ),
+        ),
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Align(
+                alignment: Alignment.center,
                 child: Text(
-                  text,
-                  style: GoogleFonts.cairo(
-                    textStyle: TextStyle(fontSize: 16),
-                    color: kLightPrimaryColor,
+                  'أذكار الصباح',
+                  style: GoogleFonts.elMessiri(textStyle: kHeading1Text),
+                ),
+              ),
+              SizedBox(height: 20),
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.transparent,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: kSecondaryColor, width: 2),
+                ),
+                constraints: BoxConstraints(maxWidth: 350, minWidth: 200),
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Text(
+                          title,
+                          style: GoogleFonts.cairo(
+                            textStyle: kHeading2Text,
+                            color: kLightPrimaryColor,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Text(
+                          text,
+                          style: GoogleFonts.cairo(
+                            textStyle: kBodyLargeText.copyWith(fontSize: 25),
+                          ),
+                          textDirection: TextDirection.rtl,
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Text(
+                          'عدد التكرارات: $repeats',
+                          style: GoogleFonts.cairo(textStyle: kBodyRegularText),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
-            ),
-            SizedBox(height: 10),
-            Text(
-              'عدد التكرارات: $repeats',
-              style: GoogleFonts.cairo(
-                textStyle: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.normal,
+              SizedBox(height: 20),
+              Align(
+                alignment: Alignment.center,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: 75,
+                      height: 75,
+                      decoration: BoxDecoration(
+                        color: Colors.transparent,
+                        borderRadius: BorderRadius.circular(50),
+                        border: Border.all(color: kSecondaryColor, width: 2),
+                      ),
+                      child: IconButton(
+                        onPressed: _beforeZikr,
+                        icon: Icon(Icons.arrow_back, color: kLightPrimaryColor),
+                      ),
+                    ),
+                    SizedBox(width: 75),
+                    Container(
+                      width: 75,
+                      height: 75,
+                      decoration: BoxDecoration(
+                        color: Colors.transparent,
+                        borderRadius: BorderRadius.circular(50),
+                        border: Border.all(color: kSecondaryColor, width: 2),
+                      ),
+                      child: IconButton(
+                        onPressed: _nextZikr,
+                        icon: Icon(
+                          Icons.arrow_forward,
+                          color: kLightPrimaryColor,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ),
-            SizedBox(height: 20),
-            Align(
-              alignment: Alignment.center,
-              child: FloatingActionButton(
-                onPressed: _nextZikr,
-                child: Icon(Icons.arrow_forward),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

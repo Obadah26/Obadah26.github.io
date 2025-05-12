@@ -62,10 +62,26 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   SizedBox(height: 20),
-                  Text(
-                    'تفاصيل التسميع لـ ${widget.userName}',
-                    style: GoogleFonts.elMessiri(textStyle: kHeading2Text),
+                  RichText(
                     textAlign: TextAlign.right,
+                    text: TextSpan(
+                      style: GoogleFonts.elMessiri(textStyle: kHeading2Text),
+                      children: <TextSpan>[
+                        TextSpan(
+                          text: 'تفاصيل التسميع لـ ',
+                          style: GoogleFonts.elMessiri(
+                            textStyle: kHeading2Text,
+                          ),
+                        ),
+                        TextSpan(
+                          text: widget.userName,
+                          style: GoogleFonts.elMessiri(
+                            textStyle: kHeading1Text,
+                            color: kLightPrimaryColor,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                   SizedBox(height: 10),
                   Container(
@@ -83,11 +99,12 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                           timeFilters.map((String value) {
                             return DropdownMenuItem<String>(
                               value: value,
-                              child: Text(
-                                value,
-                                textAlign: TextAlign.right,
-                                style: GoogleFonts.cairo(
-                                  textStyle: kBodyRegularText.copyWith(),
+                              child: Center(
+                                child: Text(
+                                  value,
+                                  style: GoogleFonts.cairo(
+                                    textStyle: kBodyRegularText.copyWith(),
+                                  ),
                                 ),
                               ),
                             );
@@ -208,18 +225,22 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                               totalRecitations++;
 
                               String partner = '';
+                              String listenedBy = '';
                               if (doc['recitation_type'] == 'with') {
                                 partner =
                                     doc['user'] == widget.userName
                                         ? doc['other_User']
                                         : doc['user'];
+                              } else {
+                                listenedBy = doc['listened_by'] ?? '';
                               }
 
                               recitationDetails.add({
                                 'date': doc['timestamp'].toDate(),
                                 'pages': pages,
                                 'type': doc['recitation_type'] ?? 'فردي',
-                                'with': partner.isNotEmpty ? partner : '--',
+                                'with': partner,
+                                'listened_by': listenedBy,
                               });
                             }
                           }
@@ -281,6 +302,8 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                                               ),
                                               Text(
                                                 '$totalPages صفحة',
+                                                textDirection:
+                                                    TextDirection.rtl,
                                                 style: GoogleFonts.cairo(
                                                   textStyle: kBodySmallTextDark
                                                       .copyWith(
@@ -378,6 +401,19 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                                   itemCount: recitationDetails.length,
                                   itemBuilder: (context, index) {
                                     final recitation = recitationDetails[index];
+                                    final doc = filteredDocs[index];
+                                    int firstPage =
+                                        doc['first_page'] is String
+                                            ? int.tryParse(doc['first_page']) ??
+                                                0
+                                            : (doc['first_page'] as int? ?? 0);
+                                    int secondPage =
+                                        doc['second_page'] is String
+                                            ? int.tryParse(
+                                                  doc['second_page'],
+                                                ) ??
+                                                0
+                                            : (doc['second_page'] as int? ?? 0);
                                     return Card(
                                       elevation: 2,
                                       shape: RoundedRectangleBorder(
@@ -392,30 +428,40 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                                           horizontal: 16,
                                           vertical: 12,
                                         ),
-                                        title: Text(
-                                          recitation['date']
-                                              .toString()
-                                              .substring(0, 10),
-                                          style: GoogleFonts.cairo(
-                                            textStyle: kBodyRegularText
-                                                .copyWith(fontSize: 16),
-                                          ),
-                                          textAlign: TextAlign.right,
-                                        ),
-                                        subtitle: Text(
-                                          'مع ${recitation['with']}',
-                                          style: GoogleFonts.cairo(
-                                            textStyle: kBodySmallText.copyWith(
-                                              fontSize: 14,
+                                        title: Column(
+                                          children: [
+                                            Text(
+                                              'من صفحة $firstPage إلى $secondPage',
+                                              style: GoogleFonts.cairo(
+                                                textStyle: kBodySmallText
+                                                    .copyWith(fontSize: 14),
+                                              ),
+                                              textAlign: TextAlign.right,
                                             ),
-                                          ),
-                                          textAlign: TextAlign.right,
+                                            SizedBox(height: 10),
+                                            Text(
+                                              recitation['date']
+                                                  .toString()
+                                                  .substring(0, 10),
+                                              style: GoogleFonts.cairo(
+                                                textStyle: kBodyRegularText
+                                                    .copyWith(
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: kLightPrimaryColor,
+                                                    ),
+                                              ),
+                                              textAlign: TextAlign.right,
+                                            ),
+                                          ],
                                         ),
                                         trailing: Column(
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
                                           children: [
                                             Text(
+                                              textDirection: TextDirection.rtl,
                                               '${recitation['pages']} صفحة',
                                               style: GoogleFonts.cairo(
                                                 textStyle: kBodySmallText
@@ -429,11 +475,23 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                                             ),
                                             Text(
                                               recitation['type'] == 'with'
-                                                  ? ':تسميع مشترك'
-                                                  : ':تسميع فردي',
+                                                  ? 'تسميع مشترك: ${recitation['type'] == 'with'
+                                                      ? 'مع ${recitation['with']}'
+                                                      : recitation['listened_by']?.isNotEmpty == true
+                                                      ? 'سمع له: ${recitation['listened_by']}'
+                                                      : 'تسميع فردي'}'
+                                                  : 'تسميع فردي: ${recitation['type'] == 'with'
+                                                      ? 'مع ${recitation['with']}'
+                                                      : recitation['listened_by']?.isNotEmpty == true
+                                                      ? 'سمع له: ${recitation['listened_by']}'
+                                                      : 'تسميع فردي'}',
                                               style: GoogleFonts.cairo(
                                                 textStyle: kBodySmallText
-                                                    .copyWith(fontSize: 12),
+                                                    .copyWith(
+                                                      fontSize: 12,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
                                               ),
                                             ),
                                           ],

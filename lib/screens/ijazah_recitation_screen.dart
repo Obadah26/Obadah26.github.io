@@ -46,7 +46,9 @@ class _IjazahRecitationScreenState extends State<IjazahRecitationScreen> {
         'timestamp': FieldValue.serverTimestamp(),
       };
 
-      await FirebaseFirestore.instance.collection('daily_recitation').add(data);
+      await FirebaseFirestore.instance
+          .collection('ijazah_recitation')
+          .add(data);
 
       ScaffoldMessenger.of(
         context,

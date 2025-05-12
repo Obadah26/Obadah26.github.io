@@ -1,9 +1,11 @@
 import 'package:adaptive_dialog/adaptive_dialog.dart';
+import 'package:alhadiqa/screens/azkar_screen.dart';
 import 'package:alhadiqa/screens/daily_recitation_screen.dart';
 import 'package:alhadiqa/screens/ijazah_leaderboard.dart';
 import 'package:alhadiqa/screens/ijazah_recitation_screen.dart';
 import 'package:alhadiqa/screens/menu_screen.dart';
 import 'package:alhadiqa/screens/recitation_leaderboard.dart';
+import 'package:alhadiqa/widgets/home_button.dart';
 import 'package:flutter/material.dart';
 import 'package:alhadiqa/const.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -90,11 +92,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         leading: Padding(
           padding: const EdgeInsets.only(left: 30),
-          child: Icon(
-            Icons.person_outline,
-            color: kLightPrimaryColor,
-            size: 50,
-          ),
+          child: Icon(Icons.person_outline, color: kPrimaryColor, size: 50),
         ),
         automaticallyImplyLeading: false,
         backgroundColor: Colors.transparent,
@@ -116,24 +114,20 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Text.rich(
                         TextSpan(
                           text: 'أهلاً',
-                          style: GoogleFonts.cairo(
-                            color: kPrimaryTextLight,
-                            fontSize: 32,
-                            fontWeight: FontWeight.w700,
-                            height: 1.2,
-                          ),
+                          style: GoogleFonts.cairo(textStyle: kHeading2Text),
                           children: [
                             TextSpan(
                               text: '،',
                               style: GoogleFonts.cairo(
-                                textStyle: kHeading1Text,
+                                textStyle: kHeading2Text,
                               ),
                             ),
                             TextSpan(
                               text: ' $_userName',
                               style: GoogleFonts.cairo(
-                                textStyle: kHeading1Text.copyWith(
-                                  color: kLightPrimaryColor,
+                                textStyle: kHeading2Text.copyWith(
+                                  color: kPrimaryColor,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ),
@@ -177,6 +171,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   style: GoogleFonts.elMessiri(
                                     textStyle: kBodyLargeText,
                                     fontWeight: FontWeight.bold,
+                                    color: kPrimaryColor,
                                   ),
                                 ),
                               ),
@@ -245,6 +240,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             (totalPages / 40).clamp(0.0, 1.0).toDouble();
 
                         return Container(
+                          width: 400,
                           decoration: BoxDecoration(
                             color: Colors.transparent,
                             borderRadius: BorderRadius.circular(16),
@@ -268,15 +264,38 @@ class _HomeScreenState extends State<HomeScreen> {
                                   style: GoogleFonts.elMessiri(
                                     textStyle: kBodyLargeText,
                                     fontWeight: FontWeight.bold,
+                                    color: kPrimaryColor,
                                   ),
                                 ),
                                 SizedBox(height: 15),
-                                Text(
-                                  'تم انجاز $totalPages صفحة من اصل 40 صفحة',
-                                  style: GoogleFonts.cairo(
-                                    textStyle: kBodyRegularText,
-                                  ),
+                                RichText(
                                   textAlign: TextAlign.center,
+                                  text: TextSpan(
+                                    style: GoogleFonts.cairo(
+                                      textStyle: kBodyLargeText,
+                                      color: kLightPrimaryColor,
+                                    ),
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                        text: 'تم انجاز ',
+                                        style: GoogleFonts.cairo(
+                                          textStyle: kBodyLargeText,
+                                          color: kLightPrimaryColor,
+                                        ),
+                                      ),
+                                      TextSpan(
+                                        text: '$totalPages',
+                                        style: TextStyle(color: kPrimaryColor),
+                                      ),
+                                      TextSpan(
+                                        text: ' صفحة من اصل 40 صفحة',
+                                        style: GoogleFonts.cairo(
+                                          textStyle: kBodyLargeText,
+                                          color: kLightPrimaryColor,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                                 SizedBox(height: 15),
                                 SizedBox(
@@ -284,7 +303,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   child: Container(
                                     decoration: BoxDecoration(
                                       border: Border.all(
-                                        color: kSecondaryColor,
+                                        color: kPrimaryColor,
                                         width: 1.5,
                                       ),
                                       borderRadius: BorderRadius.circular(10),
@@ -297,7 +316,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                             LinearProgressBar
                                                 .progressTypeLinear,
                                         currentStep: totalPages,
-                                        progressColor: kLightPrimaryColor,
+                                        progressColor: kPrimaryColor,
                                         backgroundColor: Colors.transparent,
                                         borderRadius: BorderRadius.circular(10),
                                       ),
@@ -380,10 +399,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                   icon: Icons.mosque,
                                   text: 'الاذكار',
                                   onPressed: () {
-                                    // Navigator.pushNamed(
-                                    //   context,
-                                    //   IjazahRecitationScreen.id,
-                                    // );
+                                    Navigator.pushNamed(
+                                      context,
+                                      AzkarScreen.id,
+                                    );
                                   },
                                 ),
                               ],
@@ -445,48 +464,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   SizedBox(height: 30),
                 ],
               ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class HomeButton extends StatelessWidget {
-  const HomeButton({
-    super.key,
-    required this.icon,
-    required this.text,
-    required this.onPressed,
-  });
-  final IconData icon;
-  final String text;
-  final Function() onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 100,
-      width: 100,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          IconButton(
-            onPressed: onPressed,
-            icon: Icon(icon, size: 50, color: kLightPrimaryColor),
-          ),
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Text(
-              text,
-              style: GoogleFonts.cairo(
-                textStyle: kBodySmallText.copyWith(
-                  color: kLightPrimaryColor,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              maxLines: 1,
             ),
           ),
         ],

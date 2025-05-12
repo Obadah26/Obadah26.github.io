@@ -26,6 +26,11 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
   final TextEditingController firstPageController = TextEditingController();
   final TextEditingController secondPageController = TextEditingController();
 
+  List<String> filterNames(List<String> names, String? currentUser) {
+    if (currentUser == null) return names;
+    return names.where((name) => name != currentUser).toList();
+  }
+
   void saveData() async {
     String? userName = widget.userName;
     String otherUser = selectedName;
@@ -54,6 +59,7 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
         data['recitation_type'] = 'with';
       } else if (selectedButtonIndex == 1) {
         data['recitation_type'] = 'to';
+        data['listened_by'] = otherUser;
       }
 
       await FirebaseFirestore.instance.collection('daily_recitation').add(data);
@@ -236,9 +242,10 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
                             },
                             dropdownColor: Colors.white,
                             items:
-                                withNames.map<DropdownMenuItem<String>>((
-                                  String value,
-                                ) {
+                                filterNames(
+                                  withNames,
+                                  widget.userName,
+                                ).map<DropdownMenuItem<String>>((String value) {
                                   return DropdownMenuItem<String>(
                                     value: value,
                                     child: Align(
@@ -298,9 +305,10 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
                             },
                             dropdownColor: Colors.white,
                             items:
-                                toNames.map<DropdownMenuItem<String>>((
-                                  String value,
-                                ) {
+                                filterNames(
+                                  toNames,
+                                  widget.userName,
+                                ).map<DropdownMenuItem<String>>((String value) {
                                   return DropdownMenuItem<String>(
                                     value: value,
                                     child: Align(

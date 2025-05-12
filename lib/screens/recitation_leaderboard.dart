@@ -116,11 +116,13 @@ class _RecitationLeaderboardScreenState
                           timeFilters.map((String value) {
                             return DropdownMenuItem<String>(
                               value: value,
-                              child: Text(
-                                value,
-                                textAlign: TextAlign.right,
-                                style: GoogleFonts.cairo(
-                                  textStyle: kBodyRegularText.copyWith(),
+                              child: Center(
+                                child: Text(
+                                  value,
+                                  textAlign: TextAlign.right,
+                                  style: GoogleFonts.cairo(
+                                    textStyle: kBodyRegularText.copyWith(),
+                                  ),
                                 ),
                               ),
                             );
@@ -304,24 +306,14 @@ class _RecitationLeaderboardScreenState
                                       vertical: 12,
                                     ),
                                     title: Text(
-                                      'إجمالي تسميعاتك',
+                                      '${widget.userName}',
                                       style: GoogleFonts.cairo(
                                         textStyle: kBodyRegularText.copyWith(
                                           fontSize: 18,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                      textAlign: TextAlign.right,
-                                    ),
-                                    trailing: Text(
-                                      '$totalUserPages صفحة',
-                                      style: GoogleFonts.cairo(
-                                        textStyle: kBodySmallTextDark.copyWith(
-                                          fontSize: 16,
-                                          color: kPrimaryColor,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
+                                      textAlign: TextAlign.center,
                                     ),
                                   ),
                                 ),
@@ -374,18 +366,7 @@ class _RecitationLeaderboardScreenState
                                               textStyle: kBodyRegularText
                                                   .copyWith(fontSize: 18),
                                             ),
-                                            textAlign: TextAlign.right,
-                                          ),
-                                          trailing: Text(
-                                            '$totalPages صفحة',
-                                            style: GoogleFonts.cairo(
-                                              textStyle: kBodySmallTextDark
-                                                  .copyWith(
-                                                    fontSize: 16,
-                                                    color: kPrimaryColor,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                            ),
+                                            textAlign: TextAlign.center,
                                           ),
                                         ),
                                       ),

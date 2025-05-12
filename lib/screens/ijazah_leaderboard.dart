@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:simple_circular_progress_bar/simple_circular_progress_bar.dart';
 
 class IjazahLeaderboardScreen extends StatefulWidget {
   const IjazahLeaderboardScreen({super.key, this.userName});
@@ -131,9 +132,9 @@ class _IjazahLeaderboardScreenState extends State<IjazahLeaderboardScreen> {
                           Map<String, DateTime?> completionDates = {};
 
                           Map<String, DateTime> manuallyCompleted = {
-                            'أويس': DateTime(2024, 3, 15),
+                            'أويس': DateTime(2024, 3, 29),
                             'عمرو': DateTime(2024, 3, 29),
-                            'عبدالرحمن أبو سعدة': DateTime(2024, 2, 27),
+                            'عبدالرحمن أبو سعدة': DateTime(2023, 7, 10),
                             'سارية': DateTime(2025, 2, 24),
                           };
 
@@ -191,6 +192,10 @@ class _IjazahLeaderboardScreenState extends State<IjazahLeaderboardScreen> {
                             itemBuilder: (context, index) {
                               String name = withNames[index];
                               int totalPages = pagesPerName[name] ?? 0;
+                              double progressPercentage =
+                                  (totalPages / 604 * 100)
+                                      .clamp(0, 100)
+                                      .toDouble();
                               bool completed = totalPages >= 604;
                               DateTime? completionDate = completionDates[name];
 
@@ -215,11 +220,12 @@ class _IjazahLeaderboardScreenState extends State<IjazahLeaderboardScreen> {
                                         fontSize: 18,
                                       ),
                                     ),
-                                    textAlign: TextAlign.left,
+                                    textAlign: TextAlign.right,
                                   ),
                                   subtitle:
                                       completed && completionDate != null
                                           ? Text(
+                                            textAlign: TextAlign.right,
                                             DateFormat(
                                               'EEEE، d MMMM y',
                                               'ar',
@@ -228,25 +234,53 @@ class _IjazahLeaderboardScreenState extends State<IjazahLeaderboardScreen> {
                                               textStyle: kBodySmallTextDark
                                                   .copyWith(
                                                     fontSize: 14,
-                                                    color: Colors.green,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: kLightPrimaryColor,
                                                   ),
                                             ),
                                           )
                                           : null,
-                                  trailing: Text(
-                                    completed
-                                        ? 'تم إنهاء الإجازة'
-                                        : '$totalPages من 604 صفحة',
-                                    style: GoogleFonts.cairo(
-                                      textStyle: kBodySmallTextDark.copyWith(
-                                        fontSize: 16,
-                                        color:
-                                            completed
-                                                ? Colors.green
-                                                : kPrimaryColor,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
+                                  leading: SizedBox(
+                                    width: 50,
+                                    height: 50,
+                                    child:
+                                        completed
+                                            ? Icon(
+                                              Icons.check_circle,
+                                              color: kSecondaryColor,
+                                              size: 40,
+                                            )
+                                            : SimpleCircularProgressBar(
+                                              size: 50,
+                                              valueNotifier: ValueNotifier(
+                                                progressPercentage,
+                                              ),
+                                              progressStrokeWidth: 5,
+                                              backStrokeWidth: 5,
+                                              mergeMode: true,
+                                              onGetText: (value) {
+                                                return Text(
+                                                  '${value.toInt()}%',
+                                                  style: GoogleFonts.cairo(
+                                                    textStyle: TextStyle(
+                                                      fontSize: 12,
+                                                      color: kSecondaryColor,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                              progressColors: const [
+                                                kSecondaryColor,
+                                              ],
+                                              backColor: Color.fromRGBO(
+                                                158,
+                                                158,
+                                                158,
+                                                0.3,
+                                              ),
+                                            ),
                                   ),
                                 ),
                               );
