@@ -98,7 +98,7 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
           alignment: Alignment.centerRight,
           child: Padding(
             padding: const EdgeInsets.only(right: 8),
-            child: Icon(Icons.group_outlined, size: 50, color: kSecondaryColor),
+            child: Icon(Icons.group_outlined, size: 35, color: kPrimaryColor),
           ),
         ),
         automaticallyImplyLeading: false,
@@ -114,7 +114,11 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
                 (route) => false,
               );
             },
-            icon: Icon(Icons.arrow_back_rounded, size: 50),
+            icon: Icon(
+              Icons.arrow_back_rounded,
+              size: 35,
+              color: kPrimaryColor,
+            ),
           ),
         ),
       ),
@@ -130,17 +134,22 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
                   Center(
                     child: Text(
                       'التسميع اليومي',
-                      style: GoogleFonts.elMessiri(textStyle: kHeading2Text),
+                      style: GoogleFonts.elMessiri(
+                        textStyle: kHeading2Text.copyWith(color: kPrimaryColor),
+                      ),
                     ),
                   ),
                   SizedBox(height: 10),
                   Padding(
-                    padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(14),
                     child: Container(
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: kSecondaryColor, width: 2),
+                        border: Border.all(
+                          color: kSecondaryColor.withOpacity(0.5),
+                          width: 2,
+                        ),
                         boxShadow: [
                           BoxShadow(
                             color: Color.fromRGBO(158, 158, 158, 0.3),

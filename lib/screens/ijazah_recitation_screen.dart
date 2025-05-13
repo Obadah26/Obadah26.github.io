@@ -72,7 +72,7 @@ class _IjazahRecitationScreenState extends State<IjazahRecitationScreen> {
           alignment: Alignment.centerRight,
           child: Padding(
             padding: const EdgeInsets.only(right: 8),
-            child: Icon(Icons.person_outline, size: 50, color: kSecondaryColor),
+            child: Icon(Icons.person_outline, size: 35, color: kPrimaryColor),
           ),
         ),
         automaticallyImplyLeading: false,
@@ -88,7 +88,11 @@ class _IjazahRecitationScreenState extends State<IjazahRecitationScreen> {
                 (route) => false,
               );
             },
-            icon: Icon(Icons.arrow_back_rounded, size: 50),
+            icon: Icon(
+              Icons.arrow_back_rounded,
+              size: 35,
+              color: kPrimaryColor,
+            ),
           ),
         ),
       ),
@@ -104,7 +108,9 @@ class _IjazahRecitationScreenState extends State<IjazahRecitationScreen> {
                   Center(
                     child: Text(
                       'تسميع الاجازة',
-                      style: GoogleFonts.elMessiri(textStyle: kHeading2Text),
+                      style: GoogleFonts.elMessiri(
+                        textStyle: kHeading2Text.copyWith(color: kPrimaryColor),
+                      ),
                     ),
                   ),
                   SizedBox(height: 10),
@@ -114,7 +120,10 @@ class _IjazahRecitationScreenState extends State<IjazahRecitationScreen> {
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: kSecondaryColor, width: 2),
+                        border: Border.all(
+                          color: kSecondaryColor.withOpacity(0.3),
+                          width: 2,
+                        ),
                         boxShadow: [
                           BoxShadow(
                             color: Color.fromRGBO(158, 158, 158, 0.3),

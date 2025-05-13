@@ -27,7 +27,7 @@ class _IjazahLeaderboardScreenState extends State<IjazahLeaderboardScreen> {
           alignment: Alignment.centerRight,
           child: Padding(
             padding: const EdgeInsets.only(right: 8),
-            child: Icon(Icons.person_outline, size: 50, color: kSecondaryColor),
+            child: Icon(Icons.person_outline, size: 35, color: kPrimaryColor),
           ),
         ),
         automaticallyImplyLeading: false,
@@ -43,7 +43,11 @@ class _IjazahLeaderboardScreenState extends State<IjazahLeaderboardScreen> {
                 (route) => false,
               );
             },
-            icon: Icon(Icons.arrow_back_rounded, size: 50),
+            icon: Icon(
+              Icons.arrow_back_rounded,
+              size: 35,
+              color: kPrimaryColor,
+            ),
           ),
         ),
       ),
@@ -59,7 +63,9 @@ class _IjazahLeaderboardScreenState extends State<IjazahLeaderboardScreen> {
                   SizedBox(height: 20),
                   Text(
                     'إحصائيات الإجازة',
-                    style: GoogleFonts.elMessiri(textStyle: kHeading2Text),
+                    style: GoogleFonts.elMessiri(
+                      textStyle: kHeading2Text.copyWith(color: kPrimaryColor),
+                    ),
                     textAlign: TextAlign.right,
                   ),
                   SizedBox(height: 20),
@@ -68,7 +74,10 @@ class _IjazahLeaderboardScreenState extends State<IjazahLeaderboardScreen> {
                       decoration: BoxDecoration(
                         color: Color.fromRGBO(255, 255, 255, 0.8),
                         borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: kSecondaryColor, width: 2),
+                        border: Border.all(
+                          color: kSecondaryColor.withOpacity(0.5),
+                          width: 2,
+                        ),
                         boxShadow: [
                           BoxShadow(
                             color: Color.fromRGBO(158, 158, 158, 0.3),
@@ -184,7 +193,7 @@ class _IjazahLeaderboardScreenState extends State<IjazahLeaderboardScreen> {
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(12),
                                   side: BorderSide(
-                                    color: kLightPrimaryColor,
+                                    color: kSecondaryColor.withOpacity(0.3),
                                     width: 1,
                                   ),
                                 ),

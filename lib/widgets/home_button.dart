@@ -8,10 +8,12 @@ class HomeButton extends StatelessWidget {
     required this.icon,
     required this.text,
     required this.onPressed,
+    required this.iconColor,
   });
   final IconData icon;
   final String text;
   final Function() onPressed;
+  final Color iconColor;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +25,7 @@ class HomeButton extends StatelessWidget {
         children: [
           IconButton(
             onPressed: onPressed,
-            icon: Icon(icon, size: 50, color: kLightPrimaryColor),
+            icon: Icon(icon, size: 50, color: iconColor),
           ),
           FittedBox(
             fit: BoxFit.scaleDown,

@@ -26,11 +26,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
           alignment: Alignment.centerRight,
           child: Padding(
             padding: const EdgeInsets.only(right: 8),
-            child: Icon(
-              Icons.person_outline,
-              size: 50,
-              color: kLightPrimaryColor,
-            ),
+            child: Icon(Icons.person_outline, size: 35, color: kPrimaryColor),
           ),
         ),
         backgroundColor: Colors.transparent,
@@ -41,7 +37,11 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
             onPressed: () {
               Navigator.pop(context);
             },
-            icon: Icon(Icons.arrow_back_rounded, size: 50),
+            icon: Icon(
+              Icons.arrow_back_rounded,
+              size: 35,
+              color: kPrimaryColor,
+            ),
           ),
         ),
       ),
@@ -70,7 +70,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                           text: widget.userName,
                           style: GoogleFonts.elMessiri(
                             textStyle: kHeading1Text,
-                            color: kLightPrimaryColor,
+                            color: kPrimaryColor,
                           ),
                         ),
                       ],
@@ -82,7 +82,10 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: kLightPrimaryColor, width: 1.5),
+                      border: Border.all(
+                        color: kSecondaryColor.withOpacity(0.5),
+                        width: 1.5,
+                      ),
                     ),
                     child: DropdownButton<String>(
                       value: selectedFilter,
@@ -115,7 +118,10 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                       decoration: BoxDecoration(
                         color: Color.fromRGBO(255, 255, 255, 0.8),
                         borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: kLightPrimaryColor, width: 2),
+                        border: Border.all(
+                          color: kSecondaryColor.withOpacity(0.5),
+                          width: 2,
+                        ),
                         boxShadow: [
                           BoxShadow(
                             color: Color.fromRGBO(158, 158, 158, 0.3),
@@ -246,7 +252,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(12),
                                   side: BorderSide(
-                                    color: kPrimaryColor,
+                                    color: kSecondaryColor.withOpacity(0.3),
                                     width: 2,
                                   ),
                                 ),
@@ -414,7 +420,9 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(12),
                                         side: BorderSide(
-                                          color: kLightPrimaryColor,
+                                          color: kSecondaryColor.withOpacity(
+                                            0.3,
+                                          ),
                                           width: 1,
                                         ),
                                       ),

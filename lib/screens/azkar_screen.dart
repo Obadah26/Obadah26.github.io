@@ -55,8 +55,8 @@ class _AzkarScreenState extends State<AzkarScreen> {
             onPressed: () => Navigator.popAndPushNamed(context, HomeScreen.id),
             icon: Icon(
               Icons.arrow_back_rounded,
-              size: 50,
-              color: kLightPrimaryColor,
+              size: 35,
+              color: kPrimaryColor,
             ),
           ),
         ),
@@ -69,7 +69,7 @@ class _AzkarScreenState extends State<AzkarScreen> {
             Container(
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(color: kSecondaryColor, width: 2),
+                border: Border.all(color: kLightPrimaryColor, width: 2),
               ),
               child: IconButton(
                 onPressed: _previousZikr,
@@ -79,7 +79,7 @@ class _AzkarScreenState extends State<AzkarScreen> {
             Container(
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(color: kSecondaryColor, width: 2),
+                border: Border.all(color: kLightPrimaryColor, width: 2),
               ),
               child: IconButton(
                 onPressed: _nextZikr,
@@ -118,7 +118,9 @@ class _AzkarScreenState extends State<AzkarScreen> {
               padding: const EdgeInsets.all(16),
               child: Text(
                 _isMorning ? 'أذكار الصباح' : 'أذكار المساء',
-                style: GoogleFonts.elMessiri(textStyle: kHeading1Text),
+                style: GoogleFonts.elMessiri(
+                  textStyle: kHeading1Text.copyWith(color: kPrimaryColor),
+                ),
               ),
             ),
             Expanded(
@@ -126,11 +128,14 @@ class _AzkarScreenState extends State<AzkarScreen> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Card(
-                    elevation: 1,
+                    elevation: 2,
                     color: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
-                      side: BorderSide(color: kSecondaryColor, width: 2),
+                      side: BorderSide(
+                        color: kSecondaryColor.withOpacity(0.5),
+                        width: 2,
+                      ),
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(16),

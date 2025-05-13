@@ -9,7 +9,7 @@ class CircleIntersectionPainter extends CustomPainter {
 
     // Define circle paths
     final circle1 =
-        Path()..addOval(Rect.fromCircle(center: Offset(200, 5), radius: 225));
+        Path()..addOval(Rect.fromCircle(center: Offset(190, -10), radius: 240));
 
     final circle2 =
         Path()..addOval(Rect.fromCircle(center: Offset(350, 75), radius: 150));

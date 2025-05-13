@@ -29,7 +29,6 @@ class _HomeScreenState extends State<HomeScreen> {
   final _auth = FirebaseAuth.instance;
   String arabicDate = '';
   String _userName = '';
-  final ValueNotifier<double> _valueNotifier = ValueNotifier(0);
 
   @override
   void initState() {
@@ -57,416 +56,399 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  Widget _buildSectionContainer(Widget child) {
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1),
+            spreadRadius: 2,
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
+        border: Border.all(color: kSecondaryColor.withOpacity(0.3)),
+      ),
+      child: child,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true,
+      backgroundColor: Colors.grey[50],
       appBar: AppBar(
-        title: Align(
-          alignment: Alignment.centerRight,
-          child: Padding(
-            padding: const EdgeInsets.only(right: 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                IconButton(
-                  onPressed: () {},
-                  icon: Icon(Icons.notifications_outlined, size: 30),
-                ),
-                IconButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder:
-                            (context) =>
-                                MenuScreen(auth: _auth, userName: _userName),
-                      ),
-                    );
-                  },
-                  icon: Icon(Icons.menu, size: 50),
-                ),
-              ],
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            IconButton(
+              onPressed: () {},
+              icon: Icon(
+                Icons.notifications_outlined,
+                size: 30,
+                color: kPrimaryColor,
+              ),
+              tooltip: 'الإشعارات',
             ),
-          ),
+            IconButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder:
+                        (context) =>
+                            MenuScreen(auth: _auth, userName: _userName),
+                  ),
+                );
+              },
+              icon: Icon(Icons.menu, size: 32, color: kPrimaryColor),
+              tooltip: 'القائمة',
+            ),
+          ],
         ),
         leading: Padding(
-          padding: const EdgeInsets.only(left: 30),
-          child: Icon(Icons.person_outline, color: kPrimaryColor, size: 50),
+          padding: const EdgeInsets.only(left: 16),
+          child: IconButton(
+            icon: Icon(Icons.person_outline, color: kPrimaryColor, size: 30),
+            onPressed: () {},
+            tooltip: 'الملف الشخصي',
+          ),
         ),
-        automaticallyImplyLeading: false,
         backgroundColor: Colors.transparent,
-        toolbarHeight: 100,
+        elevation: 0,
+        toolbarHeight: 70,
       ),
-      backgroundColor: Colors.white,
-      body: Stack(
-        children: [
-          SafeArea(
-            child: SingleChildScrollView(
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            // Greeting Section
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Align(
-                    // Hi Text
-                    alignment: Alignment.centerRight,
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 8),
-                      child: Text.rich(
+                  Text.rich(
+                    TextSpan(
+                      text: 'أهلاً،',
+                      style: GoogleFonts.cairo(
+                        textStyle: TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey[800],
+                        ),
+                      ),
+                      children: [
                         TextSpan(
-                          text: 'أهلاً',
-                          style: GoogleFonts.cairo(textStyle: kHeading2Text),
-                          children: [
-                            TextSpan(
-                              text: '،',
-                              style: GoogleFonts.cairo(
-                                textStyle: kHeading2Text,
-                              ),
-                            ),
-                            TextSpan(
-                              text: ' $_userName',
-                              style: GoogleFonts.cairo(
-                                textStyle: kHeading2Text.copyWith(
-                                  color: kPrimaryColor,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  Align(
-                    // Date
-                    alignment: Alignment.centerRight,
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 12),
-                      child: Text(
-                        arabicDate,
-                        style: GoogleFonts.elMessiri(textStyle: kBodySmallText),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 30),
-                  Center(
-                    // Ayah
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.transparent,
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: kSecondaryColor, width: 2),
-                      ),
-                      constraints: BoxConstraints(maxWidth: 350, minWidth: 200),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: Padding(
-                                padding: const EdgeInsets.all(8),
-                                child: Text(
-                                  'اية يومية',
-                                  style: GoogleFonts.elMessiri(
-                                    textStyle: kBodyLargeText,
-                                    fontWeight: FontWeight.bold,
-                                    color: kPrimaryColor,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Align(
-                                alignment: Alignment.center,
-                                child: Text(
-                                  'إِنَّا نَحْنُ نَزَّلْنَا الذِّكْرَ وَإِنَّا لَهُ لَحَافِظُونَ',
-                                  style: GoogleFonts.notoKufiArabic(
-                                    textStyle: kHeading2Text.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      color: kLightPrimaryColor,
-                                    ),
-                                  ),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 8),
-                              child: Text(
-                                '[الحجر: 9]',
-                                style: GoogleFonts.notoKufiArabic(
-                                  textStyle: kBodySmallText.copyWith(),
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 30),
-                  Center(
-                    // Weekly Target
-                    child: StreamBuilder<QuerySnapshot>(
-                      stream:
-                          _firestore
-                              .collection('daily_recitation')
-                              .where('user', isEqualTo: _userName)
-                              .snapshots(),
-                      builder: (context, snapshot) {
-                        if (!snapshot.hasData) {
-                          return Center(child: CircularProgressIndicator());
-                        }
-
-                        int totalPages = 0;
-                        final docs = snapshot.data!.docs;
-
-                        for (var doc in docs) {
-                          int firstPage =
-                              doc['first_page'] is String
-                                  ? int.tryParse(doc['first_page']) ?? 0
-                                  : (doc['first_page'] as int? ?? 0);
-                          int secondPage =
-                              doc['second_page'] is String
-                                  ? int.tryParse(doc['second_page']) ?? 0
-                                  : (doc['second_page'] as int? ?? 0);
-                          totalPages += (secondPage - firstPage);
-                        }
-
-                        double progressPercentage =
-                            (totalPages / 40).clamp(0.0, 1.0).toDouble();
-
-                        return Container(
-                          width: 400,
-                          decoration: BoxDecoration(
-                            color: Colors.transparent,
-                            borderRadius: BorderRadius.circular(16),
-                            border: Border.all(
-                              color: kSecondaryColor,
-                              width: 2,
+                          text: ' $_userName',
+                          style: GoogleFonts.cairo(
+                            textStyle: TextStyle(
+                              fontSize: 28,
+                              fontWeight: FontWeight.bold,
+                              color: kPrimaryColor,
                             ),
                           ),
-                          constraints: BoxConstraints(
-                            maxWidth: 350,
-                            minWidth: 200,
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                SizedBox(height: 5),
-                                Text(
-                                  'الهدف الاسبوعي',
-                                  style: GoogleFonts.elMessiri(
-                                    textStyle: kBodyLargeText,
-                                    fontWeight: FontWeight.bold,
-                                    color: kPrimaryColor,
-                                  ),
-                                ),
-                                SizedBox(height: 15),
-                                RichText(
-                                  textAlign: TextAlign.center,
-                                  text: TextSpan(
-                                    style: GoogleFonts.cairo(
-                                      textStyle: kBodyLargeText,
-                                      color: kLightPrimaryColor,
-                                    ),
-                                    children: <TextSpan>[
-                                      TextSpan(
-                                        text: 'تم انجاز ',
-                                        style: GoogleFonts.cairo(
-                                          textStyle: kBodyLargeText,
-                                          color: kLightPrimaryColor,
-                                        ),
-                                      ),
-                                      TextSpan(
-                                        text: '$totalPages',
-                                        style: TextStyle(color: kPrimaryColor),
-                                      ),
-                                      TextSpan(
-                                        text: ' صفحة من اصل 40 صفحة',
-                                        style: GoogleFonts.cairo(
-                                          textStyle: kBodyLargeText,
-                                          color: kLightPrimaryColor,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(height: 15),
-                                SizedBox(
-                                  width: 250,
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      border: Border.all(
-                                        color: kPrimaryColor,
-                                        width: 1.5,
-                                      ),
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(10),
-                                      child: LinearProgressBar(
-                                        maxSteps: 40,
-                                        progressType:
-                                            LinearProgressBar
-                                                .progressTypeLinear,
-                                        currentStep: totalPages,
-                                        progressColor: kPrimaryColor,
-                                        backgroundColor: Colors.transparent,
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(height: 15),
-                                Text(
-                                  totalPages <= 10
-                                      ? 'القليل الدائم خير من الكثير المنقطع'
-                                      : totalPages <= 20
-                                      ? 'استمر في الإنجاز'
-                                      : totalPages <= 30
-                                      ? 'أحسنت! زد من همتك'
-                                      : totalPages <= 39
-                                      ? 'بقيت خطوات قليلة'
-                                      : 'مبارك! لقد أتممت الهدف',
-                                  style: GoogleFonts.cairo(
-                                    textStyle: kBodySmallText,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                  SizedBox(height: 30),
-                  Center(
-                    // Buttons
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.transparent,
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: kSecondaryColor, width: 2),
-                      ),
-                      constraints: BoxConstraints(maxWidth: 350, minWidth: 200),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                HomeButton(
-                                  icon: Icons.group,
-                                  text: 'التسميع اليومي',
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder:
-                                            (context) => DailyRecitationScreen(
-                                              userName: _userName,
-                                            ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                                HomeButton(
-                                  icon: Icons.person,
-                                  text: 'الاجازة',
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder:
-                                            (context) => IjazahRecitationScreen(
-                                              userName: _userName,
-                                            ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                                HomeButton(
-                                  icon: Icons.mosque,
-                                  text: 'الاذكار',
-                                  onPressed: () {
-                                    Navigator.pushNamed(
-                                      context,
-                                      AzkarScreen.id,
-                                    );
-                                  },
-                                ),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                HomeButton(
-                                  icon: Icons.leaderboard,
-                                  text: 'نتائج التسميع',
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder:
-                                            (context) =>
-                                                RecitationLeaderboardScreen(
-                                                  userName: _userName,
-                                                ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                                HomeButton(
-                                  icon: Icons.leaderboard,
-                                  text: 'نتائج الاجازة',
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder:
-                                            (context) =>
-                                                IjazahLeaderboardScreen(
-                                                  userName: _userName,
-                                                ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                                HomeButton(
-                                  icon: Icons.dark_mode,
-                                  text: 'رمضان',
-                                  onPressed: () {
-                                    showOkAlertDialog(
-                                      context: context,
-                                      title: 'غير فعال',
-                                      message: 'يتفعل خلال رمضان فقط',
-                                      okLabel: 'حسناً',
-                                    );
-                                  },
-                                ),
-                              ],
-                            ),
-                          ],
                         ),
+                      ],
+                    ),
+                  ),
+                  Text(
+                    arabicDate,
+                    style: GoogleFonts.elMessiri(
+                      textStyle: TextStyle(
+                        fontSize: 16,
+                        color: Colors.grey[600],
                       ),
                     ),
                   ),
-                  SizedBox(height: 30),
                 ],
               ),
             ),
-          ),
-        ],
+
+            // Daily Ayah Section
+            _buildSectionContainer(
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    'اية يومية',
+                    style: GoogleFonts.elMessiri(
+                      textStyle: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: kPrimaryColor,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Column(
+                    children: [
+                      Text(
+                        'إِنَّا نَحْنُ نَزَّلْنَا الذِّكْرَ وَإِنَّا لَهُ لَحَافِظُونَ',
+                        style: GoogleFonts.notoKufiArabic(
+                          textStyle: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: kLightPrimaryColor,
+                            height: 1.8,
+                          ),
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        '[الحجر: 9]',
+                        style: GoogleFonts.notoKufiArabic(
+                          textStyle: TextStyle(
+                            fontSize: 16,
+                            color: kPrimaryColor,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+
+            // Weekly Target Section
+            _buildSectionContainer(
+              StreamBuilder<QuerySnapshot>(
+                stream:
+                    _firestore
+                        .collection('daily_recitation')
+                        .where('user', isEqualTo: _userName)
+                        .snapshots(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return Center(
+                      child: CircularProgressIndicator(color: kPrimaryColor),
+                    );
+                  }
+
+                  int totalPages = 0;
+                  final docs = snapshot.data!.docs;
+
+                  for (var doc in docs) {
+                    int firstPage =
+                        doc['first_page'] is String
+                            ? int.tryParse(doc['first_page']) ?? 0
+                            : (doc['first_page'] as int? ?? 0);
+                    int secondPage =
+                        doc['second_page'] is String
+                            ? int.tryParse(doc['second_page']) ?? 0
+                            : (doc['second_page'] as int? ?? 0);
+                    totalPages += (secondPage - firstPage);
+                  }
+
+                  double progress = totalPages / 40;
+                  Color progressColor =
+                      progress < 0.25
+                          ? Colors.orange
+                          : progress < 0.75
+                          ? Colors.blue
+                          : Colors.green;
+
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        'الهدف الاسبوعي',
+                        style: GoogleFonts.elMessiri(
+                          textStyle: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: kPrimaryColor,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      RichText(
+                        textAlign: TextAlign.center,
+                        text: TextSpan(
+                          style: GoogleFonts.cairo(
+                            textStyle: TextStyle(
+                              fontSize: 16,
+                              color: Colors.grey[700],
+                            ),
+                          ),
+                          children: <TextSpan>[
+                            TextSpan(text: 'تم انجاز '),
+                            TextSpan(
+                              text: '$totalPages',
+                              style: TextStyle(
+                                color: kPrimaryColor,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                              ),
+                            ),
+                            TextSpan(text: ' صفحة من اصل 40 صفحة'),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      LinearProgressBar(
+                        maxSteps: 40,
+                        progressType: LinearProgressBar.progressTypeLinear,
+                        currentStep: totalPages,
+                        progressColor: progressColor,
+                        backgroundColor: Colors.grey[200],
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('0', style: TextStyle(color: Colors.grey[600])),
+                          Text('40', style: TextStyle(color: Colors.grey[600])),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        totalPages <= 10
+                            ? 'القليل الدائم خير من الكثير المنقطع'
+                            : totalPages <= 20
+                            ? 'استمر في الإنجاز'
+                            : totalPages <= 30
+                            ? 'أحسنت! زد من همتك'
+                            : totalPages <= 39
+                            ? 'بقيت خطوات قليلة'
+                            : 'مبارك! لقد أتممت الهدف',
+                        style: GoogleFonts.cairo(
+                          textStyle: TextStyle(
+                            fontSize: 14,
+                            color: progressColor,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ),
+
+            _buildSectionContainer(
+              Column(
+                children: [
+                  Text(
+                    'الخدمات السريعة',
+                    style: GoogleFonts.elMessiri(
+                      textStyle: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: kPrimaryColor,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  GridView.count(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    crossAxisCount: 3,
+                    childAspectRatio: 0.9,
+                    mainAxisSpacing: 12,
+                    crossAxisSpacing: 12,
+                    children: [
+                      HomeButton(
+                        icon: Icons.group,
+                        text: 'التسميع اليومي',
+                        iconColor: Colors.blue,
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder:
+                                  (context) => DailyRecitationScreen(
+                                    userName: _userName,
+                                  ),
+                            ),
+                          );
+                        },
+                      ),
+                      HomeButton(
+                        icon: Icons.person,
+                        text: 'الاجازة',
+                        iconColor: Colors.purple,
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder:
+                                  (context) => IjazahRecitationScreen(
+                                    userName: _userName,
+                                  ),
+                            ),
+                          );
+                        },
+                      ),
+                      HomeButton(
+                        icon: Icons.mosque,
+                        text: 'الاذكار',
+                        iconColor: Colors.green,
+                        onPressed: () {
+                          Navigator.pushNamed(context, AzkarScreen.id);
+                        },
+                      ),
+                      HomeButton(
+                        icon: Icons.leaderboard,
+                        text: 'نتائج التسميع',
+                        iconColor: Colors.orange,
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder:
+                                  (context) => RecitationLeaderboardScreen(
+                                    userName: _userName,
+                                  ),
+                            ),
+                          );
+                        },
+                      ),
+                      HomeButton(
+                        icon: Icons.leaderboard,
+                        text: 'نتائج الاجازة',
+                        iconColor: Colors.teal,
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder:
+                                  (context) => IjazahLeaderboardScreen(
+                                    userName: _userName,
+                                  ),
+                            ),
+                          );
+                        },
+                      ),
+                      HomeButton(
+                        icon: Icons.nights_stay,
+                        text: 'رمضان',
+                        iconColor: Colors.indigo,
+                        onPressed: () {
+                          showOkAlertDialog(
+                            context: context,
+                            title: 'غير فعال',
+                            message: 'يتفعل خلال رمضان فقط',
+                            okLabel: 'حسناً',
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+          ],
+        ),
       ),
     );
   }

@@ -35,11 +35,7 @@ class _RecitationLeaderboardScreenState
           alignment: Alignment.centerRight,
           child: Padding(
             padding: const EdgeInsets.only(right: 8),
-            child: Icon(
-              Icons.group_outlined,
-              size: 50,
-              color: kLightPrimaryColor,
-            ),
+            child: Icon(Icons.group_outlined, size: 30, color: kPrimaryColor),
           ),
         ),
         automaticallyImplyLeading: false,
@@ -55,7 +51,11 @@ class _RecitationLeaderboardScreenState
                 (route) => false,
               );
             },
-            icon: Icon(Icons.arrow_back_rounded, size: 50),
+            icon: Icon(
+              Icons.arrow_back_rounded,
+              size: 30,
+              color: kPrimaryColor,
+            ),
           ),
         ),
       ),
@@ -71,7 +71,9 @@ class _RecitationLeaderboardScreenState
                   SizedBox(height: 20),
                   Text(
                     'إحصائيات التسميع',
-                    style: GoogleFonts.elMessiri(textStyle: kHeading2Text),
+                    style: GoogleFonts.elMessiri(
+                      textStyle: kHeading2Text.copyWith(color: kPrimaryColor),
+                    ),
                     textAlign: TextAlign.right,
                   ),
                   SizedBox(height: 10),
@@ -80,7 +82,10 @@ class _RecitationLeaderboardScreenState
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: kLightPrimaryColor, width: 1.5),
+                      border: Border.all(
+                        color: kSecondaryColor.withOpacity(0.3),
+                        width: 1.5,
+                      ),
                     ),
                     child: DropdownButton<String>(
                       value: selectedFilter,
@@ -114,7 +119,10 @@ class _RecitationLeaderboardScreenState
                       decoration: BoxDecoration(
                         color: Color.fromRGBO(255, 255, 255, 0.8),
                         borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: kLightPrimaryColor, width: 2),
+                        border: Border.all(
+                          color: kSecondaryColor.withOpacity(0.3),
+                          width: 2,
+                        ),
                         boxShadow: [
                           BoxShadow(
                             color: Color.fromRGBO(158, 158, 158, 0.3),
@@ -243,12 +251,12 @@ class _RecitationLeaderboardScreenState
                                     );
                                   },
                                   child: Card(
-                                    elevation: 3,
+                                    elevation: 1,
                                     color: Colors.white,
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(12),
                                       side: BorderSide(
-                                        color: kPrimaryColor,
+                                        color: kSecondaryColor.withOpacity(0.5),
                                         width: 2,
                                       ),
                                     ),
@@ -309,7 +317,9 @@ class _RecitationLeaderboardScreenState
                                             12,
                                           ),
                                           side: BorderSide(
-                                            color: kLightPrimaryColor,
+                                            color: kSecondaryColor.withOpacity(
+                                              0.5,
+                                            ),
                                             width: 1,
                                           ),
                                         ),
