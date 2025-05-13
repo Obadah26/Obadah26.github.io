@@ -43,7 +43,7 @@ class _AzkarScreenState extends State<AzkarScreen> {
   Widget build(BuildContext context) {
     final title = currentTitles[_currentIndex];
     final text = currentAzkar[title]?['النص'] ?? '';
-    final repeats = currentAzkar[title]?['عدد التكرارات'] ?? 1;
+    final repeats = currentAzkar[title]?['عدد التكرار'] ?? 1;
 
     return Scaffold(
       appBar: AppBar(
@@ -165,7 +165,7 @@ class _AzkarScreenState extends State<AzkarScreen> {
                             ),
                           ),
                           Text(
-                            'عدد التكرارات: $repeats',
+                            'عدد التكرار: $repeats',
                             style: GoogleFonts.cairo(
                               textStyle: kBodyRegularText,
                             ),

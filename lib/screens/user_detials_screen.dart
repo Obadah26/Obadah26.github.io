@@ -269,7 +269,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                                                 CrossAxisAlignment.end,
                                             children: [
                                               Text(
-                                                'إجمالي التسميعات',
+                                                'إجمالي التسميع',
                                                 style: GoogleFonts.cairo(
                                                   textStyle: kBodyRegularText
                                                       .copyWith(fontSize: 16),
@@ -481,8 +481,8 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                                                 SizedBox(height: 5),
                                                 Text(
                                                   recitation['type'] == 'with'
-                                                      ? 'نوع التسميع: مشترك'
-                                                      : 'نوع التسميع: فردي',
+                                                      ? 'نوع التسميع: مدارسة'
+                                                      : 'نوع التسميع: تسميع',
                                                   style: GoogleFonts.cairo(
                                                     textStyle: kBodySmallText
                                                         .copyWith(
@@ -512,7 +512,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                                                             ?.isNotEmpty ==
                                                         true)
                                                   Text(
-                                                    'تم السماع بواسطة: ${recitation['listened_by']}',
+                                                    ' بواسطة: ${recitation['listened_by']}',
                                                     style: GoogleFonts.cairo(
                                                       textStyle: kBodySmallText
                                                           .copyWith(

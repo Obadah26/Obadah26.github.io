@@ -229,15 +229,25 @@ class _RecitationLeaderboardScreenState
 
                           sortWithNames(pagesPerName);
 
+                          final excludedNames = [
+                            'استاذ عبدالرحمن الخن',
+                            'استاذ ابو عبيدة',
+                          ];
+
                           final otherUsers =
                               recitationStudentsName
-                                  .where((name) => name != widget.userName)
+                                  .where(
+                                    (name) =>
+                                        name != widget.userName &&
+                                        !excludedNames.contains(name),
+                                  )
                                   .toList();
 
                           return Column(
                             children: [
-                              // Current user card (if userName is provided)
-                              if (widget.userName != null)
+                              if (widget.userName != null &&
+                                  widget.userName != 'استاذ عبدالرحمن الخن' &&
+                                  widget.userName != 'استاذ ابو عبيدة')
                                 GestureDetector(
                                   onTap: () {
                                     Navigator.push(
@@ -277,18 +287,22 @@ class _RecitationLeaderboardScreenState
                                         textAlign: TextAlign.center,
                                       ),
                                       subtitle: Text(
-                                        '${pagesPerName[widget.userName] ?? 0} صفحات',
+                                        '${pagesPerName[widget.userName] ?? 0} صفحة',
                                         style: GoogleFonts.cairo(
                                           textStyle: kBodyRegularText.copyWith(
                                             fontSize: 16,
                                           ),
                                         ),
+                                        textDirection: TextDirection.rtl,
                                         textAlign: TextAlign.center,
                                       ),
                                     ),
                                   ),
                                 ),
-                              if (widget.userName != null) SizedBox(height: 10),
+                              if (widget.userName != null &&
+                                  widget.userName != 'استاذ عبدالرحمن الخن' &&
+                                  widget.userName != 'استاذ ابو عبيدة')
+                                SizedBox(height: 10),
                               Expanded(
                                 child: ListView.builder(
                                   padding: EdgeInsets.all(10),
@@ -341,12 +355,13 @@ class _RecitationLeaderboardScreenState
                                             textAlign: TextAlign.center,
                                           ),
                                           subtitle: Text(
-                                            '$totalPages صفحات',
+                                            '$totalPages صفحة',
                                             style: GoogleFonts.cairo(
                                               textStyle: kBodyRegularText
                                                   .copyWith(fontSize: 16),
                                             ),
                                             textAlign: TextAlign.center,
+                                            textDirection: TextDirection.rtl,
                                           ),
                                         ),
                                       ),

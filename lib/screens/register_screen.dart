@@ -1,4 +1,6 @@
 import 'package:alhadiqa/circle_painter.dart';
+import 'package:alhadiqa/lists.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:alhadiqa/widgets/rounded_text_field.dart';
 import 'package:alhadiqa/widgets/rounded_button.dart';
@@ -19,12 +21,136 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   String userName = '';
   String email = '';
   String password = '';
   bool showSpinner = false;
+  String? selectedUserName;
+  List<String> availableUserNames = [];
+  bool loadingUserNames = true;
 
-  TextEditingController userNameController = TextEditingController();
+  @override
+  void initState() {
+    super.initState();
+    _loadAvailableUserNames();
+  }
+
+  Future<void> _loadAvailableUserNames() async {
+    setState(() => loadingUserNames = true);
+
+    try {
+      final snapshot =
+          await FirebaseFirestore.instance.collection('usernames').get();
+
+      final takenNames = snapshot.docs.map((doc) => doc.id).toSet();
+
+      setState(() {
+        availableUserNames =
+            userNames.where((name) => !takenNames.contains(name)).toList();
+      });
+    } catch (e) {
+      setState(() => availableUserNames = List.from(userNames));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('تعذر تحميل الأسماء المتاحة')));
+    } finally {
+      setState(() => loadingUserNames = false);
+    }
+  }
+
+  Future<void> _registerUser() async {
+    if (selectedUserName == null || selectedUserName!.isEmpty) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('الرجاء اختيار اسم مستخدم')));
+      return;
+    }
+
+    setState(() => showSpinner = true);
+
+    try {
+      // 1. Validate username availability
+      final usernameDoc =
+          await _firestore.collection('usernames').doc(selectedUserName).get();
+
+      if (usernameDoc.exists) {
+        throw FirebaseAuthException(
+          code: 'username-taken',
+          message: 'اسم المستخدم محجوز بالفعل',
+        );
+      }
+
+      // 2. Create auth user
+      final userCredential = await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      // 3. Update profile and reload (critical section)
+      await userCredential.user?.updateProfile(displayName: selectedUserName);
+      await userCredential.user?.reload();
+      final updatedUser = _auth.currentUser;
+
+      if (updatedUser == null) throw Exception("User creation failed");
+
+      // 4. Send verification email (should come before navigation)
+      await updatedUser.sendEmailVerification();
+
+      // 5. Atomic Firestore operations
+      await _firestore.runTransaction((transaction) async {
+        transaction
+            .set(_firestore.collection('usernames').doc(selectedUserName), {
+              'userId': updatedUser.uid,
+              'email': email,
+              'reservedAt': FieldValue.serverTimestamp(),
+              'emailVerified': false,
+            });
+
+        transaction.set(_firestore.collection('users').doc(updatedUser.uid), {
+          'username': selectedUserName,
+          'email': email,
+          'emailVerified': false,
+          'createdAt': FieldValue.serverTimestamp(),
+        });
+      });
+
+      // 6. Show success and navigate
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'تم إنشاء الحساب بنجاح! الرجاء التحقق من بريدك الإلكتروني',
+          ),
+          duration: Duration(seconds: 5),
+        ),
+      );
+
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        LoginScreen.id,
+        (route) => false,
+      );
+    } on FirebaseAuthException catch (e) {
+      String errorMessage = 'حدث خطأ أثناء التسجيل';
+      if (e.code == 'weak-password') {
+        errorMessage = 'كلمة المرور ضعيفة';
+      } else if (e.code == 'email-already-in-use') {
+        errorMessage = 'البريد الإلكتروني مستخدم بالفعل';
+      } else if (e.code == 'username-taken') {
+        errorMessage = e.message ?? 'اسم المستخدم محجوز';
+      }
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(errorMessage)));
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('حدث خطأ غير متوقع: ${e.toString()}')),
+      );
+    } finally {
+      setState(() => showSpinner = false);
+    }
+  }
+
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
@@ -90,19 +216,69 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                     ),
                     SizedBox(height: 30),
-                    RoundedTextField(
-                      obscure: false,
-                      textColor: kPrimaryTextLight,
-                      controller: userNameController,
-                      icon: Icons.person,
-                      textHint: 'اسم المستخدم',
-                      keyboardType: TextInputType.name,
-                      hintColor: kPrimaryTextLight.withValues(
-                        alpha: (0.199 * 255),
-                      ),
-                      onChanged: (value) {
-                        userName = value;
-                      },
+                    Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(25, 0, 16, 0),
+                          child: Icon(Icons.person, color: kLightPrimaryColor),
+                        ),
+                        Container(
+                          width: 320,
+                          height: 65,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                              color: kLightPrimaryColor,
+                              width: 1.5,
+                            ),
+                          ),
+                          child: DropdownButton<String>(
+                            isExpanded: true,
+                            hint: Center(
+                              child:
+                                  loadingUserNames
+                                      ? CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                      )
+                                      : availableUserNames.isEmpty
+                                      ? Text(
+                                        'لا توجد أسماء متاحة',
+                                        style: TextStyle(color: Colors.grey),
+                                      )
+                                      : Text('اختر اسم المستخدم'),
+                            ),
+                            value: selectedUserName,
+                            icon: const Icon(
+                              Icons.arrow_drop_down,
+                              color: kLightPrimaryColor,
+                            ),
+                            iconSize: 24,
+                            elevation: 4,
+                            style: GoogleFonts.cairo(
+                              textStyle: kBodyRegularText.copyWith(),
+                            ),
+                            underline: Container(),
+                            onChanged: (String? newValue) {
+                              setState(() {
+                                selectedUserName = newValue!;
+                              });
+                            },
+                            dropdownColor: Colors.white,
+                            items:
+                                availableUserNames
+                                    .map(
+                                      (name) => DropdownMenuItem(
+                                        value: name,
+                                        child: Align(
+                                          alignment: Alignment.center,
+                                          child: Text(name),
+                                        ),
+                                      ),
+                                    )
+                                    .toList(),
+                          ),
+                        ),
+                      ],
                     ),
                     SizedBox(height: 30),
                     RoundedTextField(
@@ -136,48 +312,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     SizedBox(height: 50),
                     RoundedButton(
-                      onPressed: () async {
-                        setState(() {
-                          showSpinner = true;
-                        });
-                        try {
-                          final user = await _auth
-                              .createUserWithEmailAndPassword(
-                                email: email,
-                                password: password,
-                              );
-                          if (user != null) {
-                            await user.user?.updateProfile(
-                              displayName: userName,
-                            );
-                            Navigator.pushNamedAndRemoveUntil(
-                              context,
-                              HomeScreen.id,
-                              (route) => false,
-                            );
-                          }
-                        } catch (e) {
-                          print(e);
-                          String errorMessage = 'حدث خطأ ما. حاول مرة اخرى';
-
-                          if (e is FirebaseAuthException) {
-                            if (e.code == 'weak-password') {
-                              errorMessage = 'كلمة المرور ضعيفة';
-                            } else if (e.code == 'email-already-in-use') {
-                              errorMessage = 'البريد الإلكتروني مستخدم بالفعل';
-                            }
-                          }
-                          ScaffoldMessenger.of(
-                            context,
-                          ).showSnackBar(SnackBar(content: Text(errorMessage)));
-                        }
-                        setState(() {
-                          showSpinner = false;
-                        });
-                        userNameController.clear();
-                        emailController.clear();
-                        passwordController.clear();
-                      },
+                      onPressed: _registerUser,
                       buttonText: 'إنشاء حساب',
                     ),
                     SizedBox(height: 20),

@@ -177,16 +177,26 @@ class _LoginScreenState extends State<LoginScreen> {
                     SizedBox(height: 10),
                     RoundedButton(
                       onPressed: () async {
-                        setState(() {
-                          showSpinner = true;
-                        });
+                        setState(() => showSpinner = true);
                         try {
                           final user = await _auth.signInWithEmailAndPassword(
                             email: email,
                             password: password,
                           );
-                          if (user != null) {
-                            // Save or clear email based on remember me choice
+
+                          if (user.user != null) {
+                            // Check if email is verified
+                            if (!user.user!.emailVerified) {
+                              await user.user!
+                                  .sendEmailVerification(); // Resend if not verified
+                              throw FirebaseAuthException(
+                                code: 'email-not-verified',
+                                message:
+                                    'الرجاء التحقق من بريدك الإلكتروني أولاً',
+                              );
+                            }
+
+                            // Save remember me preferences
                             if (_rememberMe) {
                               box.write('rememberMe', true);
                               box.write('email', email);
@@ -201,27 +211,22 @@ class _LoginScreenState extends State<LoginScreen> {
                               (route) => false,
                             );
                           }
-                        } catch (e) {
-                          print(e);
+                        } on FirebaseAuthException catch (e) {
                           String errorMessage = 'حدث خطأ ما. حاول مرة اخرى.';
-
-                          if (e is FirebaseAuthException) {
-                            if (e.code == 'wrong-password') {
-                              errorMessage = 'كلمة المرور غير صحيحة';
-                            } else if (e.code == 'user-not-found') {
-                              errorMessage =
-                                  'لم يتم العثور على حساب بهذا البريد الإلكتروني';
-                            }
+                          if (e.code == 'wrong-password') {
+                            errorMessage = 'كلمة المرور غير صحيحة';
+                          } else if (e.code == 'user-not-found') {
+                            errorMessage =
+                                'لم يتم العثور على حساب بهذا البريد الإلكتروني';
+                          } else if (e.code == 'email-not-verified') {
+                            errorMessage = e.message!;
                           }
                           ScaffoldMessenger.of(
                             context,
                           ).showSnackBar(SnackBar(content: Text(errorMessage)));
+                        } finally {
+                          setState(() => showSpinner = false);
                         }
-                        setState(() {
-                          showSpinner = false;
-                        });
-                        emailController.clear();
-                        passwordController.clear();
                       },
                       buttonText: 'تسجيل دخول',
                     ),

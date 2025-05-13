@@ -1,4 +1,5 @@
 import 'package:adaptive_dialog/adaptive_dialog.dart';
+import 'package:alhadiqa/lists.dart';
 import 'package:alhadiqa/screens/azkar_screen.dart';
 import 'package:alhadiqa/screens/daily_recitation_screen.dart';
 import 'package:alhadiqa/screens/ijazah_leaderboard.dart';
@@ -29,6 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final _auth = FirebaseAuth.instance;
   String arabicDate = '';
   String _userName = '';
+  bool _loadingUser = true;
 
   @override
   void initState() {
@@ -38,16 +40,32 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void getCurrentUser() async {
+    setState(() => _loadingUser = true);
     try {
       final user = await _auth.currentUser;
       if (user != null) {
+        await user.reload();
+        final refreshedUser = _auth.currentUser;
         setState(() {
-          _userName = user.displayName ?? "User";
+          _userName = refreshedUser?.displayName ?? "User";
         });
       }
+
+      if (_userName == "User") {
+        final doc = await _firestore.collection('users').doc(user?.uid).get();
+        if (doc.exists) {
+          setState(() {
+            _userName = doc['username'] ?? "User";
+          });
+        }
+      }
     } catch (e) {
-      print(e);
+      print("Error getting user: $e");
+      setState(() {
+        _userName = "User";
+      });
     }
+    setState(() => _loadingUser = false);
   }
 
   Future<void> _loadArabicDate() async {
@@ -76,6 +94,13 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       child: child,
     );
+  }
+
+  MapEntry<String, String> _getDailyAsar() {
+    final now = DateTime.now();
+    final dayOfYear = now.difference(DateTime(now.year, 5, 14)).inDays;
+    final index = dayOfYear % asar.length;
+    return asar.entries.elementAt(index);
   }
 
   @override
@@ -135,7 +160,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   Text.rich(
                     TextSpan(
-                      text: 'أهلاً،',
+                      text: 'أهلاً، ',
                       style: GoogleFonts.cairo(
                         textStyle: TextStyle(
                           fontSize: 28,
@@ -145,7 +170,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       children: [
                         TextSpan(
-                          text: ' $_userName',
+                          text: _loadingUser ? '...جاري التحميل' : _userName,
                           style: GoogleFonts.cairo(
                             textStyle: TextStyle(
                               fontSize: 28,
@@ -176,7 +201,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    'اية يومية',
+                    'آثار يومية',
                     style: GoogleFonts.elMessiri(
                       textStyle: TextStyle(
                         fontSize: 18,
@@ -189,7 +214,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   Column(
                     children: [
                       Text(
-                        'إِنَّا نَحْنُ نَزَّلْنَا الذِّكْرَ وَإِنَّا لَهُ لَحَافِظُونَ',
+                        _getDailyAsar().key,
                         style: GoogleFonts.notoKufiArabic(
                           textStyle: TextStyle(
                             fontSize: 22,
@@ -202,7 +227,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        '[الحجر: 9]',
+                        _getDailyAsar().value,
                         style: GoogleFonts.notoKufiArabic(
                           textStyle: TextStyle(
                             fontSize: 16,
@@ -287,7 +312,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 fontSize: 20,
                               ),
                             ),
-                            TextSpan(text: ' صفحة من اصل 40 صفحة'),
+                            TextSpan(text: ' صفحة من أصل 40 صفحة'),
                           ],
                         ),
                       ),

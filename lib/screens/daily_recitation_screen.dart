@@ -16,9 +16,10 @@ class DailyRecitationScreen extends StatefulWidget {
 }
 
 class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
-  String selectedName = 'أحمد';
+  String? selectedWithName;
+  String? selectedToName;
   int? selectedButtonIndex;
-  List<String> buttonTexts = ['مع شخص', 'لشخص'];
+  List<String> buttonTexts = ['مدارسة', 'تسميع'];
   bool _withVisible = false;
   bool _toVisible = false;
   bool _inputVisible = false;
@@ -27,18 +28,30 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
   final TextEditingController firstPageController = TextEditingController();
   final TextEditingController secondPageController = TextEditingController();
 
+  @override
+  void initState() {
+    super.initState();
+    selectedWithName = withNames.isNotEmpty ? withNames[0] : null;
+    selectedToName = toNames.isNotEmpty ? toNames[0] : null;
+  }
+
   List<String> filterNames(List<String> names, String? currentUser) {
     if (currentUser == null) return names;
-    return names.where((name) => name != currentUser).toList();
+    final filtered = names.where((name) => name != currentUser).toList();
+    return filtered.isNotEmpty ? filtered : names;
   }
 
   void saveData() async {
     String? userName = widget.userName;
-    String otherUser = selectedName;
+    String? otherUser =
+        selectedButtonIndex == 0 ? selectedWithName : selectedToName;
     String firstPage = firstPageController.text;
     String secondPage = secondPageController.text;
 
-    if (userName == null || firstPage.isEmpty || secondPage.isEmpty) {
+    if (userName == null ||
+        otherUser == null ||
+        firstPage.isEmpty ||
+        secondPage.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('الرجاء ملء جميع الحقول', textAlign: TextAlign.right),
@@ -164,17 +177,6 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                ': قمت بالتسميع',
-                                style: GoogleFonts.cairo(
-                                  textStyle: kBodyRegularText.copyWith(
-                                    fontSize: 20,
-                                  ),
-                                ),
-                              ),
-                            ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: List.generate(buttonTexts.length, (
@@ -248,7 +250,7 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
                                     ),
                                     child: DropdownButton<String>(
                                       isExpanded: true,
-                                      value: selectedName,
+                                      value: selectedWithName,
                                       icon: const Icon(
                                         Icons.arrow_drop_down,
                                         color: kLightPrimaryColor,
@@ -261,7 +263,7 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
                                       underline: Container(),
                                       onChanged: (String? newValue) {
                                         setState(() {
-                                          selectedName = newValue!;
+                                          selectedWithName = newValue!;
                                         });
                                       },
                                       dropdownColor: Colors.white,
@@ -286,7 +288,7 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
                                   Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Text(
-                                      'سمعت مع',
+                                      'دارست مع',
                                       style: GoogleFonts.cairo(
                                         textStyle: kBodyRegularText.copyWith(),
                                       ),
@@ -315,7 +317,7 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
                                     ),
                                     child: DropdownButton<String>(
                                       isExpanded: true,
-                                      value: selectedName,
+                                      value: selectedToName,
                                       icon: const Icon(
                                         Icons.arrow_drop_down,
                                         color: kLightPrimaryColor,
@@ -328,7 +330,7 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
                                       underline: Container(),
                                       onChanged: (String? newValue) {
                                         setState(() {
-                                          selectedName = newValue!;
+                                          selectedToName = newValue!;
                                         });
                                       },
                                       dropdownColor: Colors.white,
