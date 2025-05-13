@@ -2,7 +2,7 @@ import 'package:alhadiqa/const.dart';
 import 'package:alhadiqa/screens/home_screen.dart';
 import 'package:alhadiqa/widgets/rounded_button.dart';
 import 'package:flutter/material.dart';
-import 'package:alhadiqa/names.dart';
+import 'package:alhadiqa/lists.dart';
 import 'package:alhadiqa/widgets/rounded_text_field.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -19,9 +19,10 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
   String selectedName = 'أحمد';
   int? selectedButtonIndex;
   List<String> buttonTexts = ['مع شخص', 'لشخص'];
-  bool withVisible = false;
-  bool toVisible = false;
-  bool inputVisible = false;
+  bool _withVisible = false;
+  bool _toVisible = false;
+  bool _inputVisible = false;
+  bool _saveVisible = false;
 
   final TextEditingController firstPageController = TextEditingController();
   final TextEditingController secondPageController = TextEditingController();
@@ -74,9 +75,10 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
       secondPageController.clear();
       setState(() {
         selectedButtonIndex = null;
-        withVisible = false;
-        toVisible = false;
-        inputVisible = false;
+        _withVisible = false;
+        _toVisible = false;
+        _inputVisible = false;
+        _saveVisible = false;
       });
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -96,11 +98,7 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
           alignment: Alignment.centerRight,
           child: Padding(
             padding: const EdgeInsets.only(right: 8),
-            child: Icon(
-              Icons.group_outlined,
-              size: 50,
-              color: kLightPrimaryColor,
-            ),
+            child: Icon(Icons.group_outlined, size: 50, color: kSecondaryColor),
           ),
         ),
         automaticallyImplyLeading: false,
@@ -136,271 +134,302 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
                     ),
                   ),
                   SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text(
-                        ':',
-                        style: GoogleFonts.cairo(
-                          textStyle: kBodyRegularText.copyWith(fontSize: 20),
-                        ),
-                        textAlign: TextAlign.right,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          'قمت بالتسميع',
-                          style: GoogleFonts.cairo(
-                            textStyle: kBodyRegularText.copyWith(fontSize: 20),
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: kSecondaryColor, width: 2),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Color.fromRGBO(158, 158, 158, 0.3),
+                            spreadRadius: 2,
+                            blurRadius: 5,
+                            offset: Offset(0, 3),
                           ),
-                        ),
+                        ],
                       ),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: List.generate(buttonTexts.length, (index) {
-                      return Padding(
-                        padding: EdgeInsets.only(right: 8),
-                        child: TextButton(
-                          onPressed: () {
-                            setState(() {
-                              if (selectedButtonIndex != index) {
-                                selectedButtonIndex = index;
-                                withVisible = (index == 0);
-                                toVisible = (index == 1);
-                                inputVisible = true;
-                              }
-                            });
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(16),
-                              color:
-                                  selectedButtonIndex == index
-                                      ? kLightPrimaryColor
-                                      : Colors.transparent,
-                              border: Border.all(
-                                color: kLightPrimaryColor,
-                                width: 2,
-                              ),
-                            ),
-                            height: 35,
-                            width: 105,
-                            child: Text(
-                              buttonTexts[index],
-                              style: GoogleFonts.cairo(
-                                textStyle: kBodySmallTextDark.copyWith(
-                                  color:
-                                      selectedButtonIndex == index
-                                          ? Colors.white
-                                          : kLightPrimaryColor,
-                                  fontSize: 12,
+                      child: Padding(
+                        padding: const EdgeInsets.all(4),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                ': قمت بالتسميع',
+                                style: GoogleFonts.cairo(
+                                  textStyle: kBodyRegularText.copyWith(
+                                    fontSize: 20,
+                                  ),
                                 ),
                               ),
-                              textAlign: TextAlign.center,
                             ),
-                          ),
-                        ),
-                      );
-                    }),
-                  ),
-                  SizedBox(height: 20),
-                  Visibility(
-                    visible: withVisible,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Container(
-                          width: 250,
-                          padding: const EdgeInsets.symmetric(horizontal: 12),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(
-                              color: kLightPrimaryColor,
-                              width: 1.5,
-                            ),
-                          ),
-                          child: DropdownButton<String>(
-                            isExpanded: true,
-                            value: selectedName,
-                            icon: const Icon(
-                              Icons.arrow_drop_down,
-                              color: kLightPrimaryColor,
-                            ),
-                            iconSize: 24,
-                            elevation: 4,
-                            style: GoogleFonts.cairo(
-                              textStyle: kBodyRegularText.copyWith(),
-                            ),
-                            underline: Container(),
-                            onChanged: (String? newValue) {
-                              setState(() {
-                                selectedName = newValue!;
-                              });
-                            },
-                            dropdownColor: Colors.white,
-                            items:
-                                filterNames(
-                                  withNames,
-                                  widget.userName,
-                                ).map<DropdownMenuItem<String>>((String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Align(
-                                      alignment: Alignment.center,
-                                      child: Text(value),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: List.generate(buttonTexts.length, (
+                                index,
+                              ) {
+                                return Padding(
+                                  padding: EdgeInsets.only(right: 8),
+                                  child: TextButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        if (selectedButtonIndex != index) {
+                                          selectedButtonIndex = index;
+                                          _withVisible = (index == 0);
+                                          _toVisible = (index == 1);
+                                          _inputVisible = true;
+                                          _saveVisible = true;
+                                        }
+                                      });
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(16),
+                                        color:
+                                            selectedButtonIndex == index
+                                                ? kLightPrimaryColor
+                                                : Colors.transparent,
+                                        border: Border.all(
+                                          color: kLightPrimaryColor,
+                                          width: 2,
+                                        ),
+                                      ),
+                                      height: 35,
+                                      width: 105,
+                                      child: Text(
+                                        buttonTexts[index],
+                                        style: GoogleFonts.cairo(
+                                          textStyle: kBodySmallTextDark
+                                              .copyWith(
+                                                color:
+                                                    selectedButtonIndex == index
+                                                        ? Colors.white
+                                                        : kLightPrimaryColor,
+                                                fontSize: 12,
+                                              ),
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
                                     ),
-                                  );
-                                }).toList(),
-                          ),
-                        ),
-                        SizedBox(width: 10),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            'سمعت مع',
-                            style: GoogleFonts.cairo(
-                              textStyle: kBodyRegularText.copyWith(),
+                                  ),
+                                );
+                              }),
                             ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Visibility(
-                    visible: toVisible,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Container(
-                          width: 250,
-                          padding: const EdgeInsets.symmetric(horizontal: 12),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(
-                              color: kLightPrimaryColor,
-                              width: 1.5,
-                            ),
-                          ),
-                          child: DropdownButton<String>(
-                            isExpanded: true,
-                            value: selectedName,
-                            icon: const Icon(
-                              Icons.arrow_drop_down,
-                              color: kLightPrimaryColor,
-                            ),
-                            iconSize: 24,
-                            elevation: 4,
-                            style: GoogleFonts.cairo(
-                              textStyle: kBodyRegularText.copyWith(),
-                            ),
-                            underline: Container(),
-                            onChanged: (String? newValue) {
-                              setState(() {
-                                selectedName = newValue!;
-                              });
-                            },
-                            dropdownColor: Colors.white,
-                            items:
-                                filterNames(
-                                  toNames,
-                                  widget.userName,
-                                ).map<DropdownMenuItem<String>>((String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Align(
-                                      alignment: Alignment.center,
-                                      child: Text(value),
+                            SizedBox(height: 20),
+                            Visibility(
+                              visible: _withVisible,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Container(
+                                    width: 250,
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 12,
                                     ),
-                                  );
-                                }).toList(),
-                          ),
-                        ),
-                        SizedBox(width: 10),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            'سمعت ل',
-                            style: GoogleFonts.cairo(
-                              textStyle: kBodyRegularText.copyWith(),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(8),
+                                      border: Border.all(
+                                        color: kLightPrimaryColor,
+                                        width: 1.5,
+                                      ),
+                                    ),
+                                    child: DropdownButton<String>(
+                                      isExpanded: true,
+                                      value: selectedName,
+                                      icon: const Icon(
+                                        Icons.arrow_drop_down,
+                                        color: kLightPrimaryColor,
+                                      ),
+                                      iconSize: 24,
+                                      elevation: 4,
+                                      style: GoogleFonts.cairo(
+                                        textStyle: kBodyRegularText.copyWith(),
+                                      ),
+                                      underline: Container(),
+                                      onChanged: (String? newValue) {
+                                        setState(() {
+                                          selectedName = newValue!;
+                                        });
+                                      },
+                                      dropdownColor: Colors.white,
+                                      items:
+                                          filterNames(
+                                            withNames,
+                                            widget.userName,
+                                          ).map<DropdownMenuItem<String>>((
+                                            String value,
+                                          ) {
+                                            return DropdownMenuItem<String>(
+                                              value: value,
+                                              child: Align(
+                                                alignment: Alignment.center,
+                                                child: Text(value),
+                                              ),
+                                            );
+                                          }).toList(),
+                                    ),
+                                  ),
+                                  SizedBox(width: 10),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      'سمعت مع',
+                                      style: GoogleFonts.cairo(
+                                        textStyle: kBodyRegularText.copyWith(),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 20),
-                  Visibility(
-                    visible: inputVisible,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        RoundedTextField(
-                          controller: firstPageController,
-                          obscure: false,
-                          textColor: kPrimaryTextLight,
-                          textHint: '312',
-                          keyboardType: TextInputType.number,
-                          width: 150,
-                          height: 50,
-                          hintColor: kSecondaryTextLight.withValues(
-                            alpha: (0.199 * 255),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            'من صفحة',
-                            style: GoogleFonts.cairo(
-                              textStyle: kBodyRegularText.copyWith(),
+                            Visibility(
+                              visible: _toVisible,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Container(
+                                    width: 250,
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 12,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(8),
+                                      border: Border.all(
+                                        color: kLightPrimaryColor,
+                                        width: 1.5,
+                                      ),
+                                    ),
+                                    child: DropdownButton<String>(
+                                      isExpanded: true,
+                                      value: selectedName,
+                                      icon: const Icon(
+                                        Icons.arrow_drop_down,
+                                        color: kLightPrimaryColor,
+                                      ),
+                                      iconSize: 24,
+                                      elevation: 4,
+                                      style: GoogleFonts.cairo(
+                                        textStyle: kBodyRegularText.copyWith(),
+                                      ),
+                                      underline: Container(),
+                                      onChanged: (String? newValue) {
+                                        setState(() {
+                                          selectedName = newValue!;
+                                        });
+                                      },
+                                      dropdownColor: Colors.white,
+                                      items:
+                                          filterNames(
+                                            toNames,
+                                            widget.userName,
+                                          ).map<DropdownMenuItem<String>>((
+                                            String value,
+                                          ) {
+                                            return DropdownMenuItem<String>(
+                                              value: value,
+                                              child: Align(
+                                                alignment: Alignment.center,
+                                                child: Text(value),
+                                              ),
+                                            );
+                                          }).toList(),
+                                    ),
+                                  ),
+                                  SizedBox(width: 10),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      'سمعت ل',
+                                      style: GoogleFonts.cairo(
+                                        textStyle: kBodyRegularText.copyWith(),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 20),
-                  Visibility(
-                    visible: inputVisible,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        RoundedTextField(
-                          controller: secondPageController,
-                          obscure: false,
-                          textColor: kPrimaryTextLight,
-                          textHint: '330',
-                          keyboardType: TextInputType.number,
-                          width: 150,
-                          height: 50,
-                          hintColor: kSecondaryTextLight.withValues(
-                            alpha: (0.199 * 255),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            'الى صفحة',
-                            style: GoogleFonts.cairo(
-                              textStyle: kBodyRegularText.copyWith(),
+                            SizedBox(height: 20),
+                            Visibility(
+                              visible: _inputVisible,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  RoundedTextField(
+                                    controller: firstPageController,
+                                    obscure: false,
+                                    textColor: kPrimaryTextLight,
+                                    textHint: '312',
+                                    keyboardType: TextInputType.number,
+                                    width: 150,
+                                    height: 50,
+                                    hintColor: kSecondaryTextLight.withValues(
+                                      alpha: (0.199 * 255),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      'من صفحة',
+                                      style: GoogleFonts.cairo(
+                                        textStyle: kBodyRegularText.copyWith(),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
+                            SizedBox(height: 20),
+                            Visibility(
+                              visible: _inputVisible,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  RoundedTextField(
+                                    controller: secondPageController,
+                                    obscure: false,
+                                    textColor: kPrimaryTextLight,
+                                    textHint: '330',
+                                    keyboardType: TextInputType.number,
+                                    width: 150,
+                                    height: 50,
+                                    hintColor: kSecondaryTextLight.withValues(
+                                      alpha: (0.199 * 255),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      'الى صفحة',
+                                      style: GoogleFonts.cairo(
+                                        textStyle: kBodyRegularText.copyWith(),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(height: 50),
+                            Visibility(
+                              visible: _saveVisible,
+                              child: Center(
+                                child: RoundedButton(
+                                  buttonText: 'حفظ',
+                                  isPrimary: false,
+                                  onPressed: saveData,
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 50),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
                   ),
-                  SizedBox(height: 50),
-                  Center(
-                    child: RoundedButton(
-                      buttonText: 'حفظ',
-                      isPrimary: false,
-                      onPressed: saveData,
-                    ),
-                  ),
-                  SizedBox(height: 450),
                 ],
               ),
             ),

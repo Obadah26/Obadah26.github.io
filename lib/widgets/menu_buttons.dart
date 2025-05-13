@@ -21,7 +21,7 @@ class MenuButtons extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.transparent,
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: kLightPrimaryColor, width: 2),
+        border: Border.all(color: kSecondaryColor, width: 2),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,

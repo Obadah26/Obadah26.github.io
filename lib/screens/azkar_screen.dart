@@ -1,7 +1,9 @@
 import 'package:alhadiqa/const.dart';
 import 'package:alhadiqa/screens/home_screen.dart';
+import 'package:alhadiqa/widgets/rounded_button.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:alhadiqa/lists.dart';
 
 class AzkarScreen extends StatefulWidget {
   const AzkarScreen({super.key});
@@ -11,203 +13,166 @@ class AzkarScreen extends StatefulWidget {
 }
 
 class _AzkarScreenState extends State<AzkarScreen> {
-  final Map<String, Map<String, dynamic>> azkarAsbah = {
-    'آية الكرسي': {
-      'النص':
-          'الله لا إله إلا هو الحي القيوم لا تأخذه سنة ولا نوم له ما في السماوات وما في الأرض من ذا الذي يشفع عنده إلا بإذنه يعلم ما بين أيديهم وما خلفهم ولا يحيطون بشيء من علمه إلا بما شاء وسع كرسيه السماوات والأرض ولا يؤوده حفظهما وهو العلي العظيم. [آية الكرسى - البقرة 255]',
-      'عدد التكرارات': 1,
-    },
-    'سورة الإخلاص': {
-      'النص':
-          'بسم الله الرحمن الرحيم\nقل هو الله أحد، الله الصمد، لم يلد ولم يولد، ولم يكن لهۥ كفوا أحدۢ.',
-      'عدد التكرارات': 3,
-    },
-    'سورة الفلق': {
-      'النص':
-          'بسم الله الرحمن الرحيم\nقل أعوذ برب الفلق، من شر ما خلق، ومن شر غاسق إذا وقب، ومن شر النفثت فى العقد، ومن شر حاسد إذا حسد.',
-      'عدد التكرارات': 3,
-    },
-    'سورة الناس': {
-      'النص':
-          'بسم الله الرحمن الرحيم\nقل أعوذ برب الناس، ملك الناس، إله الناس، من شر الوسواس الخناس، الذى يوسوس فى صدور الناس، من الجنة والناس.',
-      'عدد التكرارات': 3,
-    },
-    'الحديث رقم 1': {
-      'النص':
-          'أصبحنا وأصبح الملك لله والحمد لله ، لا إله إلا الله وحده لا شريك له، له الملك وله الحمد، وهو على كل شيء قدير ، رب أسألك خير ما في هذا اليوم وخير ما بعده ، وأعوذ بك من شر ما في هذا اليوم وشر ما بعده، رب أعوذبك من الكسل وسوء الكبر ، رب أعوذ بك من عذاب في النار وعذاب في القبر.',
-      'عدد التكرارات': 1,
-    },
-    'الحديث رقم 2': {
-      'النص':
-          'اللهم أنت ربي لا إله إلا أنت ، خلقتني وأنا عبدك ، وأنا على عهدك ووعدك ما استطعت ، أعوذبك من شر ما صنعت ، أبوء لك بنعمتك علي وأبوء بذنبي فاغفر لي فإنه لا يغفر الذنوب إلا أنت .',
-      'عدد التكرارات': 1,
-    },
-    'الحديث رقم 3': {
-      'النص': 'رضيت بالله ربا وبالإسلام دينا وبمحمد صلى الله عليه وسلم نبيا.',
-      'عدد التكرارات': 3,
-    },
-    'الحديث رقم 4': {
-      'النص':
-          'اللهم إني أصبحت أشهدك ، وأشهد حملة عرشك ، وملائكتك ، وجميع خلقك ، أنك أنت الله لا إله إلا أنت وحدك لا شريك لك ، وأن  محمدا عبدك ورسولك.',
-      'عدد التكرارات': 4,
-    },
-    'الحديث رقم 5': {
-      'النص':
-          'اللهم إني أصبحت أشهدك ، وأشهد حملة عرشك ، وملائكتك ، وجميع خلقك ، أنك أنت الله لا إله إلا أنت وحدك لا شريك لك ، وأن  محمدا عبدك ورسولك.',
-      'عدد التكرارات': 1,
-    },
-    'الحديث رقم 6': {
-      'النص': 'حسبي الله لا إله إلا هو عليه توكلت وهو رب العرش العظيم.',
-      'عدد التكرارات': 7,
-    },
-    'الحديث رقم 7': {
-      'النص':
-          'بسم الله الذي لا يضر مع اسمه شيء في الأرض ولا في السماء وهو السميع العليم.',
-      'عدد التكرارات': 3,
-    },
-    'الحديث رقم 8': {
-      'النص': 'اللهم بك أصبحنا وبك أمسينا ، وبك نحيا وبك نحيا وإليك النشور.',
-      'عدد التكرارات': 1,
-    },
-  };
-
   int _currentIndex = 0;
+  bool _isMorning = true;
+
+  Map<String, Map<String, dynamic>> get currentAzkar =>
+      _isMorning ? azkarAsbah : azkarAlmasa;
+  List<String> get currentTitles => currentAzkar.keys.toList();
 
   void _nextZikr() {
     setState(() {
-      _currentIndex = (_currentIndex + 1) % azkarAsbah.length;
+      _currentIndex = (_currentIndex + 1) % currentTitles.length;
     });
   }
 
-  void _beforeZikr() {
+  void _previousZikr() {
     setState(() {
-      _currentIndex = (_currentIndex - 1) % azkarAsbah.length;
+      _currentIndex = (_currentIndex - 1) % currentTitles.length;
+    });
+  }
+
+  void _toggleAzkarType() {
+    setState(() {
+      _isMorning = !_isMorning;
+      _currentIndex = 0;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    String title = azkarAsbah.keys.elementAt(_currentIndex);
-    String text = azkarAsbah[title]?['النص'] ?? '';
-    int repeats = azkarAsbah[title]?['عدد التكرارات'] ?? 0;
+    final title = currentTitles[_currentIndex];
+    final text = currentAzkar[title]?['النص'] ?? '';
+    final repeats = currentAzkar[title]?['عدد التكرارات'] ?? 1;
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
         automaticallyImplyLeading: false,
         title: Align(
           alignment: Alignment.centerLeft,
-          child: Padding(
-            padding: const EdgeInsets.only(right: 8),
-            child: IconButton(
-              onPressed: () {
-                Navigator.popAndPushNamed(context, HomeScreen.id);
-              },
-              icon: Icon(
-                Icons.arrow_back_rounded,
-                size: 50,
-                color: kLightPrimaryColor,
-              ),
+          child: IconButton(
+            onPressed: () => Navigator.popAndPushNamed(context, HomeScreen.id),
+            icon: Icon(
+              Icons.arrow_back_rounded,
+              size: 50,
+              color: kLightPrimaryColor,
             ),
           ),
         ),
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Align(
-                alignment: Alignment.center,
-                child: Text(
-                  'أذكار الصباح',
-                  style: GoogleFonts.elMessiri(textStyle: kHeading1Text),
-                ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(color: kSecondaryColor, width: 2),
               ),
-              SizedBox(height: 20),
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.transparent,
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: kSecondaryColor, width: 2),
-                ),
-                constraints: BoxConstraints(maxWidth: 350, minWidth: 200),
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: Text(
-                          title,
-                          style: GoogleFonts.cairo(
-                            textStyle: kHeading2Text,
-                            color: kLightPrimaryColor,
+              child: IconButton(
+                onPressed: _previousZikr,
+                icon: Icon(Icons.arrow_back, color: kLightPrimaryColor),
+              ),
+            ),
+            Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(color: kSecondaryColor, width: 2),
+              ),
+              child: IconButton(
+                onPressed: _nextZikr,
+                icon: Icon(Icons.arrow_forward, color: kLightPrimaryColor),
+              ),
+            ),
+          ],
+        ),
+      ),
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  RoundedButton(
+                    width: 150,
+                    onPressed: _isMorning ? null : _toggleAzkarType,
+                    buttonText: 'أذكار الصباح',
+                    isPrimary: _isMorning ? true : false,
+                  ),
+                  const SizedBox(width: 16),
+                  RoundedButton(
+                    width: 150,
+                    onPressed: _isMorning ? _toggleAzkarType : null,
+                    buttonText: 'أذكار المساء',
+                    isPrimary: _isMorning ? false : true,
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Text(
+                _isMorning ? 'أذكار الصباح' : 'أذكار المساء',
+                style: GoogleFonts.elMessiri(textStyle: kHeading1Text),
+              ),
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Card(
+                    elevation: 1,
+                    color: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                      side: BorderSide(color: kSecondaryColor, width: 2),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        children: [
+                          Text(
+                            title,
+                            style: GoogleFonts.cairo(
+                              textStyle: kHeading2Text.copyWith(
+                                color: kLightPrimaryColor,
+                              ),
+                            ),
+                            textAlign: TextAlign.center,
                           ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: Text(
-                          text,
-                          style: GoogleFonts.cairo(
-                            textStyle: kBodyLargeText.copyWith(fontSize: 25),
+                          const Divider(color: kSecondaryColor),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            child: Text(
+                              text,
+                              style: GoogleFonts.cairo(
+                                textStyle: kBodyLargeText.copyWith(
+                                  fontSize: 22,
+                                ),
+                              ),
+                              textDirection: TextDirection.rtl,
+                              textAlign: TextAlign.center,
+                            ),
                           ),
-                          textDirection: TextDirection.rtl,
-                        ),
+                          Text(
+                            'عدد التكرارات: $repeats',
+                            style: GoogleFonts.cairo(
+                              textStyle: kBodyRegularText,
+                            ),
+                          ),
+                        ],
                       ),
-                      SizedBox(height: 10),
-                      Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: Text(
-                          'عدد التكرارات: $repeats',
-                          style: GoogleFonts.cairo(textStyle: kBodyRegularText),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 ),
               ),
-              SizedBox(height: 20),
-              Align(
-                alignment: Alignment.center,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      width: 75,
-                      height: 75,
-                      decoration: BoxDecoration(
-                        color: Colors.transparent,
-                        borderRadius: BorderRadius.circular(50),
-                        border: Border.all(color: kSecondaryColor, width: 2),
-                      ),
-                      child: IconButton(
-                        onPressed: _beforeZikr,
-                        icon: Icon(Icons.arrow_back, color: kLightPrimaryColor),
-                      ),
-                    ),
-                    SizedBox(width: 75),
-                    Container(
-                      width: 75,
-                      height: 75,
-                      decoration: BoxDecoration(
-                        color: Colors.transparent,
-                        borderRadius: BorderRadius.circular(50),
-                        border: Border.all(color: kSecondaryColor, width: 2),
-                      ),
-                      child: IconButton(
-                        onPressed: _nextZikr,
-                        icon: Icon(
-                          Icons.arrow_forward,
-                          color: kLightPrimaryColor,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

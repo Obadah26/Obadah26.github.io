@@ -1,3 +1,4 @@
+import 'package:alhadiqa/screens/azkar_screen.dart';
 import 'package:alhadiqa/screens/daily_recitation_screen.dart';
 import 'package:alhadiqa/screens/home_screen.dart';
 import 'package:alhadiqa/screens/ijazah_leaderboard.dart';
@@ -32,13 +33,7 @@ class _MenuScreenState extends State<MenuScreen> {
           alignment: Alignment.centerRight,
           child: Padding(
             padding: const EdgeInsets.only(right: 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Icon(Icons.notifications_outlined, size: 30),
-                Icon(Icons.menu, size: 50),
-              ],
-            ),
+            child: Icon(Icons.notifications_outlined, size: 50),
           ),
         ),
         automaticallyImplyLeading: false,
@@ -67,7 +62,7 @@ class _MenuScreenState extends State<MenuScreen> {
                       icon: Icons.home,
                       text: 'الرئيسية',
                       onPressed: () {
-                        Navigator.popAndPushNamed(context, HomeScreen.id);
+                        Navigator.pushNamed(context, HomeScreen.id);
                       },
                     ),
                     SizedBox(width: 30),
@@ -128,7 +123,7 @@ class _MenuScreenState extends State<MenuScreen> {
                       icon: Icons.leaderboard,
                       text: 'نتائج الاجازة',
                       onPressed: () {
-                        Navigator.popAndPushNamed(
+                        Navigator.pushNamed(
                           context,
                           IjazahLeaderboardScreen.id,
                         );
@@ -150,25 +145,38 @@ class _MenuScreenState extends State<MenuScreen> {
                   ],
                 ),
                 SizedBox(height: 50),
-                MenuButtons(
-                  icon: Icons.logout,
-                  text: 'تسجيل خروج',
-                  onPressed: () async {
-                    final box = GetStorage();
-                    await box.remove('rememberMe');
-                    await box.remove('email');
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    MenuButtons(
+                      icon: Icons.logout,
+                      text: 'تسجيل خروج',
+                      onPressed: () async {
+                        final box = GetStorage();
+                        await box.remove('rememberMe');
+                        await box.remove('email');
 
-                    if (widget.auth != null) {
-                      await widget.auth!.signOut();
-                      Navigator.pushNamedAndRemoveUntil(
-                        context,
-                        WelcomeScreen.id,
-                        (route) => false,
-                      );
-                    } else {
-                      print("Auth instance is null");
-                    }
-                  },
+                        if (widget.auth != null) {
+                          await widget.auth!.signOut();
+                          Navigator.pushNamedAndRemoveUntil(
+                            context,
+                            WelcomeScreen.id,
+                            (route) => false,
+                          );
+                        } else {
+                          print("Auth instance is null");
+                        }
+                      },
+                    ),
+                    SizedBox(width: 30),
+                    MenuButtons(
+                      icon: Icons.mosque,
+                      text: 'الأذكار',
+                      onPressed: () {
+                        Navigator.pushNamed(context, AzkarScreen.id);
+                      },
+                    ),
+                  ],
                 ),
               ],
             ),

@@ -2,6 +2,7 @@ import 'package:alhadiqa/const.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:alhadiqa/lists.dart';
 
 class UserDetailsScreen extends StatefulWidget {
   static String id = 'user_details_screen';
@@ -15,14 +16,6 @@ class UserDetailsScreen extends StatefulWidget {
 
 class _UserDetailsScreenState extends State<UserDetailsScreen> {
   String selectedFilter = 'الأسبوع';
-  final List<String> timeFilters = [
-    'منذ انشاء التطبيق',
-    'اليوم',
-    'الأسبوع',
-    'الشهر',
-    'ثلاثة أشهر',
-    'السنة',
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -249,6 +242,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                             children: [
                               Card(
                                 elevation: 3,
+                                color: Colors.white,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(12),
                                   side: BorderSide(
@@ -416,6 +410,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                                             : (doc['second_page'] as int? ?? 0);
                                     return Card(
                                       elevation: 2,
+                                      color: Colors.white,
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(12),
                                         side: BorderSide(
@@ -423,76 +418,103 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                                           width: 1,
                                         ),
                                       ),
-                                      child: ListTile(
-                                        contentPadding: EdgeInsets.symmetric(
-                                          horizontal: 16,
-                                          vertical: 12,
-                                        ),
-                                        title: Column(
-                                          children: [
-                                            Text(
-                                              'من صفحة $firstPage إلى $secondPage',
-                                              style: GoogleFonts.cairo(
-                                                textStyle: kBodySmallText
-                                                    .copyWith(fontSize: 14),
-                                              ),
-                                              textAlign: TextAlign.right,
-                                            ),
-                                            SizedBox(height: 10),
-                                            Text(
-                                              recitation['date']
-                                                  .toString()
-                                                  .substring(0, 10),
-                                              style: GoogleFonts.cairo(
-                                                textStyle: kBodyRegularText
-                                                    .copyWith(
-                                                      fontSize: 16,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: kLightPrimaryColor,
-                                                    ),
-                                              ),
-                                              textAlign: TextAlign.right,
-                                            ),
-                                          ],
-                                        ),
-                                        trailing: Column(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(16),
+                                        child: Row(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.center,
+                                              MainAxisAlignment.spaceEvenly,
                                           children: [
-                                            Text(
-                                              textDirection: TextDirection.rtl,
-                                              '${recitation['pages']} صفحة',
-                                              style: GoogleFonts.cairo(
-                                                textStyle: kBodySmallText
-                                                    .copyWith(
-                                                      fontSize: 16,
-                                                      color: kPrimaryColor,
-                                                      fontWeight:
-                                                          FontWeight.bold,
+                                            Column(
+                                              children: [
+                                                Text(
+                                                  'من صفحة $firstPage إلى $secondPage',
+                                                  style: GoogleFonts.cairo(
+                                                    textStyle: kBodySmallText,
+                                                  ),
+                                                  textAlign: TextAlign.right,
+                                                ),
+                                                Padding(
+                                                  padding: const EdgeInsets.all(
+                                                    8.0,
+                                                  ),
+                                                  child: Text(
+                                                    recitation['date']
+                                                        .toString()
+                                                        .substring(0, 10),
+                                                    style: GoogleFonts.cairo(
+                                                      textStyle: kBodyRegularText
+                                                          .copyWith(
+                                                            fontSize: 14,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            color:
+                                                                kLightPrimaryColor,
+                                                          ),
                                                     ),
-                                              ),
+                                                  ),
+                                                ),
+                                              ],
                                             ),
-                                            Text(
-                                              recitation['type'] == 'with'
-                                                  ? 'تسميع مشترك: ${recitation['type'] == 'with'
-                                                      ? 'مع ${recitation['with']}'
-                                                      : recitation['listened_by']?.isNotEmpty == true
-                                                      ? 'سمع له: ${recitation['listened_by']}'
-                                                      : 'تسميع فردي'}'
-                                                  : 'تسميع فردي: ${recitation['type'] == 'with'
-                                                      ? 'مع ${recitation['with']}'
-                                                      : recitation['listened_by']?.isNotEmpty == true
-                                                      ? 'سمع له: ${recitation['listened_by']}'
-                                                      : 'تسميع فردي'}',
-                                              style: GoogleFonts.cairo(
-                                                textStyle: kBodySmallText
-                                                    .copyWith(
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.bold,
+                                            Column(
+                                              children: [
+                                                Text(
+                                                  textDirection:
+                                                      TextDirection.rtl,
+                                                  '${recitation['pages']} صفحة',
+                                                  style: GoogleFonts.cairo(
+                                                    textStyle: kBodyRegularText
+                                                        .copyWith(
+                                                          color: kPrimaryColor,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                  ),
+                                                ),
+                                                SizedBox(height: 5),
+                                                Text(
+                                                  recitation['type'] == 'with'
+                                                      ? 'نوع التسميع: مشترك'
+                                                      : 'نوع التسميع: فردي',
+                                                  style: GoogleFonts.cairo(
+                                                    textStyle: kBodySmallText
+                                                        .copyWith(
+                                                          fontSize: 10,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                  ),
+                                                ),
+                                                if (recitation['type'] ==
+                                                        'with' &&
+                                                    recitation['with'] != null)
+                                                  Text(
+                                                    'مع ${recitation['with']}',
+                                                    style: GoogleFonts.cairo(
+                                                      textStyle: kBodySmallText
+                                                          .copyWith(
+                                                            fontSize: 10,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
                                                     ),
-                                              ),
+                                                  ),
+                                                if (recitation['type'] !=
+                                                        'with' &&
+                                                    recitation['listened_by']
+                                                            ?.isNotEmpty ==
+                                                        true)
+                                                  Text(
+                                                    'تم السماع بواسطة: ${recitation['listened_by']}',
+                                                    style: GoogleFonts.cairo(
+                                                      textStyle: kBodySmallText
+                                                          .copyWith(
+                                                            fontSize: 10,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                    ),
+                                                  ),
+                                              ],
                                             ),
                                           ],
                                         ),

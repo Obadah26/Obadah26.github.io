@@ -8,12 +8,16 @@ class RoundedButton extends StatelessWidget {
     required this.buttonText,
     this.isPrimary = true,
     this.isDisabled = false,
+    this.isChangeSize = false,
+    this.width = 300,
   });
 
   final Function()? onPressed;
   final String buttonText;
   final bool isPrimary;
   final bool isDisabled;
+  final bool isChangeSize;
+  final double width;
 
   static const primaryColor = Color(0xFF00a674);
   static const accentColor = Color(0xFF009995);
@@ -30,7 +34,7 @@ class RoundedButton extends StatelessWidget {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
       ),
       child: Container(
-        width: 300,
+        width: width,
         height: 50,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(30),

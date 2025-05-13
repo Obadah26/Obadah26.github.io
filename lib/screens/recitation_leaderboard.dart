@@ -4,6 +4,7 @@ import 'package:alhadiqa/screens/user_detials_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:alhadiqa/lists.dart';
 
 class RecitationLeaderboardScreen extends StatefulWidget {
   const RecitationLeaderboardScreen({super.key, this.userName});
@@ -17,37 +18,10 @@ class RecitationLeaderboardScreen extends StatefulWidget {
 
 class _RecitationLeaderboardScreenState
     extends State<RecitationLeaderboardScreen> {
-  final List<String> withNames = [
-    'أحمد',
-    'أويس',
-    'بدر',
-    'حازم',
-    'خالد',
-    'سارية',
-    'عبادة',
-    'عبيدة',
-    'عبدالرحمن أبو سعدة',
-    'عبدالرحمن رعد',
-    'عروة',
-    'عمر',
-    'عمرو',
-    'فايز',
-    'مجد',
-    'زيد',
-  ];
-
   String selectedFilter = 'الأسبوع';
-  final List<String> timeFilters = [
-    'منذ انشاء التطبيق',
-    'اليوم',
-    'الأسبوع',
-    'الشهر',
-    'ثلاثة أشهر',
-    'السنة',
-  ];
 
   void sortWithNames(Map<String, int> pagesPerName) {
-    withNames.sort(
+    recitationStudentsName.sort(
       (a, b) => (pagesPerName[b] ?? 0).compareTo(pagesPerName[a] ?? 0),
     );
   }
@@ -154,7 +128,6 @@ class _RecitationLeaderboardScreenState
                         stream:
                             FirebaseFirestore.instance
                                 .collection('daily_recitation')
-                                .where('user', isEqualTo: widget.userName)
                                 .orderBy('timestamp', descending: true)
                                 .snapshots(),
                         builder: (context, snapshot) {
@@ -167,17 +140,6 @@ class _RecitationLeaderboardScreenState
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
                             return Center(child: CircularProgressIndicator());
-                          }
-
-                          if (snapshot.data!.docs.isEmpty) {
-                            return Center(
-                              child: Text(
-                                'لا توجد تسميعات مسجلة بعد',
-                                style: GoogleFonts.cairo(
-                                  textStyle: kBodyRegularText,
-                                ),
-                              ),
-                            );
                           }
 
                           final now = DateTime.now();
@@ -216,34 +178,6 @@ class _RecitationLeaderboardScreenState
                               }).toList();
 
                           Map<String, int> pagesPerName = {};
-                          int totalUserPages = 0;
-
-                          for (var doc in filteredDocs) {
-                            int firstPage =
-                                doc['first_page'] is String
-                                    ? int.tryParse(doc['first_page']) ?? 0
-                                    : (doc['first_page'] as int? ?? 0);
-                            int secondPage =
-                                doc['second_page'] is String
-                                    ? int.tryParse(doc['second_page']) ?? 0
-                                    : (doc['second_page'] as int? ?? 0);
-                            int pages = secondPage - firstPage;
-
-                            if (pages > 0) {
-                              totalUserPages += pages;
-
-                              if ((doc['recitation_type'] ?? '') == 'with' &&
-                                  doc['other_User'] != null) {
-                                String otherUser = doc['other_User'];
-                                pagesPerName.update(
-                                  otherUser,
-                                  (value) => value + pages,
-                                  ifAbsent: () => pages,
-                                );
-                              }
-                            }
-                          }
-
                           Map<String, List<Timestamp>> recitationDates = {};
 
                           for (var doc in filteredDocs) {
@@ -258,93 +192,117 @@ class _RecitationLeaderboardScreenState
                             int pages = secondPage - firstPage;
 
                             if (pages > 0) {
+                              // Count pages for the user who recorded the recitation
+                              String user = doc['user'];
+                              pagesPerName.update(
+                                user,
+                                (value) => value + pages,
+                                ifAbsent: () => pages,
+                              );
+                              recitationDates
+                                  .putIfAbsent(user, () => [])
+                                  .add(doc['timestamp']);
+
+                              // Count pages for the partner if it's a joint recitation
                               if ((doc['recitation_type'] ?? '') == 'with' &&
                                   doc['other_User'] != null) {
                                 String otherUser = doc['other_User'];
-                                Timestamp time = doc['timestamp'];
-
                                 pagesPerName.update(
                                   otherUser,
-                                  (v) => v + pages,
+                                  (value) => value + pages,
                                   ifAbsent: () => pages,
                                 );
                                 recitationDates
                                     .putIfAbsent(otherUser, () => [])
-                                    .add(time);
+                                    .add(doc['timestamp']);
                               }
                             }
                           }
 
                           sortWithNames(pagesPerName);
 
+                          final otherUsers =
+                              recitationStudentsName
+                                  .where((name) => name != widget.userName)
+                                  .toList();
+
                           return Column(
                             children: [
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder:
-                                          (context) => UserDetailsScreen(
-                                            userName: widget.userName,
-                                          ),
-                                    ),
-                                  );
-                                },
-                                child: Card(
-                                  elevation: 3,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                    side: BorderSide(
-                                      color: kPrimaryColor,
-                                      width: 2,
-                                    ),
-                                  ),
-                                  child: ListTile(
-                                    contentPadding: EdgeInsets.symmetric(
-                                      horizontal: 16,
-                                      vertical: 12,
-                                    ),
-                                    title: Text(
-                                      '${widget.userName}',
-                                      style: GoogleFonts.cairo(
-                                        textStyle: kBodyRegularText.copyWith(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                              // Current user card (if userName is provided)
+                              if (widget.userName != null)
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder:
+                                            (context) => UserDetailsScreen(
+                                              userName: widget.userName!,
+                                            ),
                                       ),
-                                      textAlign: TextAlign.center,
+                                    );
+                                  },
+                                  child: Card(
+                                    elevation: 3,
+                                    color: Colors.white,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                      side: BorderSide(
+                                        color: kPrimaryColor,
+                                        width: 2,
+                                      ),
+                                    ),
+                                    child: ListTile(
+                                      contentPadding: EdgeInsets.symmetric(
+                                        horizontal: 16,
+                                        vertical: 12,
+                                      ),
+                                      title: Text(
+                                        '${widget.userName}',
+                                        style: GoogleFonts.cairo(
+                                          textStyle: kBodyRegularText.copyWith(
+                                            fontSize: 18,
+                                            color: kPrimaryColor,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      subtitle: Text(
+                                        '${pagesPerName[widget.userName] ?? 0} صفحات',
+                                        style: GoogleFonts.cairo(
+                                          textStyle: kBodyRegularText.copyWith(
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                              SizedBox(height: 10),
+                              if (widget.userName != null) SizedBox(height: 10),
                               Expanded(
                                 child: ListView.builder(
                                   padding: EdgeInsets.all(10),
-                                  itemCount: withNames.length,
+                                  itemCount: otherUsers.length,
                                   itemBuilder: (context, index) {
-                                    String name = withNames[index];
+                                    String name = otherUsers[index];
                                     int totalPages = pagesPerName[name] ?? 0;
-
-                                    if (totalPages == 0) {
-                                      return SizedBox.shrink();
-                                    }
 
                                     return GestureDetector(
                                       onTap: () {
-                                        String selectedUser = name;
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
                                             builder:
                                                 (context) => UserDetailsScreen(
-                                                  userName: selectedUser,
+                                                  userName: name,
                                                 ),
                                           ),
                                         );
                                       },
                                       child: Card(
+                                        color: Colors.white,
                                         elevation: 2,
                                         shape: RoundedRectangleBorder(
                                           borderRadius: BorderRadius.circular(
@@ -364,7 +322,19 @@ class _RecitationLeaderboardScreenState
                                             name,
                                             style: GoogleFonts.cairo(
                                               textStyle: kBodyRegularText
-                                                  .copyWith(fontSize: 18),
+                                                  .copyWith(
+                                                    fontSize: 18,
+                                                    color: kPrimaryColor,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                            ),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                          subtitle: Text(
+                                            '$totalPages صفحات',
+                                            style: GoogleFonts.cairo(
+                                              textStyle: kBodyRegularText
+                                                  .copyWith(fontSize: 16),
                                             ),
                                             textAlign: TextAlign.center,
                                           ),

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:simple_circular_progress_bar/simple_circular_progress_bar.dart';
+import 'package:alhadiqa/lists.dart';
 
 class IjazahLeaderboardScreen extends StatefulWidget {
   const IjazahLeaderboardScreen({super.key, this.userName});
@@ -17,25 +18,6 @@ class IjazahLeaderboardScreen extends StatefulWidget {
 }
 
 class _IjazahLeaderboardScreenState extends State<IjazahLeaderboardScreen> {
-  final List<String> withNames = [
-    'أحمد',
-    'أويس',
-    'بدر',
-    'حازم',
-    'خالد',
-    'سارية',
-    'عبادة',
-    'عبيدة',
-    'عبدالرحمن أبو سعدة',
-    'عبدالرحمن رعد',
-    'عروة',
-    'عمر',
-    'عمرو',
-    'فايز',
-    'مجد',
-    'زيد',
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,11 +27,7 @@ class _IjazahLeaderboardScreenState extends State<IjazahLeaderboardScreen> {
           alignment: Alignment.centerRight,
           child: Padding(
             padding: const EdgeInsets.only(right: 8),
-            child: Icon(
-              Icons.person_outline,
-              size: 50,
-              color: kLightPrimaryColor,
-            ),
+            child: Icon(Icons.person_outline, size: 50, color: kSecondaryColor),
           ),
         ),
         automaticallyImplyLeading: false,
@@ -90,7 +68,7 @@ class _IjazahLeaderboardScreenState extends State<IjazahLeaderboardScreen> {
                       decoration: BoxDecoration(
                         color: Color.fromRGBO(255, 255, 255, 0.8),
                         borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: kLightPrimaryColor, width: 2),
+                        border: Border.all(color: kSecondaryColor, width: 2),
                         boxShadow: [
                           BoxShadow(
                             color: Color.fromRGBO(158, 158, 158, 0.3),
@@ -138,7 +116,7 @@ class _IjazahLeaderboardScreenState extends State<IjazahLeaderboardScreen> {
                             'سارية': DateTime(2025, 2, 24),
                           };
 
-                          for (var name in withNames) {
+                          for (var name in ijazahStudents) {
                             pagesPerName[name] = 0;
                             completionDates[name] = null;
                           }
@@ -156,7 +134,8 @@ class _IjazahLeaderboardScreenState extends State<IjazahLeaderboardScreen> {
 
                             if (pages > 0) {
                               String? user = doc['user'];
-                              if (user != null && withNames.contains(user)) {
+                              if (user != null &&
+                                  ijazahStudents.contains(user)) {
                                 pagesPerName.update(
                                   user,
                                   (value) => value + pages,
@@ -180,7 +159,7 @@ class _IjazahLeaderboardScreenState extends State<IjazahLeaderboardScreen> {
                             completionDates[name] = date;
                           });
 
-                          withNames.sort(
+                          ijazahStudents.sort(
                             (a, b) => (pagesPerName[b] ?? 0).compareTo(
                               pagesPerName[a] ?? 0,
                             ),
@@ -188,9 +167,9 @@ class _IjazahLeaderboardScreenState extends State<IjazahLeaderboardScreen> {
 
                           return ListView.builder(
                             padding: EdgeInsets.all(10),
-                            itemCount: withNames.length,
+                            itemCount: ijazahStudents.length,
                             itemBuilder: (context, index) {
-                              String name = withNames[index];
+                              String name = ijazahStudents[index];
                               int totalPages = pagesPerName[name] ?? 0;
                               double progressPercentage =
                                   (totalPages / 604 * 100)
@@ -201,6 +180,7 @@ class _IjazahLeaderboardScreenState extends State<IjazahLeaderboardScreen> {
 
                               return Card(
                                 elevation: 2,
+                                color: Colors.white,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(12),
                                   side: BorderSide(
@@ -218,6 +198,7 @@ class _IjazahLeaderboardScreenState extends State<IjazahLeaderboardScreen> {
                                     style: GoogleFonts.cairo(
                                       textStyle: kBodyRegularText.copyWith(
                                         fontSize: 18,
+                                        fontWeight: FontWeight.w500,
                                       ),
                                     ),
                                     textAlign: TextAlign.right,
