@@ -1,5 +1,8 @@
+import 'package:alhadiqa/notification_service.dart';
 import 'package:alhadiqa/screens/azkar_screen.dart';
+import 'package:alhadiqa/screens/notification_screen.dart';
 import 'package:alhadiqa/screens/user_detials_screen.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:alhadiqa/screens/welcome_screen.dart';
 import 'package:alhadiqa/screens/login_screen.dart';
@@ -22,6 +25,16 @@ void main() async {
   await GetStorage.init();
   await initializeDateFormatting('ar', null);
 
+  // Initialize notifications
+  await NotificationService.initializeNotifications();
+
+  // Set up notification listeners
+  AwesomeNotifications().setListeners(
+    onActionReceivedMethod: NotificationService.onActionReceivedMethod,
+    onNotificationCreatedMethod:
+        NotificationService.onNotificationCreatedMethod,
+  );
+
   final box = GetStorage();
   final bool rememberMe = box.read('rememberMe') ?? false;
   final User? user = FirebaseAuth.instance.currentUser;
@@ -30,7 +43,6 @@ void main() async {
     MyApp(
       initialRoute:
           (rememberMe && user != null) ? HomeScreen.id : WelcomeScreen.id,
-      // initialRoute: WelcomeScreen.id,
     ),
   );
 }
@@ -45,18 +57,20 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       initialRoute: initialRoute,
       routes: {
-        WelcomeScreen.id: (context) => WelcomeScreen(),
-        RegisterScreen.id: (context) => RegisterScreen(),
-        LoginScreen.id: (context) => LoginScreen(),
-        HomeScreen.id: (context) => HomeScreen(),
-        MenuScreen.id: (context) => MenuScreen(),
-        DailyRecitationScreen.id: (context) => DailyRecitationScreen(),
-        IjazahRecitationScreen.id: (context) => IjazahRecitationScreen(),
+        WelcomeScreen.id: (context) => const WelcomeScreen(),
+        RegisterScreen.id: (context) => const RegisterScreen(),
+        LoginScreen.id: (context) => const LoginScreen(),
+        HomeScreen.id: (context) => const HomeScreen(),
+        MenuScreen.id: (context) => const MenuScreen(),
+        DailyRecitationScreen.id: (context) => const DailyRecitationScreen(),
+        IjazahRecitationScreen.id: (context) => const IjazahRecitationScreen(),
         RecitationLeaderboardScreen.id:
-            (context) => RecitationLeaderboardScreen(),
-        IjazahLeaderboardScreen.id: (context) => IjazahLeaderboardScreen(),
-        UserDetailsScreen.id: (context) => UserDetailsScreen(),
-        AzkarScreen.id: (context) => AzkarScreen(),
+            (context) => const RecitationLeaderboardScreen(),
+        IjazahLeaderboardScreen.id:
+            (context) => const IjazahLeaderboardScreen(),
+        UserDetailsScreen.id: (context) => const UserDetailsScreen(),
+        AzkarScreen.id: (context) => const AzkarScreen(),
+        NotificationScreen.id: (context) => const NotificationScreen(),
       },
     );
   }

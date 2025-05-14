@@ -1,0 +1,253 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:alhadiqa/lists.dart';
+import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
+
+class NotificationService {
+  static final GetStorage _storage = GetStorage();
+  static const String _notificationKey = 'notifications';
+
+  static Future<void> initializeNotifications() async {
+    await GetStorage.init();
+
+    bool isAllowed = await AwesomeNotifications().isNotificationAllowed();
+    if (!isAllowed) {
+      await AwesomeNotifications().requestPermissionToSendNotifications();
+    }
+
+    await _setupNotificationChannels();
+    await _scheduleNotifications();
+  }
+
+  static Future<void> onActionReceivedMethod(
+    ReceivedAction receivedAction,
+  ) async {
+    await _storeNotification(
+      id: receivedAction.id ?? DateTime.now().millisecondsSinceEpoch,
+      title: receivedAction.title ?? 'Notification',
+      body: receivedAction.body ?? '',
+      payload: receivedAction.payload ?? {},
+    );
+
+    // Handle specific notification types
+    if (receivedAction.payload?['type'] == 'azkar') {
+      // Navigation would be handled by the main listener in main.dart
+    }
+  }
+
+  static Future<void> onNotificationCreatedMethod(
+    ReceivedNotification receivedNotification,
+  ) async {
+    await _storeNotification(
+      id: receivedNotification.id ?? DateTime.now().millisecondsSinceEpoch,
+      title: receivedNotification.title ?? 'Notification',
+      body: receivedNotification.body ?? '',
+      payload: receivedNotification.payload ?? {},
+    );
+  }
+
+  static Future<void> _storeNotification({
+    required int id,
+    required String title,
+    required String body,
+    required Map<String, dynamic> payload,
+  }) async {
+    try {
+      final notifications = _storage.read<List>(_notificationKey) ?? [];
+      notifications.insert(0, {
+        'id': id,
+        'title': title,
+        'body': body,
+        'payload': payload,
+        'date': DateTime.now().toIso8601String(),
+        'read': false,
+      });
+      await _storage.write(_notificationKey, notifications);
+    } catch (e) {
+      debugPrint('Error storing notification: $e');
+    }
+  }
+
+  static Future<List<Map<String, dynamic>>> getNotifications() async {
+    try {
+      await GetStorage.init();
+      final notifications = _storage.read<List>(_notificationKey) ?? [];
+      return notifications.cast<Map<String, dynamic>>();
+    } catch (e) {
+      debugPrint('Error getting notifications: $e');
+      return [];
+    }
+  }
+
+  static Future<void> markAllAsRead() async {
+    try {
+      final notifications = await getNotifications();
+      for (var notification in notifications) {
+        notification['read'] = true;
+      }
+      await _storage.write(_notificationKey, notifications);
+    } catch (e) {
+      debugPrint('Error marking all as read: $e');
+    }
+  }
+
+  static Future<void> markAsRead(int id) async {
+    try {
+      final notifications = await getNotifications();
+      final index = notifications.indexWhere((n) => n['id'] == id);
+      if (index != -1) {
+        notifications[index]['read'] = true;
+        await _storage.write(_notificationKey, notifications);
+      }
+    } catch (e) {
+      debugPrint('Error marking notification as read: $e');
+    }
+  }
+
+  static Future<void> _setupNotificationChannels() async {
+    await AwesomeNotifications().initialize(null, [
+      NotificationChannel(
+        channelKey: 'basic_channel',
+        channelName: 'Basic notifications',
+        channelDescription: 'Notification channel for basic reminders',
+        importance: NotificationImportance.High,
+        defaultColor: const Color(0xFF00796B),
+        ledColor: Colors.white,
+        playSound: true,
+        enableLights: true,
+        enableVibration: true,
+      ),
+    ]);
+  }
+
+  static Future<void> _scheduleNotifications() async {
+    await _cancelAllScheduled();
+    await _scheduleMorningAzkar();
+    await _scheduleEveningAzkar();
+    await _scheduleDailyAsar();
+    await _scheduleSaturdyMeeting();
+    await _scheduleTuesdayMeeting();
+  }
+
+  static Future<void> _cancelAllScheduled() async {
+    await AwesomeNotifications().cancelAllSchedules();
+  }
+
+  static Future<void> _scheduleMorningAzkar() async {
+    await AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        id: 1,
+        channelKey: 'basic_channel',
+        title: 'أذكار الصباح',
+        body: 'حان وقت قراءة أذكار الصباح',
+        notificationLayout: NotificationLayout.Default,
+        payload: {'type': 'azkar', 'time': 'morning'},
+      ),
+      schedule: NotificationCalendar(
+        hour: 6,
+        minute: 0,
+        second: 0,
+        repeats: true,
+      ),
+    );
+  }
+
+  static Future<void> _scheduleEveningAzkar() async {
+    await AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        id: 2,
+        channelKey: 'basic_channel',
+        title: 'أذكار المساء',
+        body: 'حان وقت قراءة أذكار المساء',
+        notificationLayout: NotificationLayout.Default,
+        payload: {'type': 'azkar', 'time': 'evening'},
+      ),
+      schedule: NotificationCalendar(
+        hour: 16,
+        minute: 0,
+        second: 0,
+        repeats: true,
+      ),
+    );
+  }
+
+  static Future<void> _scheduleDailyAsar() async {
+    final now = DateTime.now();
+    final dayOfYear = now.difference(DateTime(now.year, 1, 1)).inDays;
+    final asarEntry = asar.entries.elementAt(dayOfYear % asar.length);
+
+    await AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        id: 3,
+        channelKey: 'basic_channel',
+        title: 'آثار يومية',
+        body: '${asarEntry.key}\n${asarEntry.value}',
+        notificationLayout: NotificationLayout.BigText,
+      ),
+      schedule: NotificationCalendar(
+        hour: 16,
+        minute: 30,
+        second: 0,
+        repeats: true,
+      ),
+    );
+  }
+
+  static Future<void> _scheduleSaturdyMeeting() async {
+    await AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        id: 4,
+        channelKey: 'basic_channel',
+        title: 'درس مع أستاذ أبو عبيدة',
+        body: 'تذكير بحضور الدرس',
+        notificationLayout: NotificationLayout.BigText,
+      ),
+      schedule: NotificationCalendar(
+        weekday: DateTime.saturday,
+        hour: 13,
+        minute: 30,
+        second: 0,
+        repeats: true,
+      ),
+    );
+  }
+
+  static Future<void> _scheduleTuesdayMeeting() async {
+    await AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        id: 5,
+        channelKey: 'basic_channel',
+        title: 'درس مع أستاذ عبالرحمن الخن',
+        body: 'تذكير بحضور الدرس',
+        notificationLayout: NotificationLayout.BigText,
+      ),
+      schedule: NotificationCalendar(
+        weekday: DateTime.tuesday,
+        hour: 13,
+        minute: 30,
+        second: 0,
+        repeats: true,
+      ),
+    );
+  }
+
+  static Future<void> deleteNotification(int id) async {
+    try {
+      final notifications = await getNotifications();
+      notifications.removeWhere((n) => n['id'] == id);
+      await _storage.write(_notificationKey, notifications);
+    } catch (e) {
+      debugPrint('Error deleting notification: $e');
+    }
+  }
+
+  static Future<int> getUnreadCount() async {
+    try {
+      final notifications = await getNotifications();
+      return notifications.where((n) => !n['read']).length;
+    } catch (e) {
+      debugPrint('Error getting unread count: $e');
+      return 0;
+    }
+  }
+}

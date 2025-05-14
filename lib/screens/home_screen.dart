@@ -1,12 +1,15 @@
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:alhadiqa/lists.dart';
+import 'package:alhadiqa/notification_service.dart';
 import 'package:alhadiqa/screens/azkar_screen.dart';
 import 'package:alhadiqa/screens/daily_recitation_screen.dart';
 import 'package:alhadiqa/screens/ijazah_leaderboard.dart';
 import 'package:alhadiqa/screens/ijazah_recitation_screen.dart';
 import 'package:alhadiqa/screens/menu_screen.dart';
+import 'package:alhadiqa/screens/notification_screen.dart';
 import 'package:alhadiqa/screens/recitation_leaderboard.dart';
 import 'package:alhadiqa/widgets/home_button.dart';
+import 'package:badges/badges.dart' as badges;
 import 'package:flutter/material.dart';
 import 'package:alhadiqa/const.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -90,7 +93,7 @@ class _HomeScreenState extends State<HomeScreen> {
             offset: const Offset(0, 4),
           ),
         ],
-        border: Border.all(color: kSecondaryColor.withOpacity(0.3)),
+        border: Border.all(color: Color.fromRGBO(76, 175, 80, 0.3)),
       ),
       child: child,
     );
@@ -111,14 +114,60 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            IconButton(
-              onPressed: () {},
-              icon: Icon(
-                Icons.notifications_outlined,
-                size: 30,
-                color: kPrimaryColor,
-              ),
-              tooltip: 'الإشعارات',
+            StreamBuilder<int>(
+              stream: Stream.periodic(const Duration(seconds: 30)).asyncMap((
+                _,
+              ) async {
+                return await NotificationService.getUnreadCount();
+              }),
+              initialData: null,
+              builder: (context, snapshot) {
+                final isLoading =
+                    snapshot.connectionState == ConnectionState.waiting ||
+                    snapshot.connectionState == ConnectionState.none;
+
+                final unreadCount = snapshot.data ?? 0;
+
+                return badges.Badge(
+                  position: badges.BadgePosition.topEnd(top: -4, end: -2),
+                  badgeContent:
+                      isLoading
+                          ? const SizedBox(
+                            height: 10,
+                            width: 10,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 1.5,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                Colors.white,
+                              ),
+                            ),
+                          )
+                          : Text(
+                            unreadCount > 9 ? '9+' : unreadCount.toString(),
+                            style: GoogleFonts.cairo(
+                              textStyle: kBodySmallTextDark.copyWith(
+                                fontSize: 10,
+                              ),
+                            ),
+                          ),
+                  showBadge: isLoading || unreadCount > 0,
+                  badgeStyle: badges.BadgeStyle(
+                    badgeColor: kPrimaryColor,
+                    padding: const EdgeInsets.all(5),
+                  ),
+                  child: IconButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, NotificationScreen.id);
+                    },
+                    icon: const Icon(
+                      Icons.notifications_outlined,
+                      size: 30,
+                      color: kPrimaryColor,
+                    ),
+                    tooltip: 'الإشعارات',
+                  ),
+                );
+              },
             ),
             IconButton(
               onPressed: () {
