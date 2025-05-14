@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:alhadiqa/widgets/rounded_text_field.dart';
 import 'package:alhadiqa/widgets/rounded_button.dart';
 import 'package:alhadiqa/screens/login_screen.dart';
-import 'package:alhadiqa/screens/home_screen.dart';
 import 'package:alhadiqa/const.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';

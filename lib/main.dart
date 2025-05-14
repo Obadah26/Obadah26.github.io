@@ -31,8 +31,8 @@ void main() async {
   // Set up notification listeners
   AwesomeNotifications().setListeners(
     onActionReceivedMethod: NotificationService.onActionReceivedMethod,
-    onNotificationCreatedMethod:
-        NotificationService.onNotificationCreatedMethod,
+    onNotificationDisplayedMethod:
+        NotificationService.onNotificationDisplayedMethod,
   );
 
   final box = GetStorage();

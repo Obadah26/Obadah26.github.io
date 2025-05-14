@@ -29,13 +29,13 @@ class NotificationService {
       payload: receivedAction.payload ?? {},
     );
 
-    // Handle specific notification types
+    // Handle navigation based on notification type
     if (receivedAction.payload?['type'] == 'azkar') {
-      // Navigation would be handled by the main listener in main.dart
+      // This would be handled by your navigation system
     }
   }
 
-  static Future<void> onNotificationCreatedMethod(
+  static Future<void> onNotificationDisplayedMethod(
     ReceivedNotification receivedNotification,
   ) async {
     await _storeNotification(
@@ -54,15 +54,19 @@ class NotificationService {
   }) async {
     try {
       final notifications = _storage.read<List>(_notificationKey) ?? [];
-      notifications.insert(0, {
-        'id': id,
-        'title': title,
-        'body': body,
-        'payload': payload,
-        'date': DateTime.now().toIso8601String(),
-        'read': false,
-      });
-      await _storage.write(_notificationKey, notifications);
+
+      // Check if notification already exists
+      if (!notifications.any((n) => n['id'] == id)) {
+        notifications.insert(0, {
+          'id': id,
+          'title': title,
+          'body': body,
+          'payload': payload,
+          'date': DateTime.now().toIso8601String(),
+          'read': false,
+        });
+        await _storage.write(_notificationKey, notifications);
+      }
     } catch (e) {
       debugPrint('Error storing notification: $e');
     }
@@ -217,7 +221,7 @@ class NotificationService {
       content: NotificationContent(
         id: 5,
         channelKey: 'basic_channel',
-        title: 'درس مع أستاذ عبالرحمن الخن',
+        title: 'درس مع أستاذ عبدالرحمن الخن',
         body: 'تذكير بحضور الدرس',
         notificationLayout: NotificationLayout.BigText,
       ),
