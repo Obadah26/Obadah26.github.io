@@ -10,6 +10,8 @@ const Color kLightPrimaryColor = Color(0xFF00a674);
 const Color kPrimaryColor = Color(0xFF009995);
 const Color kDarkPrimaryColor = Color(0xFF008aad);
 const Color kSecondaryColor = Color(0xFF4caf50);
+const Color kMainBorderColor = Color.fromRGBO(76, 175, 80, 0.5);
+const Color kSecondaryBorderColor = Color.fromRGBO(76, 175, 80, 0.3);
 const Color kBottomBarIconsColor = Colors.transparent;
 
 const TextStyle kHeading1Text = TextStyle(

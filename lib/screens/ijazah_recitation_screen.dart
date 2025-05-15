@@ -121,7 +121,7 @@ class _IjazahRecitationScreenState extends State<IjazahRecitationScreen> {
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(
-                          color: kSecondaryColor.withOpacity(0.3),
+                          color: kSecondaryBorderColor,
                           width: 2,
                         ),
                         boxShadow: [

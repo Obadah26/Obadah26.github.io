@@ -56,7 +56,7 @@ class _AzkarScreenState extends State<AzkarScreen> {
             icon: Icon(
               Icons.arrow_back_rounded,
               size: 35,
-              color: kPrimaryColor,
+              color: kDarkPrimaryColor,
             ),
           ),
         ),
@@ -69,21 +69,21 @@ class _AzkarScreenState extends State<AzkarScreen> {
             Container(
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(color: kLightPrimaryColor, width: 2),
+                border: Border.all(color: kDarkPrimaryColor, width: 2),
               ),
               child: IconButton(
                 onPressed: _previousZikr,
-                icon: Icon(Icons.arrow_back, color: kLightPrimaryColor),
+                icon: Icon(Icons.arrow_back, color: kDarkPrimaryColor),
               ),
             ),
             Container(
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(color: kLightPrimaryColor, width: 2),
+                border: Border.all(color: kDarkPrimaryColor, width: 2),
               ),
               child: IconButton(
                 onPressed: _nextZikr,
-                icon: Icon(Icons.arrow_forward, color: kLightPrimaryColor),
+                icon: Icon(Icons.arrow_forward, color: kDarkPrimaryColor),
               ),
             ),
           ],
@@ -119,7 +119,7 @@ class _AzkarScreenState extends State<AzkarScreen> {
               child: Text(
                 _isMorning ? 'أذكار الصباح' : 'أذكار المساء',
                 style: GoogleFonts.elMessiri(
-                  textStyle: kHeading1Text.copyWith(color: kPrimaryColor),
+                  textStyle: kHeading1Text.copyWith(color: kDarkPrimaryColor),
                 ),
               ),
             ),
@@ -132,10 +132,7 @@ class _AzkarScreenState extends State<AzkarScreen> {
                     color: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
-                      side: BorderSide(
-                        color: kSecondaryColor.withOpacity(0.5),
-                        width: 2,
-                      ),
+                      side: BorderSide(color: kMainBorderColor, width: 2),
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(16),
@@ -145,7 +142,7 @@ class _AzkarScreenState extends State<AzkarScreen> {
                             title,
                             style: GoogleFonts.cairo(
                               textStyle: kHeading2Text.copyWith(
-                                color: kLightPrimaryColor,
+                                color: kPrimaryColor,
                               ),
                             ),
                             textAlign: TextAlign.center,
@@ -167,7 +164,9 @@ class _AzkarScreenState extends State<AzkarScreen> {
                           Text(
                             'عدد التكرار: $repeats',
                             style: GoogleFonts.cairo(
-                              textStyle: kBodyRegularText,
+                              textStyle: kBodyRegularText.copyWith(
+                                color: kLightPrimaryColor,
+                              ),
                             ),
                           ),
                         ],

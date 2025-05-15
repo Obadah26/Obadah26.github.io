@@ -90,7 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
+            color: Color.fromRGBO(128, 128, 128, 0.1),
             spreadRadius: 2,
             blurRadius: 8,
             offset: const Offset(0, 4),
@@ -155,7 +155,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                   showBadge: isLoading || unreadCount > 0,
                   badgeStyle: badges.BadgeStyle(
-                    badgeColor: kPrimaryColor,
+                    badgeColor: kDarkPrimaryColor,
                     padding: const EdgeInsets.all(5),
                   ),
                   child: IconButton(
@@ -165,7 +165,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     icon: const Icon(
                       Icons.notifications_outlined,
                       size: 30,
-                      color: kPrimaryColor,
+                      color: kDarkPrimaryColor,
                     ),
                     tooltip: 'الإشعارات',
                   ),
@@ -173,7 +173,7 @@ class _HomeScreenState extends State<HomeScreen> {
               },
             ),
             IconButton(
-              icon: Icon(Icons.menu, color: kPrimaryColor, size: 30),
+              icon: Icon(Icons.menu, color: kDarkPrimaryColor, size: 30),
               onPressed: () {
                 Navigator.push(
                   context,
@@ -191,7 +191,11 @@ class _HomeScreenState extends State<HomeScreen> {
         leading: Padding(
           padding: const EdgeInsets.only(left: 16),
           child: IconButton(
-            icon: Icon(Icons.person_outline, color: kPrimaryColor, size: 30),
+            icon: Icon(
+              Icons.checklist_rounded,
+              color: kDarkPrimaryColor,
+              size: 30,
+            ),
             onPressed: () {
               if (_loadingUser) {
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -242,7 +246,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             textStyle: TextStyle(
                               fontSize: 28,
                               fontWeight: FontWeight.bold,
-                              color: kPrimaryColor,
+                              color: kDarkPrimaryColor,
                             ),
                           ),
                         ),
@@ -273,7 +277,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       textStyle: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: kPrimaryColor,
+                        color: kDarkPrimaryColor,
                       ),
                     ),
                   ),
@@ -358,14 +362,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     totalPages += ((secondPage - firstPage) + 1);
                   }
 
-                  double progress = totalPages / 40;
-                  Color progressColor =
-                      progress < 0.25
-                          ? Colors.orange
-                          : progress < 0.75
-                          ? Colors.blue
-                          : Colors.green;
-
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
@@ -375,7 +371,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           textStyle: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
-                            color: kPrimaryColor,
+                            color: kDarkPrimaryColor,
                           ),
                         ),
                       ),
@@ -408,7 +404,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         maxSteps: 40,
                         progressType: LinearProgressBar.progressTypeLinear,
                         currentStep: totalPages,
-                        progressColor: progressColor,
+                        progressColor: kLightPrimaryColor,
                         backgroundColor: Colors.grey[200],
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -423,18 +419,18 @@ class _HomeScreenState extends State<HomeScreen> {
                       const SizedBox(height: 16),
                       Text(
                         totalPages <= 10
-                            ? 'القليل الدائم خير من الكثير المنقطع'
+                            ? 'الصبر والمداومة مفتاح النجاح في حفظ كتاب الله'
                             : totalPages <= 20
-                            ? 'استمر في الإنجاز'
+                            ? 'القليل الدائم خير من الكثير المنقطع'
                             : totalPages <= 30
-                            ? 'أحسنت! زد من همتك'
+                            ? 'استمر في الإنجاز'
                             : totalPages <= 39
-                            ? 'بقيت خطوات قليلة'
+                            ? 'خطوات قليلة تفصلك عن الهدف'
                             : 'مبارك! لقد أتممت الهدف',
                         style: GoogleFonts.cairo(
                           textStyle: TextStyle(
                             fontSize: 14,
-                            color: progressColor,
+                            color: kPrimaryColor,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -455,7 +451,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       textStyle: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: kPrimaryColor,
+                        color: kDarkPrimaryColor,
                       ),
                     ),
                   ),

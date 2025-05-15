@@ -84,18 +84,16 @@ class _NotificationScreenState extends State<NotificationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(
           'الإشعارات',
           style: GoogleFonts.elMessiri(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: Colors.black87,
+            textStyle: kHeading2Text.copyWith(color: kDarkPrimaryColor),
           ),
         ),
         centerTitle: true,
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: kPrimaryColor),

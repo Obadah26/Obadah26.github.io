@@ -83,7 +83,7 @@ class _RecitationLeaderboardScreenState
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(
-                        color: kSecondaryColor.withOpacity(0.3),
+                        color: kSecondaryBorderColor,
                         width: 1.5,
                       ),
                     ),
@@ -120,7 +120,7 @@ class _RecitationLeaderboardScreenState
                         color: Color.fromRGBO(255, 255, 255, 0.8),
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(
-                          color: kSecondaryColor.withOpacity(0.3),
+                          color: kSecondaryBorderColor,
                           width: 2,
                         ),
                         boxShadow: [
@@ -276,7 +276,7 @@ class _RecitationLeaderboardScreenState
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(12),
                                       side: BorderSide(
-                                        color: kSecondaryColor.withOpacity(0.5),
+                                        color: kMainBorderColor,
                                         width: 2,
                                       ),
                                     ),
@@ -341,9 +341,7 @@ class _RecitationLeaderboardScreenState
                                             12,
                                           ),
                                           side: BorderSide(
-                                            color: kSecondaryColor.withOpacity(
-                                              0.5,
-                                            ),
+                                            color: kMainBorderColor,
                                             width: 1,
                                           ),
                                         ),

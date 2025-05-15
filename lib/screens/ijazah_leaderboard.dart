@@ -74,10 +74,7 @@ class _IjazahLeaderboardScreenState extends State<IjazahLeaderboardScreen> {
                       decoration: BoxDecoration(
                         color: Color.fromRGBO(255, 255, 255, 0.8),
                         borderRadius: BorderRadius.circular(20),
-                        border: Border.all(
-                          color: kSecondaryColor.withOpacity(0.5),
-                          width: 2,
-                        ),
+                        border: Border.all(color: kMainBorderColor, width: 2),
                         boxShadow: [
                           BoxShadow(
                             color: Color.fromRGBO(158, 158, 158, 0.3),
@@ -118,13 +115,6 @@ class _IjazahLeaderboardScreenState extends State<IjazahLeaderboardScreen> {
                           Map<String, int> pagesPerName = {};
                           Map<String, DateTime?> completionDates = {};
 
-                          // Map<String, DateTime> manuallyCompleted = {
-                          //   'أويس': DateTime(2024, 3, 29),
-                          //   'عمرو': DateTime(2024, 3, 29),
-                          //   'عبدالرحمن أبو سعدة': DateTime(2023, 7, 10),
-                          //   'سارية': DateTime(2025, 2, 24),
-                          // };
-
                           for (var name in ijazahStudents) {
                             pagesPerName[name] = 0;
                             completionDates[name] = null;
@@ -160,11 +150,6 @@ class _IjazahLeaderboardScreenState extends State<IjazahLeaderboardScreen> {
                             }
                           }
 
-                          // manuallyCompleted.forEach((name, date) {
-                          //   pagesPerName[name] = 604;
-                          //   completionDates[name] = date;
-                          // });
-
                           ijazahStudents.sort(
                             (a, b) => (pagesPerName[b] ?? 0).compareTo(
                               pagesPerName[a] ?? 0,
@@ -190,7 +175,7 @@ class _IjazahLeaderboardScreenState extends State<IjazahLeaderboardScreen> {
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(12),
                                   side: BorderSide(
-                                    color: kSecondaryColor.withOpacity(0.3),
+                                    color: kSecondaryBorderColor,
                                     width: 1,
                                   ),
                                 ),

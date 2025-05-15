@@ -212,10 +212,7 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(20),
-                        border: Border.all(
-                          color: kSecondaryColor.withOpacity(0.5),
-                          width: 2,
-                        ),
+                        border: Border.all(color: kMainBorderColor, width: 2),
                         boxShadow: [
                           BoxShadow(
                             color: Color.fromRGBO(158, 158, 158, 0.3),
@@ -440,7 +437,7 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
                                     child: Text(
                                       'من صفحة',
                                       style: GoogleFonts.cairo(
-                                        textStyle: kBodyRegularText.copyWith(),
+                                        textStyle: kBodyRegularText,
                                       ),
                                     ),
                                   ),
@@ -470,7 +467,7 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
                                     child: Text(
                                       'الى صفحة',
                                       style: GoogleFonts.cairo(
-                                        textStyle: kBodyRegularText.copyWith(),
+                                        textStyle: kBodyRegularText,
                                       ),
                                     ),
                                   ),
@@ -489,7 +486,6 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
                               ),
                             ),
                             SizedBox(height: 50),
-                            // Add this widget where you want to display pending confirmations
                             StreamBuilder<QuerySnapshot>(
                               stream:
                                   FirebaseFirestore.instance
@@ -540,9 +536,7 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
                                         color: Colors.white,
                                         shape: RoundedRectangleBorder(
                                           side: BorderSide(
-                                            color: kSecondaryColor.withOpacity(
-                                              0.3,
-                                            ),
+                                            color: kSecondaryBorderColor,
                                           ),
                                           borderRadius: BorderRadius.circular(
                                             20,

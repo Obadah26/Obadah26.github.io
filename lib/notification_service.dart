@@ -189,7 +189,7 @@ class NotificationService {
         notificationLayout: NotificationLayout.BigText,
       ),
       schedule: NotificationCalendar(
-        hour: 16,
+        hour: 13,
         minute: 30,
         second: 0,
         repeats: true,

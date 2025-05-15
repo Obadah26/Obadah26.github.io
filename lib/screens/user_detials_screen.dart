@@ -82,10 +82,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(8),
-                      border: Border.all(
-                        color: kSecondaryColor.withOpacity(0.5),
-                        width: 1.5,
-                      ),
+                      border: Border.all(color: kMainBorderColor, width: 1.5),
                     ),
                     child: DropdownButton<String>(
                       value: selectedFilter,
@@ -118,10 +115,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                       decoration: BoxDecoration(
                         color: Color.fromRGBO(255, 255, 255, 0.8),
                         borderRadius: BorderRadius.circular(20),
-                        border: Border.all(
-                          color: kSecondaryColor.withOpacity(0.5),
-                          width: 2,
-                        ),
+                        border: Border.all(color: kMainBorderColor, width: 2),
                         boxShadow: [
                           BoxShadow(
                             color: Color.fromRGBO(158, 158, 158, 0.3),
@@ -275,7 +269,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(12),
                                   side: BorderSide(
-                                    color: kSecondaryColor.withOpacity(0.3),
+                                    color: kSecondaryBorderColor,
                                     width: 2,
                                   ),
                                 ),
@@ -452,9 +446,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(12),
                                         side: BorderSide(
-                                          color: kSecondaryColor.withOpacity(
-                                            0.3,
-                                          ),
+                                          color: kSecondaryBorderColor,
                                           width: 1,
                                         ),
                                       ),
