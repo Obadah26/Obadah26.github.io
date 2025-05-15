@@ -1,5 +1,6 @@
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:alhadiqa/lists.dart';
+import 'package:alhadiqa/mutual_recitation_status.dart';
 import 'package:alhadiqa/notification_service.dart';
 import 'package:alhadiqa/screens/azkar_screen.dart';
 import 'package:alhadiqa/screens/daily_recitation_screen.dart';
@@ -7,6 +8,7 @@ import 'package:alhadiqa/screens/ijazah_leaderboard.dart';
 import 'package:alhadiqa/screens/ijazah_recitation_screen.dart';
 import 'package:alhadiqa/screens/menu_screen.dart';
 import 'package:alhadiqa/screens/notification_screen.dart';
+import 'package:alhadiqa/screens/pending_confirmations_screen.dart';
 import 'package:alhadiqa/screens/recitation_leaderboard.dart';
 import 'package:alhadiqa/widgets/home_button.dart';
 import 'package:badges/badges.dart' as badges;
@@ -170,6 +172,7 @@ class _HomeScreenState extends State<HomeScreen> {
               },
             ),
             IconButton(
+              icon: Icon(Icons.menu, color: kPrimaryColor, size: 30),
               onPressed: () {
                 Navigator.push(
                   context,
@@ -180,7 +183,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 );
               },
-              icon: Icon(Icons.menu, size: 32, color: kPrimaryColor),
               tooltip: 'القائمة',
             ),
           ],
@@ -189,7 +191,22 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: const EdgeInsets.only(left: 16),
           child: IconButton(
             icon: Icon(Icons.person_outline, color: kPrimaryColor, size: 30),
-            onPressed: () {},
+            onPressed: () {
+              if (_loadingUser) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('جاري تحميل بيانات المستخدم...')),
+                );
+                return;
+              }
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder:
+                      (context) =>
+                          PendingConfirmationsScreen(userName: _userName),
+                ),
+              );
+            },
             tooltip: 'الملف الشخصي',
           ),
         ),
@@ -243,7 +260,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
-
+            SizedBox(height: 10),
+            MutualRecitationStatus(userName: _userName),
+            SizedBox(height: 10),
             // Daily Ayah Section
             _buildSectionContainer(
               Column(
@@ -317,7 +336,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         doc['second_page'] is String
                             ? int.tryParse(doc['second_page']) ?? 0
                             : (doc['second_page'] as int? ?? 0);
-                    totalPages += (secondPage - firstPage);
+                    totalPages += ((secondPage - firstPage) + 1);
                   }
 
                   double progress = totalPages / 40;

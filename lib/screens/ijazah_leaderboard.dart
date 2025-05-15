@@ -118,12 +118,12 @@ class _IjazahLeaderboardScreenState extends State<IjazahLeaderboardScreen> {
                           Map<String, int> pagesPerName = {};
                           Map<String, DateTime?> completionDates = {};
 
-                          Map<String, DateTime> manuallyCompleted = {
-                            'أويس': DateTime(2024, 3, 29),
-                            'عمرو': DateTime(2024, 3, 29),
-                            'عبدالرحمن أبو سعدة': DateTime(2023, 7, 10),
-                            'سارية': DateTime(2025, 2, 24),
-                          };
+                          // Map<String, DateTime> manuallyCompleted = {
+                          //   'أويس': DateTime(2024, 3, 29),
+                          //   'عمرو': DateTime(2024, 3, 29),
+                          //   'عبدالرحمن أبو سعدة': DateTime(2023, 7, 10),
+                          //   'سارية': DateTime(2025, 2, 24),
+                          // };
 
                           for (var name in ijazahStudents) {
                             pagesPerName[name] = 0;
@@ -139,17 +139,14 @@ class _IjazahLeaderboardScreenState extends State<IjazahLeaderboardScreen> {
                                 doc['second_page'] is String
                                     ? int.tryParse(doc['second_page']) ?? 0
                                     : (doc['second_page'] as int? ?? 0);
-                            int pages = secondPage - firstPage;
+                            int pages = (secondPage - firstPage) + 1;
 
                             if (pages > 0) {
                               String? user = doc['user'];
                               if (user != null &&
                                   ijazahStudents.contains(user)) {
-                                pagesPerName.update(
-                                  user,
-                                  (value) => value + pages,
-                                  ifAbsent: () => pages,
-                                );
+                                pagesPerName[user] =
+                                    (pagesPerName[user] ?? 0) + pages;
 
                                 if (pagesPerName[user]! >= 604 &&
                                     completionDates[user] == null) {
@@ -163,10 +160,10 @@ class _IjazahLeaderboardScreenState extends State<IjazahLeaderboardScreen> {
                             }
                           }
 
-                          manuallyCompleted.forEach((name, date) {
-                            pagesPerName[name] = 604;
-                            completionDates[name] = date;
-                          });
+                          // manuallyCompleted.forEach((name, date) {
+                          //   pagesPerName[name] = 604;
+                          //   completionDates[name] = date;
+                          // });
 
                           ijazahStudents.sort(
                             (a, b) => (pagesPerName[b] ?? 0).compareTo(
@@ -229,7 +226,31 @@ class _IjazahLeaderboardScreenState extends State<IjazahLeaderboardScreen> {
                                                   ),
                                             ),
                                           )
-                                          : null,
+                                          : totalPages == 0
+                                          ? Text(
+                                            'لم يبدأ بعد',
+                                            style: GoogleFonts.cairo(
+                                              textStyle: kBodySmallTextDark
+                                                  .copyWith(
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: kLightPrimaryColor,
+                                                  ),
+                                            ),
+                                            textAlign: TextAlign.right,
+                                          )
+                                          : Text(
+                                            'صفحة $totalPages',
+                                            style: GoogleFonts.cairo(
+                                              textStyle: kBodySmallTextDark
+                                                  .copyWith(
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: kLightPrimaryColor,
+                                                  ),
+                                            ),
+                                            textAlign: TextAlign.right,
+                                          ),
                                   leading: SizedBox(
                                     width: 50,
                                     height: 50,

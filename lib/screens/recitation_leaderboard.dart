@@ -197,7 +197,7 @@ class _RecitationLeaderboardScreenState
                                 doc['second_page'] is String
                                     ? int.tryParse(doc['second_page']) ?? 0
                                     : (doc['second_page'] as int? ?? 0);
-                            int pages = secondPage - firstPage;
+                            int pages = (secondPage - firstPage) + 1;
 
                             if (pages > 0) {
                               // Count pages for the user who recorded the recitation

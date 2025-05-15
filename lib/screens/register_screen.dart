@@ -69,10 +69,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
     setState(() => showSpinner = true);
 
     try {
-      // 1. Validate username availability
+      // 1. Check username availability
       final usernameDoc =
           await _firestore.collection('usernames').doc(selectedUserName).get();
-
       if (usernameDoc.exists) {
         throw FirebaseAuthException(
           code: 'username-taken',
@@ -80,46 +79,43 @@ class _RegisterScreenState extends State<RegisterScreen> {
         );
       }
 
-      // 2. Create auth user
+      // 2. Create user with email/password
       final userCredential = await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
 
-      // 3. Update profile and reload (critical section)
+      // 3. Update user profile with display name
       await userCredential.user?.updateProfile(displayName: selectedUserName);
       await userCredential.user?.reload();
-      final updatedUser = _auth.currentUser;
 
-      if (updatedUser == null) throw Exception("User creation failed");
+      // 4. Send verification email
+      await userCredential.user?.sendEmailVerification();
 
-      // 4. Send verification email (should come before navigation)
-      await updatedUser.sendEmailVerification();
+      // 5. Create user document and reserve username
+      final batch = _firestore.batch();
 
-      // 5. Atomic Firestore operations
-      await _firestore.runTransaction((transaction) async {
-        transaction
-            .set(_firestore.collection('usernames').doc(selectedUserName), {
-              'userId': updatedUser.uid,
-              'email': email,
-              'reservedAt': FieldValue.serverTimestamp(),
-              'emailVerified': false,
-            });
-
-        transaction.set(_firestore.collection('users').doc(updatedUser.uid), {
-          'username': selectedUserName,
-          'email': email,
-          'emailVerified': false,
-          'createdAt': FieldValue.serverTimestamp(),
-        });
+      // Create user document
+      batch.set(_firestore.collection('users').doc(userCredential.user!.uid), {
+        'username': selectedUserName,
+        'email': email,
+        'createdAt': FieldValue.serverTimestamp(),
+        'emailVerified': false,
       });
 
-      // 6. Show success and navigate
+      // Reserve username
+      batch.set(_firestore.collection('usernames').doc(selectedUserName), {
+        'userId': userCredential.user!.uid,
+        'email': email,
+        'reservedAt': FieldValue.serverTimestamp(),
+      });
+
+      await batch.commit();
+
+      // Show success message
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(
-            'تم إنشاء الحساب بنجاح! الرجاء التحقق من بريدك الإلكتروني',
-          ),
+          content: Text('تم إنشاء الحساب! الرجاء التحقق من بريدك الإلكتروني'),
           duration: Duration(seconds: 5),
         ),
       );

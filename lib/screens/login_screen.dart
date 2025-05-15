@@ -1,6 +1,7 @@
 import 'package:alhadiqa/circle_painter.dart';
 import 'package:alhadiqa/const.dart';
 import 'package:alhadiqa/screens/register_screen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:alhadiqa/widgets/rounded_text_field.dart';
 import 'package:alhadiqa/widgets/rounded_button.dart';
@@ -185,10 +186,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           );
 
                           if (user.user != null) {
-                            // Check if email is verified
+                            // Check email verification
                             if (!user.user!.emailVerified) {
-                              await user.user!
-                                  .sendEmailVerification(); // Resend if not verified
+                              await user.user!.sendEmailVerification();
                               throw FirebaseAuthException(
                                 code: 'email-not-verified',
                                 message:
@@ -205,6 +205,24 @@ class _LoginScreenState extends State<LoginScreen> {
                               box.remove('email');
                             }
 
+                            // Verify the user has a display name set
+                            if (user.user!.displayName == null ||
+                                user.user!.displayName!.isEmpty) {
+                              // Get the username from Firestore if not set
+                              final userDoc =
+                                  await FirebaseFirestore.instance
+                                      .collection('users')
+                                      .doc(user.user!.uid)
+                                      .get();
+
+                              if (userDoc.exists) {
+                                await user.user!.updateProfile(
+                                  displayName: userDoc.data()!['username'],
+                                );
+                                await user.user!.reload();
+                              }
+                            }
+
                             Navigator.pushNamedAndRemoveUntil(
                               context,
                               HomeScreen.id,
@@ -212,18 +230,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             );
                           }
                         } on FirebaseAuthException catch (e) {
-                          String errorMessage = 'حدث خطأ ما. حاول مرة اخرى.';
-                          if (e.code == 'wrong-password') {
-                            errorMessage = 'كلمة المرور غير صحيحة';
-                          } else if (e.code == 'user-not-found') {
-                            errorMessage =
-                                'لم يتم العثور على حساب بهذا البريد الإلكتروني';
-                          } else if (e.code == 'email-not-verified') {
-                            errorMessage = e.message!;
-                          }
-                          ScaffoldMessenger.of(
-                            context,
-                          ).showSnackBar(SnackBar(content: Text(errorMessage)));
+                          // ... existing error handling ...
                         } finally {
                           setState(() => showSpinner = false);
                         }

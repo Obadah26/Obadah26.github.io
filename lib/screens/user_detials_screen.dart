@@ -217,7 +217,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                                 doc['second_page'] is String
                                     ? int.tryParse(doc['second_page']) ?? 0
                                     : (doc['second_page'] as int? ?? 0);
-                            int pages = secondPage - firstPage;
+                            int pages = (secondPage - firstPage) + 1;
 
                             if (pages > 0) {
                               totalPages += pages;
@@ -225,13 +225,23 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
 
                               String partner = '';
                               String listenedBy = '';
+                              final data = doc.data() as Map<String, dynamic>;
+
                               if (doc['recitation_type'] == 'with') {
                                 partner =
                                     doc['user'] == widget.userName
                                         ? doc['other_User']
                                         : doc['user'];
-                              } else {
-                                listenedBy = doc['listened_by'] ?? '';
+                              } else if (doc['recitation_type'] == 'to') {
+                                // For 'to' recitations, show the other_User as partner (the one listened to)
+                                partner =
+                                    data.containsKey('other_User')
+                                        ? (data['other_User'] ?? '')
+                                        : '';
+                                listenedBy =
+                                    data.containsKey('listened_by')
+                                        ? (data['listened_by'] ?? '')
+                                        : '';
                               }
 
                               recitationDetails.add({
@@ -494,7 +504,9 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                                                 ),
                                                 if (recitation['type'] ==
                                                         'with' &&
-                                                    recitation['with'] != null)
+                                                    recitation['with']
+                                                            ?.isNotEmpty ==
+                                                        true)
                                                   Text(
                                                     'مع ${recitation['with']}',
                                                     style: GoogleFonts.cairo(
@@ -506,13 +518,29 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                                                           ),
                                                     ),
                                                   ),
-                                                if (recitation['type'] !=
-                                                        'with' &&
+                                                if (recitation['type'] ==
+                                                        'to' &&
+                                                    recitation['with']
+                                                            ?.isNotEmpty ==
+                                                        true)
+                                                  Text(
+                                                    'عند ${recitation['with']}',
+                                                    style: GoogleFonts.cairo(
+                                                      textStyle: kBodySmallText
+                                                          .copyWith(
+                                                            fontSize: 10,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                    ),
+                                                  ),
+                                                if (recitation['type'] ==
+                                                        'to' &&
                                                     recitation['listened_by']
                                                             ?.isNotEmpty ==
                                                         true)
                                                   Text(
-                                                    ' بواسطة: ${recitation['listened_by']}',
+                                                    ' عند: ${recitation['listened_by']}',
                                                     style: GoogleFonts.cairo(
                                                       textStyle: kBodySmallText
                                                           .copyWith(

@@ -1,6 +1,7 @@
 import 'package:alhadiqa/const.dart';
 import 'package:alhadiqa/screens/home_screen.dart';
 import 'package:alhadiqa/widgets/rounded_button.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:alhadiqa/lists.dart';
 import 'package:alhadiqa/widgets/rounded_text_field.dart';
@@ -42,48 +43,73 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
   }
 
   void saveData() async {
-    String? userName = widget.userName;
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null || user.displayName == null) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('الرجاء تسجيل الدخول أولاً')));
+      return;
+    }
+
     String? otherUser =
         selectedButtonIndex == 0 ? selectedWithName : selectedToName;
     String firstPage = firstPageController.text;
     String secondPage = secondPageController.text;
 
-    if (userName == null ||
-        otherUser == null ||
-        firstPage.isEmpty ||
-        secondPage.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('الرجاء ملء جميع الحقول', textAlign: TextAlign.right),
-        ),
-      );
+    if (otherUser == null || firstPage.isEmpty || secondPage.isEmpty) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('الرجاء ملء جميع الحقول')));
       return;
     }
 
     try {
+      String? otherUserId;
+
+      // Only fetch other user's ID if type is 'with' (selectedButtonIndex == 0)
+      if (selectedButtonIndex == 0) {
+        final otherUserDoc =
+            await FirebaseFirestore.instance
+                .collection('usernames')
+                .doc(otherUser)
+                .get();
+
+        if (!otherUserDoc.exists) {
+          throw Exception('المستخدم الآخر غير موجود');
+        }
+        otherUserId = otherUserDoc.data()!['userId'];
+      }
+
       Map<String, dynamic> data = {
-        'user': userName,
         'first_page': int.tryParse(firstPage) ?? 0,
         'second_page': int.tryParse(secondPage) ?? 0,
+        'user': user.displayName!,
+        'userId': user.uid,
+        'other_User': otherUser, // display name
+        'recitation_type': selectedButtonIndex == 0 ? 'with' : 'to',
         'timestamp': FieldValue.serverTimestamp(),
+        'status': selectedButtonIndex == 0 ? 'pending' : 'confirmed',
       };
 
-      if (selectedButtonIndex == 0) {
-        data['other_User'] = otherUser;
-        data['recitation_type'] = 'with';
-      } else if (selectedButtonIndex == 1) {
-        data['recitation_type'] = 'to';
-        data['listened_by'] = otherUser;
+      // Include other_userId only if available
+      if (otherUserId != null) {
+        data['other_userId'] = otherUserId;
       }
 
       await FirebaseFirestore.instance.collection('daily_recitation').add(data);
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('تم حفظ البيانات بنجاح!', textAlign: TextAlign.right),
+          content: Text(
+            selectedButtonIndex == 0
+                ? 'تم إرسال طلب التأكيد إلى $otherUser'
+                : 'تم حفظ البيانات بنجاح!',
+            textAlign: TextAlign.right,
+          ),
         ),
       );
 
+      // Clear inputs and reset UI
       firstPageController.clear();
       secondPageController.clear();
       setState(() {
@@ -97,6 +123,33 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('فشل في حفظ البيانات: $e', textAlign: TextAlign.right),
+        ),
+      );
+    }
+  }
+
+  Future<void> _handleConfirmation(String docId, bool accepted) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('daily_recitation')
+          .doc(docId)
+          .update({
+            'status': accepted ? 'confirmed' : 'rejected',
+            'confirmed_at': FieldValue.serverTimestamp(),
+          });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            accepted ? 'تم تأكيد التسميع بنجاح' : 'تم رفض التسميع',
+            textAlign: TextAlign.right,
+          ),
+        ),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('فشل في تأكيد التسميع: $e', textAlign: TextAlign.right),
         ),
       );
     }
@@ -436,6 +489,97 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
                               ),
                             ),
                             SizedBox(height: 50),
+                            // Add this widget where you want to display pending confirmations
+                            StreamBuilder<QuerySnapshot>(
+                              stream:
+                                  FirebaseFirestore.instance
+                                      .collection('daily_recitation')
+                                      .where(
+                                        'other_User',
+                                        isEqualTo: widget.userName,
+                                      )
+                                      .where(
+                                        'recitation_type',
+                                        isEqualTo: 'with',
+                                      )
+                                      .where('status', isEqualTo: 'pending')
+                                      .orderBy('timestamp', descending: true)
+                                      .snapshots(),
+                              builder: (context, snapshot) {
+                                if (!snapshot.hasData) {
+                                  return const SizedBox();
+                                }
+
+                                final pendingItems = snapshot.data!.docs;
+
+                                if (pendingItems.isEmpty) {
+                                  return const SizedBox();
+                                }
+
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 16,
+                                        vertical: 8,
+                                      ),
+                                      child: Text(
+                                        'طلبات في انتظار التأكيد',
+                                        style: GoogleFonts.cairo(
+                                          textStyle: kBodyRegularText.copyWith(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    ...pendingItems.map((doc) {
+                                      final data =
+                                          doc.data() as Map<String, dynamic>;
+                                      return Card(
+                                        margin: const EdgeInsets.symmetric(
+                                          horizontal: 16,
+                                          vertical: 4,
+                                        ),
+                                        child: ListTile(
+                                          title: Text(
+                                            '${data['user']} يطلب تأكيد الصفحات ${data['first_page']} إلى ${data['second_page']}',
+                                            textAlign: TextAlign.right,
+                                          ),
+                                          trailing: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              IconButton(
+                                                icon: const Icon(
+                                                  Icons.check,
+                                                  color: Colors.green,
+                                                ),
+                                                onPressed:
+                                                    () => _handleConfirmation(
+                                                      doc.id,
+                                                      true,
+                                                    ),
+                                              ),
+                                              IconButton(
+                                                icon: const Icon(
+                                                  Icons.close,
+                                                  color: Colors.red,
+                                                ),
+                                                onPressed:
+                                                    () => _handleConfirmation(
+                                                      doc.id,
+                                                      false,
+                                                    ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    }).toList(),
+                                  ],
+                                );
+                              },
+                            ),
                           ],
                         ),
                       ),
