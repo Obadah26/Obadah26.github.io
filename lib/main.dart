@@ -25,19 +25,16 @@ void main() async {
   await GetStorage.init();
   await initializeDateFormatting('ar', null);
 
-  // Initialize notifications
-  await NotificationService.initializeNotifications();
-
   // Set up notification listeners
   AwesomeNotifications().setListeners(
     onActionReceivedMethod: NotificationService.onActionReceivedMethod,
     onNotificationDisplayedMethod:
         NotificationService.onNotificationDisplayedMethod,
   );
+  final User? user = FirebaseAuth.instance.currentUser;
 
   final box = GetStorage();
   final bool rememberMe = box.read('rememberMe') ?? false;
-  final User? user = FirebaseAuth.instance.currentUser;
 
   runApp(
     MyApp(

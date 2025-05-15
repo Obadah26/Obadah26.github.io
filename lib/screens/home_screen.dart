@@ -19,6 +19,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:linear_progress_bar/linear_progress_bar.dart';
+import 'package:rxdart/rxdart.dart';
 
 final _firestore = FirebaseFirestore.instance;
 late User loggedInUser;
@@ -260,9 +261,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
-            SizedBox(height: 10),
             MutualRecitationStatus(userName: _userName),
-            SizedBox(height: 10),
             // Daily Ayah Section
             _buildSectionContainer(
               Column(
@@ -311,12 +310,32 @@ class _HomeScreenState extends State<HomeScreen> {
 
             // Weekly Target Section
             _buildSectionContainer(
-              StreamBuilder<QuerySnapshot>(
-                stream:
-                    _firestore
-                        .collection('daily_recitation')
-                        .where('user', isEqualTo: _userName)
-                        .snapshots(),
+              StreamBuilder<List<QueryDocumentSnapshot>>(
+                stream: Rx.combineLatest2<
+                  QuerySnapshot,
+                  QuerySnapshot,
+                  List<QueryDocumentSnapshot>
+                >(
+                  _firestore
+                      .collection('daily_recitation')
+                      .where('user', isEqualTo: _userName)
+                      .where('recitation_type', whereIn: ['to', 'with'])
+                      .where('status', isEqualTo: 'confirmed')
+                      .snapshots(),
+                  _firestore
+                      .collection('daily_recitation')
+                      .where('other_User', isEqualTo: _userName)
+                      .where('recitation_type', whereIn: ['to', 'with'])
+                      .where('status', isEqualTo: 'confirmed')
+                      .snapshots(),
+                  (snapshot1, snapshot2) {
+                    // Merge docs from both snapshots into a single list
+                    final combinedDocs = <QueryDocumentSnapshot>[];
+                    combinedDocs.addAll(snapshot1.docs);
+                    combinedDocs.addAll(snapshot2.docs);
+                    return combinedDocs;
+                  },
+                ),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
                     return Center(
@@ -325,7 +344,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   }
 
                   int totalPages = 0;
-                  final docs = snapshot.data!.docs;
+                  final docs = snapshot.data!;
 
                   for (var doc in docs) {
                     int firstPage =

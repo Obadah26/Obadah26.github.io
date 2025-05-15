@@ -200,30 +200,40 @@ class _RecitationLeaderboardScreenState
                             int pages = (secondPage - firstPage) + 1;
 
                             if (pages > 0) {
-                              // Count pages for the user who recorded the recitation
+                              String recitationType =
+                                  doc['recitation_type'] ?? '';
                               String user = doc['user'];
-                              pagesPerName.update(
-                                user,
-                                (value) => value + pages,
-                                ifAbsent: () => pages,
-                              );
-                              recitationDates
-                                  .putIfAbsent(user, () => [])
-                                  .add(doc['timestamp']);
+                              String status = doc['status'] ?? '';
 
-                              // Count pages for the partner if it's a joint recitation
-                              if ((doc['recitation_type'] ?? '') == 'with' &&
-                                  doc['other_User'] != null) {
-                                String otherUser = doc['other_User'];
+                              if (recitationType == 'to') {
+                                // Count pages always for 'to'
                                 pagesPerName.update(
-                                  otherUser,
+                                  user,
                                   (value) => value + pages,
                                   ifAbsent: () => pages,
                                 );
-                                recitationDates
-                                    .putIfAbsent(otherUser, () => [])
-                                    .add(doc['timestamp']);
+                              } else if (recitationType == 'with' &&
+                                  status == 'confirmed') {
+                                // Count pages for 'with' only if confirmed
+                                pagesPerName.update(
+                                  user,
+                                  (value) => value + pages,
+                                  ifAbsent: () => pages,
+                                );
+
+                                if (doc['other_User'] != null) {
+                                  String otherUser = doc['other_User'];
+                                  pagesPerName.update(
+                                    otherUser,
+                                    (value) => value + pages,
+                                    ifAbsent: () => pages,
+                                  );
+                                }
                               }
+
+                              recitationDates
+                                  .putIfAbsent(user, () => [])
+                                  .add(doc['timestamp']);
                             }
                           }
 

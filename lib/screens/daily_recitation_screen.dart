@@ -85,7 +85,7 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
         'second_page': int.tryParse(secondPage) ?? 0,
         'user': user.displayName!,
         'userId': user.uid,
-        'other_User': otherUser, // display name
+        'other_User': otherUser,
         'recitation_type': selectedButtonIndex == 0 ? 'with' : 'to',
         'timestamp': FieldValue.serverTimestamp(),
         'status': selectedButtonIndex == 0 ? 'pending' : 'confirmed',
@@ -517,7 +517,7 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
                                 }
 
                                 return Column(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     Padding(
                                       padding: const EdgeInsets.symmetric(
@@ -526,9 +526,9 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
                                       ),
                                       child: Text(
                                         'طلبات في انتظار التأكيد',
-                                        style: GoogleFonts.cairo(
-                                          textStyle: kBodyRegularText.copyWith(
-                                            fontWeight: FontWeight.bold,
+                                        style: GoogleFonts.elMessiri(
+                                          textStyle: kBodyLargeText.copyWith(
+                                            color: kPrimaryColor,
                                           ),
                                         ),
                                       ),
@@ -537,29 +537,32 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
                                       final data =
                                           doc.data() as Map<String, dynamic>;
                                       return Card(
+                                        color: Colors.white,
+                                        shape: RoundedRectangleBorder(
+                                          side: BorderSide(
+                                            color: kSecondaryColor.withOpacity(
+                                              0.3,
+                                            ),
+                                          ),
+                                          borderRadius: BorderRadius.circular(
+                                            20,
+                                          ),
+                                        ),
                                         margin: const EdgeInsets.symmetric(
                                           horizontal: 16,
                                           vertical: 4,
                                         ),
                                         child: ListTile(
                                           title: Text(
-                                            '${data['user']} يطلب تأكيد الصفحات ${data['first_page']} إلى ${data['second_page']}',
+                                            'هل قد قمت بالمدارسة مع ${data['user']} من صفحة ${data['first_page']} الى ${data['second_page']} ؟',
+                                            style: GoogleFonts.cairo(
+                                              textStyle: kBodySmallText,
+                                            ),
                                             textAlign: TextAlign.right,
                                           ),
-                                          trailing: Row(
+                                          leading: Row(
                                             mainAxisSize: MainAxisSize.min,
                                             children: [
-                                              IconButton(
-                                                icon: const Icon(
-                                                  Icons.check,
-                                                  color: Colors.green,
-                                                ),
-                                                onPressed:
-                                                    () => _handleConfirmation(
-                                                      doc.id,
-                                                      true,
-                                                    ),
-                                              ),
                                               IconButton(
                                                 icon: const Icon(
                                                   Icons.close,
@@ -571,6 +574,17 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
                                                       false,
                                                     ),
                                               ),
+                                              IconButton(
+                                                icon: const Icon(
+                                                  Icons.check,
+                                                  color: Colors.green,
+                                                ),
+                                                onPressed:
+                                                    () => _handleConfirmation(
+                                                      doc.id,
+                                                      true,
+                                                    ),
+                                              ),
                                             ],
                                           ),
                                         ),
@@ -580,6 +594,7 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
                                 );
                               },
                             ),
+                            SizedBox(height: 25),
                           ],
                         ),
                       ),

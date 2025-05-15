@@ -1,5 +1,8 @@
+import 'package:alhadiqa/const.dart';
+import 'package:alhadiqa/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class PendingConfirmationsScreen extends StatefulWidget {
   const PendingConfirmationsScreen({super.key, required this.userName});
@@ -15,7 +18,44 @@ class _PendingConfirmationsScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('طلبات التأكيد')),
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Align(
+          alignment: Alignment.centerRight,
+          child: Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: Center(
+              child: Text(
+                'طلبات التأكيد',
+                style: GoogleFonts.elMessiri(
+                  textStyle: kHeading2Text.copyWith(color: kPrimaryColor),
+                ),
+              ),
+            ),
+          ),
+        ),
+        automaticallyImplyLeading: false,
+        backgroundColor: Colors.transparent,
+        toolbarHeight: 100,
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 15),
+          child: IconButton(
+            onPressed: () {
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                HomeScreen.id,
+                (route) => false,
+              );
+            },
+            icon: Icon(
+              Icons.arrow_back_rounded,
+              size: 35,
+              color: kPrimaryColor,
+            ),
+          ),
+        ),
+      ),
+      extendBodyBehindAppBar: true,
       body: StreamBuilder<QuerySnapshot>(
         stream:
             FirebaseFirestore.instance
@@ -47,22 +87,32 @@ class _PendingConfirmationsScreenState
               var doc = snapshot.data!.docs[index];
               var data = doc.data() as Map<String, dynamic>;
 
-              return ListTile(
-                title: Text(
-                  '${data['user']} يطلب تأكيد الصفحات ${data['first_page']} إلى ${data['second_page']}',
+              return Card(
+                color: Colors.white,
+                shape: RoundedRectangleBorder(
+                  side: BorderSide(color: kSecondaryColor.withOpacity(0.3)),
+                  borderRadius: BorderRadius.circular(20),
                 ),
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton(
-                      icon: Icon(Icons.check, color: Colors.green),
-                      onPressed: () => _handleConfirmation(doc.id, true),
-                    ),
-                    IconButton(
-                      icon: Icon(Icons.close, color: Colors.red),
-                      onPressed: () => _handleConfirmation(doc.id, false),
-                    ),
-                  ],
+                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                child: ListTile(
+                  title: Text(
+                    'هل قد قمت بالمدارسة مع ${data['user']} من صفحة ${data['first_page']} الى ${data['second_page']} ؟',
+                    style: GoogleFonts.cairo(textStyle: kBodySmallText),
+                    textAlign: TextAlign.right,
+                  ),
+                  leading: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.close, color: Colors.red),
+                        onPressed: () => _handleConfirmation(doc.id, false),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.check, color: Colors.green),
+                        onPressed: () => _handleConfirmation(doc.id, true),
+                      ),
+                    ],
+                  ),
                 ),
               );
             },

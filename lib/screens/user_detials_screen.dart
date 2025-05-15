@@ -220,20 +220,30 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                             int pages = (secondPage - firstPage) + 1;
 
                             if (pages > 0) {
-                              totalPages += pages;
-                              totalRecitations++;
+                              String recitationType =
+                                  doc['recitation_type'] ?? '';
+                              String status = doc['status'] ?? '';
 
+                              if (recitationType == 'to') {
+                                totalPages += pages;
+                                totalRecitations++;
+                              } else if (recitationType == 'with' &&
+                                  status == 'confirmed') {
+                                totalPages += pages;
+                                totalRecitations++;
+                              }
+
+                              // For your recitationDetails list, keep same logic to show partners, etc.
                               String partner = '';
                               String listenedBy = '';
                               final data = doc.data() as Map<String, dynamic>;
 
-                              if (doc['recitation_type'] == 'with') {
+                              if (recitationType == 'with') {
                                 partner =
                                     doc['user'] == widget.userName
                                         ? doc['other_User']
                                         : doc['user'];
-                              } else if (doc['recitation_type'] == 'to') {
-                                // For 'to' recitations, show the other_User as partner (the one listened to)
+                              } else if (recitationType == 'to') {
                                 partner =
                                     data.containsKey('other_User')
                                         ? (data['other_User'] ?? '')
@@ -247,7 +257,10 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                               recitationDetails.add({
                                 'date': doc['timestamp'].toDate(),
                                 'pages': pages,
-                                'type': doc['recitation_type'] ?? 'فردي',
+                                'type':
+                                    recitationType.isEmpty
+                                        ? 'فردي'
+                                        : recitationType,
                                 'with': partner,
                                 'listened_by': listenedBy,
                               });
@@ -412,6 +425,15 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                                   itemBuilder: (context, index) {
                                     final recitation = recitationDetails[index];
                                     final doc = filteredDocs[index];
+                                    String recitationType =
+                                        doc['recitation_type'] ?? '';
+                                    String status = doc['status'] ?? '';
+
+                                    // Skip card if type is 'with' but status is NOT 'confirmed'
+                                    if (recitationType == 'with' &&
+                                        status != 'confirmed') {
+                                      return SizedBox.shrink();
+                                    }
                                     int firstPage =
                                         doc['first_page'] is String
                                             ? int.tryParse(doc['first_page']) ??
