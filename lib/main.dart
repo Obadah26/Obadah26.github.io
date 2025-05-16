@@ -1,6 +1,7 @@
 import 'package:alhadiqa/notification_service.dart';
 import 'package:alhadiqa/screens/azkar_screen.dart';
 import 'package:alhadiqa/screens/notification_screen.dart';
+import 'package:alhadiqa/screens/settings_screen.dart';
 import 'package:alhadiqa/screens/user_detials_screen.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +19,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'firebase_options.dart';
 import 'package:alhadiqa/screens/ijazah_leaderboard.dart';
 import 'package:alhadiqa/screens/recitation_leaderboard.dart';
+import 'package:alhadiqa/screens/pending_confirmations_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -70,6 +72,8 @@ class MyApp extends StatelessWidget {
         UserDetailsScreen.id: (context) => const UserDetailsScreen(),
         AzkarScreen.id: (context) => const AzkarScreen(),
         NotificationScreen.id: (context) => const NotificationScreen(),
+        SettingsScreen.id: (context) => const SettingsScreen(),
+        PendingConfirmationsScreen.id: (context) => const NotificationScreen(),
       },
     );
   }

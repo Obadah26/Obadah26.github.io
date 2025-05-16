@@ -19,6 +19,101 @@ class NotificationService {
     await _scheduleNotifications();
   }
 
+  static Future<void> reloadScheduledNotifications() async {
+    await _cancelAllScheduled();
+
+    final storage = GetStorage();
+
+    final morningAzkar =
+        _parseTime(storage.read('morningAzkarTime')) ??
+        TimeOfDay(hour: 6, minute: 0);
+    final eveningAzkar =
+        _parseTime(storage.read('eveningAzkarTime')) ??
+        TimeOfDay(hour: 16, minute: 0);
+    final morningRecitation =
+        _parseTime(storage.read('morningRecitationTime')) ??
+        TimeOfDay(hour: 12, minute: 0);
+    final eveningRecitation =
+        _parseTime(storage.read('eveningRecitationTime')) ??
+        TimeOfDay(hour: 20, minute: 0);
+
+    await AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        id: 1,
+        channelKey: 'basic_channel',
+        title: 'أذكار الصباح',
+        body: 'حان وقت قراءة أذكار الصباح',
+        notificationLayout: NotificationLayout.Default,
+        payload: {'type': 'azkar', 'time': 'morning'},
+      ),
+      schedule: NotificationCalendar(
+        hour: morningAzkar.hour,
+        minute: morningAzkar.minute,
+        second: 0,
+        repeats: true,
+      ),
+    );
+
+    await AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        id: 2,
+        channelKey: 'basic_channel',
+        title: 'أذكار المساء',
+        body: 'حان وقت قراءة أذكار المساء',
+        notificationLayout: NotificationLayout.Default,
+        payload: {'type': 'azkar', 'time': 'evening'},
+      ),
+      schedule: NotificationCalendar(
+        hour: eveningAzkar.hour,
+        minute: eveningAzkar.minute,
+        second: 0,
+        repeats: true,
+      ),
+    );
+
+    await AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        id: 3,
+        channelKey: 'basic_channel',
+        title: 'الورد اليومي',
+        body: 'تذكير بالورد اليومي للقرآن',
+        notificationLayout: NotificationLayout.Default,
+      ),
+      schedule: NotificationCalendar(
+        hour: morningRecitation.hour,
+        minute: morningRecitation.minute,
+        second: 0,
+        repeats: true,
+      ),
+    );
+
+    await AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        id: 4,
+        channelKey: 'basic_channel',
+        title: 'الورد اليومي',
+        body: 'تذكير بالورد اليومي للقرآن',
+        notificationLayout: NotificationLayout.Default,
+      ),
+      schedule: NotificationCalendar(
+        hour: eveningRecitation.hour,
+        minute: eveningRecitation.minute,
+        second: 0,
+        repeats: true,
+      ),
+    );
+  }
+
+  static TimeOfDay? _parseTime(String? timeStr) {
+    if (timeStr == null) return null;
+    try {
+      final parts = timeStr.split(':');
+      return TimeOfDay(hour: int.parse(parts[0]), minute: int.parse(parts[1]));
+    } catch (_) {
+      return null;
+    }
+  }
+
   static Future<void> onActionReceivedMethod(
     ReceivedAction receivedAction,
   ) async {
@@ -29,10 +124,7 @@ class NotificationService {
       payload: receivedAction.payload ?? {},
     );
 
-    // Handle navigation based on notification type
-    if (receivedAction.payload?['type'] == 'azkar') {
-      // This would be handled by your navigation system
-    }
+    if (receivedAction.payload?['type'] == 'azkar') {}
   }
 
   static Future<void> onNotificationDisplayedMethod(

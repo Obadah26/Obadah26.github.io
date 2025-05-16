@@ -16,6 +16,7 @@ import 'package:alhadiqa/const.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_islamic_icons/flutter_islamic_icons.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:linear_progress_bar/linear_progress_bar.dart';
@@ -38,6 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String _userName = '';
   bool _loadingUser = true;
   bool _isTeacher = false;
+  int weeklyGoal = 40;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -45,6 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     getCurrentUser();
     _loadArabicDate();
+    _loadWeeklyGoal();
   }
 
   void getCurrentUser() async {
@@ -86,6 +89,13 @@ class _HomeScreenState extends State<HomeScreen> {
       });
     }
     setState(() => _loadingUser = false);
+  }
+
+  void _loadWeeklyGoal() {
+    final storage = GetStorage();
+    setState(() {
+      weeklyGoal = storage.read('weeklyGoal') ?? 40;
+    });
   }
 
   Stream<List<MapEntry<String, int>>> getTop5UsersThisMonthStream() {
@@ -313,6 +323,7 @@ class _HomeScreenState extends State<HomeScreen> {
         userName: _userName,
         auth: _auth,
         isTeacher: _isTeacher,
+        loadWeeklyGoal: _loadWeeklyGoal,
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -533,13 +544,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                   fontSize: 20,
                                 ),
                               ),
-                              TextSpan(text: ' صفحة من أصل 40 صفحة'),
+                              TextSpan(text: ' صفحة من أصل $weeklyGoal صفحة'),
                             ],
                           ),
                         ),
                         const SizedBox(height: 16),
                         LinearProgressBar(
-                          maxSteps: 40,
+                          maxSteps: weeklyGoal,
                           progressType: LinearProgressBar.progressTypeLinear,
                           currentStep: totalPages,
                           progressColor: kLightPrimaryColor,
@@ -555,20 +566,20 @@ class _HomeScreenState extends State<HomeScreen> {
                               style: TextStyle(color: Colors.grey[600]),
                             ),
                             Text(
-                              '40',
+                              '$weeklyGoal',
                               style: TextStyle(color: Colors.grey[600]),
                             ),
                           ],
                         ),
                         const SizedBox(height: 16),
                         Text(
-                          totalPages <= 10
+                          totalPages <= (weeklyGoal * 0.25)
                               ? 'الصبر والمداومة مفتاح النجاح في حفظ كتاب الله'
-                              : totalPages <= 20
+                              : totalPages <= (weeklyGoal * 0.5)
                               ? 'القليل الدائم خير من الكثير المنقطع'
-                              : totalPages <= 30
+                              : totalPages <= (weeklyGoal * 0.75)
                               ? 'استمر في الإنجاز'
-                              : totalPages <= 39
+                              : totalPages <= (weeklyGoal * 0.75)
                               ? 'خطوات قليلة تفصلك عن الهدف'
                               : 'مبارك! لقد أتممت الهدف',
                           style: GoogleFonts.cairo(

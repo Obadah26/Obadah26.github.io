@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 class PendingConfirmationsScreen extends StatefulWidget {
   const PendingConfirmationsScreen({super.key, required this.userName});
   final String userName;
+  static const String id = 'pending_confirmations_screen';
 
   @override
   State<PendingConfirmationsScreen> createState() =>

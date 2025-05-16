@@ -1,6 +1,8 @@
+import 'package:alhadiqa/const.dart';
+import 'package:alhadiqa/notification_service.dart';
+import 'package:alhadiqa/widgets/rounded_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:flutter/cupertino.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -90,9 +92,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
     await _storage.write('weeklyGoal', weeklyGoal);
 
-    // هنا لازم تعيد جدولة الإشعارات بالوقت الجديد
-    // مثلاً تستدعي دالة في NotificationService تقوم بإلغاء الجداول القديمة وجدولة الجديدة
-    // انتبه أن تضيف دالة عامة لإعادة الجدولة في NotificationService (مثل reloadScheduledNotifications)
+    await NotificationService.reloadScheduledNotifications();
 
     ScaffoldMessenger.of(
       context,
@@ -105,7 +105,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       appBar: AppBar(title: const Text('الإعدادات')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: ListView(
+        child: Column(
           children: [
             _buildTimePickerTile(
               'وقت أذكار الصباح',
@@ -136,8 +136,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
               value: weeklyGoal.toDouble(),
               min: 10,
               max: 100,
+              activeColor: kPrimaryColor,
+              inactiveColor: Colors.grey[400],
               divisions: 18,
-              label: '$weeklyGoal صفحة',
+              label: '$weeklyGoal',
               onChanged: (double value) {
                 setState(() {
                   weeklyGoal = value.round();
@@ -146,7 +148,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
             Center(child: Text('$weeklyGoal صفحة')),
             const SizedBox(height: 30),
-            ElevatedButton(onPressed: _saveSettings, child: const Text('حفظ')),
+            RoundedButton(
+              onPressed: _saveSettings,
+              buttonText: 'حفظ',
+              isPrimary: false,
+            ),
           ],
         ),
       ),
@@ -159,10 +165,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
     VoidCallback onTap,
   ) {
     final formattedTime = time.format(context);
-    return ListTile(
-      title: Text(title),
-      trailing: Text(formattedTime),
+    return InkWell(
       onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        child: Row(
+          children: [
+            Text(
+              formattedTime,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            const Spacer(),
+            Text(title, style: const TextStyle(fontSize: 16)),
+          ],
+        ),
+      ),
     );
   }
 }

@@ -1,10 +1,12 @@
 import 'package:adaptive_dialog/adaptive_dialog.dart';
+import 'package:alhadiqa/notification_service.dart';
 import 'package:alhadiqa/screens/azkar_screen.dart';
 import 'package:alhadiqa/screens/daily_recitation_screen.dart';
 import 'package:alhadiqa/screens/ijazah_leaderboard.dart';
 import 'package:alhadiqa/screens/ijazah_recitation_screen.dart';
 import 'package:alhadiqa/screens/pending_confirmations_screen.dart';
 import 'package:alhadiqa/screens/recitation_leaderboard.dart';
+import 'package:alhadiqa/screens/settings_screen.dart';
 import 'package:alhadiqa/screens/welcome_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -19,10 +21,12 @@ class ProfileDrawer extends StatelessWidget {
     required this.userName,
     required this.auth,
     required this.isTeacher,
+    required this.loadWeeklyGoal,
   });
   final String userName;
   final FirebaseAuth auth;
   final bool isTeacher;
+  final Function loadWeeklyGoal;
 
   @override
   Widget build(BuildContext context) {
@@ -163,7 +167,10 @@ class ProfileDrawer extends StatelessWidget {
               text: 'الإعدادات',
               icon: Icons.settings,
               onPressed: () {
-                //Navigator to settings;
+                Navigator.pushNamed(context, SettingsScreen.id).then((_) async {
+                  await NotificationService.reloadScheduledNotifications();
+                  loadWeeklyGoal();
+                });
               },
             ),
             DrawerButtons(
@@ -182,7 +189,7 @@ class ProfileDrawer extends StatelessWidget {
                     (route) => false,
                   );
                 } else {
-                  print("Auth instance is null");
+                  ScaffoldMessenger(child: Text('Auth instance is null'));
                 }
               },
             ),
