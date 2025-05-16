@@ -69,7 +69,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     setState(() => showSpinner = true);
 
     try {
-      // 1. Check username availability
       final usernameDoc =
           await _firestore.collection('usernames').doc(selectedUserName).get();
       if (usernameDoc.exists) {
@@ -79,40 +78,29 @@ class _RegisterScreenState extends State<RegisterScreen> {
         );
       }
 
-      // 2. Create user with email/password
       final userCredential = await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
 
-      // 3. Update user profile with display name
       await userCredential.user?.updateProfile(displayName: selectedUserName);
       await userCredential.user?.reload();
-
-      // 4. Send verification email
       await userCredential.user?.sendEmailVerification();
 
-      // 5. Create user document and reserve username
       final batch = _firestore.batch();
-
-      // Create user document
       batch.set(_firestore.collection('users').doc(userCredential.user!.uid), {
         'username': selectedUserName,
         'email': email,
         'createdAt': FieldValue.serverTimestamp(),
         'emailVerified': false,
       });
-
-      // Reserve username
       batch.set(_firestore.collection('usernames').doc(selectedUserName), {
         'userId': userCredential.user!.uid,
         'email': email,
         'reservedAt': FieldValue.serverTimestamp(),
       });
-
       await batch.commit();
 
-      // Show success message
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('تم إنشاء الحساب! الرجاء التحقق من بريدك الإلكتروني'),
@@ -192,7 +180,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           children: [
             CustomPaint(
               painter: CircleIntersectionPainter(),
-              size: Size(400, 400), // Adjust size as needed
+              size: Size(400, 400),
             ),
             SafeArea(
               child: SingleChildScrollView(
@@ -211,69 +199,75 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                     ),
                     SizedBox(height: 30),
-                    Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(25, 0, 16, 0),
-                          child: Icon(Icons.person, color: kLightPrimaryColor),
-                        ),
-                        Container(
-                          width: 320,
-                          height: 65,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(
-                              color: kLightPrimaryColor,
-                              width: 1.5,
-                            ),
-                          ),
-                          child: DropdownButton<String>(
-                            isExpanded: true,
-                            hint: Center(
-                              child:
-                                  loadingUserNames
-                                      ? CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                      )
-                                      : availableUserNames.isEmpty
-                                      ? Text(
-                                        'لا توجد أسماء متاحة',
-                                        style: TextStyle(color: Colors.grey),
-                                      )
-                                      : Text('اختر اسم المستخدم'),
-                            ),
-                            value: selectedUserName,
-                            icon: const Icon(
-                              Icons.arrow_drop_down,
-                              color: kLightPrimaryColor,
-                            ),
-                            iconSize: 24,
-                            elevation: 4,
-                            style: GoogleFonts.cairo(
-                              textStyle: kBodyRegularText.copyWith(),
-                            ),
-                            underline: Container(),
-                            onChanged: (String? newValue) {
-                              setState(() {
-                                selectedUserName = newValue!;
-                              });
-                            },
-                            dropdownColor: Colors.white,
-                            items:
-                                availableUserNames
-                                    .map(
-                                      (name) => DropdownMenuItem(
-                                        value: name,
-                                        child: Align(
-                                          alignment: Alignment.center,
-                                          child: Text(name),
-                                        ),
-                                      ),
-                                    )
-                                    .toList(),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 7),
+                      child: Container(
+                        width: 345,
+                        height: 65,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: kLightPrimaryColor,
+                            width: 1.5,
                           ),
                         ),
-                      ],
+                        padding: EdgeInsets.symmetric(horizontal: 8),
+                        child: Row(
+                          children: [
+                            Icon(Icons.person, color: kLightPrimaryColor),
+                            SizedBox(width: 8),
+                            Expanded(
+                              child: DropdownButton<String>(
+                                isExpanded: true,
+                                hint: Center(
+                                  child:
+                                      loadingUserNames
+                                          ? CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                          )
+                                          : availableUserNames.isEmpty
+                                          ? Text(
+                                            'لا توجد أسماء متاحة',
+                                            style: TextStyle(
+                                              color: Colors.grey,
+                                            ),
+                                          )
+                                          : Text('اختر اسم المستخدم'),
+                                ),
+                                value: selectedUserName,
+                                icon: const Icon(
+                                  Icons.arrow_drop_down,
+                                  color: kLightPrimaryColor,
+                                ),
+                                iconSize: 24,
+                                elevation: 4,
+                                style: GoogleFonts.cairo(
+                                  textStyle: kBodyRegularText.copyWith(),
+                                ),
+                                underline: Container(),
+                                onChanged: (String? newValue) {
+                                  setState(() {
+                                    selectedUserName = newValue!;
+                                  });
+                                },
+                                dropdownColor: Colors.white,
+                                items:
+                                    availableUserNames
+                                        .map(
+                                          (name) => DropdownMenuItem(
+                                            value: name,
+                                            child: Align(
+                                              alignment: Alignment.center,
+                                              child: Text(name),
+                                            ),
+                                          ),
+                                        )
+                                        .toList(),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                     SizedBox(height: 30),
                     RoundedTextField(

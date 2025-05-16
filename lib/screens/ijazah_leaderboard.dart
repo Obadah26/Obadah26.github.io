@@ -2,6 +2,7 @@ import 'package:alhadiqa/const.dart';
 import 'package:alhadiqa/screens/home_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_islamic_icons/flutter_islamic_icons.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:simple_circular_progress_bar/simple_circular_progress_bar.dart';
@@ -27,7 +28,11 @@ class _IjazahLeaderboardScreenState extends State<IjazahLeaderboardScreen> {
           alignment: Alignment.centerRight,
           child: Padding(
             padding: const EdgeInsets.only(right: 8),
-            child: Icon(Icons.person_outline, size: 35, color: kPrimaryColor),
+            child: Icon(
+              FlutterIslamicIcons.muslim2,
+              size: 35,
+              color: kPrimaryColor,
+            ),
           ),
         ),
         automaticallyImplyLeading: false,

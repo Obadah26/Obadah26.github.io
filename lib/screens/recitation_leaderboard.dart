@@ -3,6 +3,7 @@ import 'package:alhadiqa/screens/home_screen.dart';
 import 'package:alhadiqa/screens/user_detials_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_islamic_icons/flutter_islamic_icons.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:alhadiqa/lists.dart';
 
@@ -35,7 +36,11 @@ class _RecitationLeaderboardScreenState
           alignment: Alignment.centerRight,
           child: Padding(
             padding: const EdgeInsets.only(right: 8),
-            child: Icon(Icons.group_outlined, size: 30, color: kPrimaryColor),
+            child: Icon(
+              FlutterIslamicIcons.quran2,
+              size: 30,
+              color: kPrimaryColor,
+            ),
           ),
         ),
         automaticallyImplyLeading: false,

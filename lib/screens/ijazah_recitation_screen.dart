@@ -3,6 +3,7 @@ import 'package:alhadiqa/screens/home_screen.dart';
 import 'package:alhadiqa/widgets/rounded_button.dart';
 import 'package:flutter/material.dart';
 import 'package:alhadiqa/widgets/rounded_text_field.dart';
+import 'package:flutter_islamic_icons/flutter_islamic_icons.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -16,14 +17,32 @@ class IjazahRecitationScreen extends StatefulWidget {
 }
 
 class _IjazahRecitationScreenState extends State<IjazahRecitationScreen> {
+  bool _isTeacher = false;
   final TextEditingController _firstPageController = TextEditingController();
   final TextEditingController _secondPageController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    isTeacher();
+  }
 
   @override
   void dispose() {
     _firstPageController.dispose();
     _secondPageController.dispose();
     super.dispose();
+  }
+
+  void isTeacher() {
+    setState(() {
+      if (widget.userName == 'استاذ ابو عبيدة' ||
+          widget.userName == 'استاذ عبدالرحمن الخن') {
+        _isTeacher = true;
+      } else {
+        _isTeacher = false;
+      }
+    });
   }
 
   void saveData() async {
@@ -72,7 +91,11 @@ class _IjazahRecitationScreenState extends State<IjazahRecitationScreen> {
           alignment: Alignment.centerRight,
           child: Padding(
             padding: const EdgeInsets.only(right: 8),
-            child: Icon(Icons.person_outline, size: 35, color: kPrimaryColor),
+            child: Icon(
+              FlutterIslamicIcons.muslim2,
+              size: 35,
+              color: kPrimaryColor,
+            ),
           ),
         ),
         automaticallyImplyLeading: false,
@@ -208,6 +231,7 @@ class _IjazahRecitationScreenState extends State<IjazahRecitationScreen> {
                               Center(
                                 child: RoundedButton(
                                   buttonText: 'حفظ',
+                                  isDisabled: _isTeacher,
                                   isPrimary: false,
                                   onPressed: saveData,
                                 ),

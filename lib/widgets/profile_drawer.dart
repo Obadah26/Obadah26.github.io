@@ -3,6 +3,7 @@ import 'package:alhadiqa/screens/azkar_screen.dart';
 import 'package:alhadiqa/screens/daily_recitation_screen.dart';
 import 'package:alhadiqa/screens/ijazah_leaderboard.dart';
 import 'package:alhadiqa/screens/ijazah_recitation_screen.dart';
+import 'package:alhadiqa/screens/pending_confirmations_screen.dart';
 import 'package:alhadiqa/screens/recitation_leaderboard.dart';
 import 'package:alhadiqa/screens/welcome_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -13,12 +14,20 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_islamic_icons/flutter_islamic_icons.dart';
 
 class ProfileDrawer extends StatelessWidget {
-  const ProfileDrawer({super.key, required this.userName, required this.auth});
+  const ProfileDrawer({
+    super.key,
+    required this.userName,
+    required this.auth,
+    required this.isTeacher,
+  });
   final String userName;
   final FirebaseAuth auth;
+  final bool isTeacher;
 
   @override
   Widget build(BuildContext context) {
+    final words = userName.split(' ');
+
     return SizedBox(
       width: 250,
       child: Drawer(
@@ -43,18 +52,33 @@ class ProfileDrawer extends StatelessWidget {
                       ),
                     ),
                     SizedBox(width: 10),
-                    CircleAvatar(
-                      radius: 30,
-                      backgroundColor: Colors.transparent,
-                      backgroundImage: AssetImage('images/example1.png'),
-                      //backgroundImage: AssetImage('images/$userName.png'),
+                    Container(
+                      width: 50,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: kLightPrimaryColor, width: 1),
+                      ),
+                      child: CircleAvatar(
+                        backgroundColor: Colors.transparent,
+                        child: Text(
+                          isTeacher
+                              ? '${words.length > 1 ? words[1][0] : ''} ${words.length > 2 ? words[2][0] : ''}'
+                              : '${words.isNotEmpty ? words[0][0] : ''} ${words.length > 1 ? words[1][0] : ''}',
+                          style: TextStyle(
+                            fontSize: 25,
+                            letterSpacing: -1.5,
+                            color: kPrimaryColor,
+                          ),
+                        ),
+                      ),
                     ),
                   ],
                 ),
               ),
             ),
             DrawerButtons(
-              icon: FlutterIslamicIcons.solidMuslim2,
+              icon: FlutterIslamicIcons.solidQuran2,
               text: 'التسميع اليومي',
               onPressed: () {
                 Navigator.push(
@@ -81,7 +105,7 @@ class ProfileDrawer extends StatelessWidget {
               },
             ),
             DrawerButtons(
-              icon: FlutterIslamicIcons.solidQuran2,
+              icon: FlutterIslamicIcons.solidMuslim2,
               text: 'الاجازة',
               onPressed: () {
                 Navigator.push(
@@ -117,6 +141,20 @@ class ProfileDrawer extends StatelessWidget {
               text: 'الأذكار',
               onPressed: () {
                 Navigator.pushNamed(context, AzkarScreen.id);
+              },
+            ),
+            DrawerButtons(
+              icon: Icons.checklist_rounded,
+              text: 'الطلبات',
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder:
+                        (context) =>
+                            PendingConfirmationsScreen(userName: userName),
+                  ),
+                );
               },
             ),
             SizedBox(height: 50),

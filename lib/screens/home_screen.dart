@@ -6,9 +6,7 @@ import 'package:alhadiqa/screens/azkar_screen.dart';
 import 'package:alhadiqa/screens/daily_recitation_screen.dart';
 import 'package:alhadiqa/screens/ijazah_leaderboard.dart';
 import 'package:alhadiqa/screens/ijazah_recitation_screen.dart';
-import 'package:alhadiqa/screens/menu_screen.dart';
 import 'package:alhadiqa/screens/notification_screen.dart';
-import 'package:alhadiqa/screens/pending_confirmations_screen.dart';
 import 'package:alhadiqa/screens/recitation_leaderboard.dart';
 import 'package:alhadiqa/widgets/home_button.dart';
 import 'package:alhadiqa/widgets/profile_drawer.dart';
@@ -90,6 +88,111 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() => _loadingUser = false);
   }
 
+  Stream<List<MapEntry<String, int>>> getTop5UsersThisMonthStream() {
+    final now = DateTime.now();
+    final firstDayOfMonth = DateTime(now.year, now.month, 1);
+    final firstDayOfNextMonth = DateTime(now.year, now.month + 1, 1);
+
+    return _firestore
+        .collection('daily_recitation')
+        .where(
+          'timestamp',
+          isGreaterThanOrEqualTo: Timestamp.fromDate(firstDayOfMonth),
+        )
+        .where('timestamp', isLessThan: Timestamp.fromDate(firstDayOfNextMonth))
+        .snapshots()
+        .map((snapshot) {
+          Map<String, int> pagesPerUser = {};
+
+          for (var doc in snapshot.docs) {
+            int firstPage = 0;
+            int secondPage = 0;
+            try {
+              firstPage =
+                  doc['first_page'] is String
+                      ? int.tryParse(doc['first_page']) ?? 0
+                      : (doc['first_page'] as int? ?? 0);
+              secondPage =
+                  doc['second_page'] is String
+                      ? int.tryParse(doc['second_page']) ?? 0
+                      : (doc['second_page'] as int? ?? 0);
+            } catch (_) {}
+
+            int pages = (secondPage - firstPage) + 1;
+            if (pages <= 0) continue;
+
+            String user = doc['user'] ?? '';
+            String recitationType = doc['recitation_type'] ?? '';
+            String status = doc['status'] ?? '';
+
+            if (recitationType == 'to') {
+              pagesPerUser.update(
+                user,
+                (value) => value + pages,
+                ifAbsent: () => pages,
+              );
+            } else if (recitationType == 'with' && status == 'confirmed') {
+              pagesPerUser.update(
+                user,
+                (value) => value + pages,
+                ifAbsent: () => pages,
+              );
+              if (doc['other_User'] != null) {
+                String otherUser = doc['other_User'];
+                pagesPerUser.update(
+                  otherUser,
+                  (value) => value + pages,
+                  ifAbsent: () => pages,
+                );
+              }
+            }
+          }
+
+          var sortedList =
+              pagesPerUser.entries.toList()
+                ..sort((a, b) => b.value.compareTo(a.value));
+
+          return sortedList.take(5).toList();
+        });
+  }
+
+  Widget _buildTop5UsersWidget(List<MapEntry<String, int>> topUsers) {
+    return _buildSectionContainer(
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            'أفضل 5 مسمعين خلال هذا الشهر',
+            style: GoogleFonts.elMessiri(
+              textStyle: TextStyle(
+                fontSize: 17,
+                fontWeight: FontWeight.bold,
+                color: kDarkPrimaryColor,
+              ),
+            ),
+          ),
+          SizedBox(height: 12),
+          ...topUsers
+              .map(
+                (entry) => Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 6),
+                  child: Text(
+                    entry.key,
+                    style: GoogleFonts.cairo(
+                      textStyle: TextStyle(
+                        fontSize: 15,
+                        color: kLightPrimaryColor,
+                      ),
+                    ),
+                  ),
+                ),
+              )
+              .toList(),
+        ],
+      ),
+    );
+  }
+
   Future<void> _loadArabicDate() async {
     setState(() {
       arabicDate = DateFormat('EEEE، d MMMM', 'ar').format(DateTime.now());
@@ -112,7 +215,7 @@ class _HomeScreenState extends State<HomeScreen> {
             offset: const Offset(0, 4),
           ),
         ],
-        border: Border.all(color: Color.fromRGBO(76, 175, 80, 0.3)),
+        border: Border.all(color: kSecondaryBorderColor),
       ),
       child: child,
     );
@@ -131,132 +234,72 @@ class _HomeScreenState extends State<HomeScreen> {
       key: _scaffoldKey,
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            StreamBuilder<int>(
-              stream: Stream.periodic(const Duration(seconds: 30)).asyncMap((
-                _,
-              ) async {
-                return await NotificationService.getUnreadCount();
-              }),
-              initialData: null,
-              builder: (context, snapshot) {
-                final isLoading =
-                    snapshot.connectionState == ConnectionState.waiting ||
-                    snapshot.connectionState == ConnectionState.none;
-
-                final unreadCount = snapshot.data ?? 0;
-
-                return badges.Badge(
-                  position: badges.BadgePosition.topEnd(top: -4, end: -2),
-                  badgeContent:
-                      isLoading
-                          ? const SizedBox(
-                            height: 10,
-                            width: 10,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 1.5,
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                Colors.white,
-                              ),
-                            ),
-                          )
-                          : Text(
-                            unreadCount > 9 ? '9+' : unreadCount.toString(),
-                            style: GoogleFonts.cairo(
-                              textStyle: kBodySmallTextDark.copyWith(
-                                fontSize: 10,
-                              ),
-                            ),
-                          ),
-                  showBadge: isLoading || unreadCount > 0,
-                  badgeStyle: badges.BadgeStyle(
-                    badgeColor: kDarkPrimaryColor,
-                    padding: const EdgeInsets.all(5),
-                  ),
-                  child: IconButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, NotificationScreen.id);
-                    },
-                    icon: const Icon(
-                      Icons.notifications_outlined,
-                      size: 30,
-                      color: kDarkPrimaryColor,
-                    ),
-                    tooltip: 'الإشعارات',
-                  ),
-                );
-              },
+        title: Align(
+          alignment: Alignment.centerRight,
+          child: IconButton(
+            icon: Icon(
+              Icons.person_outline,
+              color: kDarkPrimaryColor,
+              size: 30,
             ),
-            IconButton(
-              icon: Icon(Icons.menu, color: kDarkPrimaryColor, size: 30),
-              onPressed: () {
-                _scaffoldKey.currentState?.openEndDrawer();
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(
-                //     builder:
-                //         (context) =>
-                //             MenuScreen(auth: _auth, userName: _userName),
-                //   ),
-                // );
-              },
-            ),
-          ],
+            onPressed: () {
+              _scaffoldKey.currentState?.openEndDrawer();
+            },
+          ),
         ),
         leading: Padding(
-          padding: const EdgeInsets.only(left: 16),
-          child: StreamBuilder<QuerySnapshot>(
-            stream:
-                FirebaseFirestore.instance
-                    .collection('daily_recitation')
-                    .where(
-                      'user',
-                      isEqualTo: _userName,
-                    ) // Pending confirmations for the user
-                    .where('status', isEqualTo: 'pending')
-                    .snapshots(),
+          padding: const EdgeInsets.fromLTRB(16, 5, 0, 0),
+          child: StreamBuilder<int>(
+            stream: Stream.periodic(const Duration(seconds: 30)).asyncMap((
+              _,
+            ) async {
+              return await NotificationService.getUnreadCount();
+            }),
+            initialData: null,
             builder: (context, snapshot) {
-              final pendingCount =
-                  snapshot.hasData ? snapshot.data!.docs.length : 0;
+              final isLoading =
+                  snapshot.connectionState == ConnectionState.waiting ||
+                  snapshot.connectionState == ConnectionState.none;
+
+              final unreadCount = snapshot.data ?? 0;
 
               return badges.Badge(
                 position: badges.BadgePosition.topEnd(top: -4, end: -2),
                 badgeContent:
-                    pendingCount == 0
-                        ? null
+                    isLoading
+                        ? const SizedBox(
+                          height: 10,
+                          width: 10,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 1.5,
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              Colors.white,
+                            ),
+                          ),
+                        )
                         : Text(
-                          pendingCount > 9 ? '9+' : pendingCount.toString(),
+                          unreadCount > 9 ? '9+' : unreadCount.toString(),
                           style: GoogleFonts.cairo(
                             textStyle: kBodySmallTextDark.copyWith(
                               fontSize: 10,
                             ),
                           ),
                         ),
-                showBadge:
-                    pendingCount > 0, // Only show if there's a pending count
+                showBadge: isLoading || unreadCount > 0,
                 badgeStyle: badges.BadgeStyle(
                   badgeColor: kDarkPrimaryColor,
                   padding: const EdgeInsets.all(5),
                 ),
                 child: IconButton(
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder:
-                            (context) =>
-                                PendingConfirmationsScreen(userName: _userName),
-                      ),
-                    );
+                    Navigator.pushNamed(context, NotificationScreen.id);
                   },
                   icon: const Icon(
-                    Icons.checklist_rounded,
-                    color: kDarkPrimaryColor,
+                    Icons.notifications_outlined,
                     size: 30,
+                    color: kDarkPrimaryColor,
                   ),
-                  tooltip: 'الملف الشخصي',
+                  tooltip: 'الإشعارات',
                 ),
               );
             },
@@ -266,7 +309,11 @@ class _HomeScreenState extends State<HomeScreen> {
         elevation: 0,
         toolbarHeight: 70,
       ),
-      endDrawer: ProfileDrawer(userName: _userName, auth: _auth),
+      endDrawer: ProfileDrawer(
+        userName: _userName,
+        auth: _auth,
+        isTeacher: _isTeacher,
+      ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
@@ -314,10 +361,53 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             MutualRecitationStatus(userName: _userName),
+            // Best 5 students
+            StreamBuilder<List<MapEntry<String, int>>>(
+              stream: getTop5UsersThisMonthStream(),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return Center(
+                    child: CircularProgressIndicator(color: kPrimaryColor),
+                  );
+                }
+                final top5Users = snapshot.data!;
+                if (top5Users.isEmpty) {
+                  return _buildSectionContainer(
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          'أفضل 5 مسمعين خلال الشهر الحالي',
+                          style: GoogleFonts.elMessiri(
+                            textStyle: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: kDarkPrimaryColor,
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 30),
+                        Text(
+                          'لم يتم تسجيل أي تسميع',
+                          style: GoogleFonts.cairo(
+                            textStyle: TextStyle(
+                              fontSize: 15,
+                              color: Colors.grey[400],
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 30),
+                      ],
+                    ),
+                  );
+                }
+                return _buildTop5UsersWidget(top5Users);
+              },
+            ),
             // Daily Ayah Section
             _buildSectionContainer(
               Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
                     'آثار يومية',
@@ -329,7 +419,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  SizedBox(height: 12),
                   Column(
                     children: [
                       Text(
@@ -342,9 +432,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             height: 1.8,
                           ),
                         ),
-                        textAlign: TextAlign.center,
                       ),
-                      const SizedBox(height: 8),
+                      SizedBox(height: 8),
                       Text(
                         _getDailyAsar().value,
                         style: GoogleFonts.notoKufiArabic(
@@ -359,7 +448,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
-
             // Weekly Target Section
             Visibility(
               visible: _isTeacher ? false : true,
@@ -498,7 +586,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
-
+            // Fast buttons
             _buildSectionContainer(
               Column(
                 children: [
@@ -522,7 +610,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     crossAxisSpacing: 12,
                     children: [
                       HomeButton(
-                        icon: FlutterIslamicIcons.muslim2,
+                        icon: FlutterIslamicIcons.quran2,
                         text: 'التسميع اليومي',
                         onPressed: () {
                           Navigator.push(
@@ -559,7 +647,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         },
                       ),
                       HomeButton(
-                        icon: FlutterIslamicIcons.quran2,
+                        icon: FlutterIslamicIcons.muslim2,
                         text: 'الاجازة',
                         onPressed: () {
                           Navigator.push(

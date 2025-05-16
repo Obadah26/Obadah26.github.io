@@ -1,6 +1,7 @@
 import 'package:alhadiqa/const.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_islamic_icons/flutter_islamic_icons.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:alhadiqa/lists.dart';
 
@@ -26,7 +27,11 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
           alignment: Alignment.centerRight,
           child: Padding(
             padding: const EdgeInsets.only(right: 8),
-            child: Icon(Icons.person_outline, size: 35, color: kPrimaryColor),
+            child: Icon(
+              FlutterIslamicIcons.quran2,
+              size: 35,
+              color: kPrimaryColor,
+            ),
           ),
         ),
         backgroundColor: Colors.transparent,

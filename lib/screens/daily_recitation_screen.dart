@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:alhadiqa/lists.dart';
 import 'package:alhadiqa/widgets/rounded_text_field.dart';
+import 'package:flutter_islamic_icons/flutter_islamic_icons.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -45,15 +46,12 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
   }
 
   void isTeacher() {
-    print('Checking if teacher. Username: ${widget.userName}');
     setState(() {
       if (widget.userName == 'استاذ ابو عبيدة' ||
           widget.userName == 'استاذ عبدالرحمن الخن') {
         _isTeacher = true;
-        print('User is a teacher');
       } else {
         _isTeacher = false;
-        print('User is not a teacher');
       }
     });
   }
@@ -180,7 +178,11 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
           alignment: Alignment.centerRight,
           child: Padding(
             padding: const EdgeInsets.only(right: 8),
-            child: Icon(Icons.group_outlined, size: 35, color: kPrimaryColor),
+            child: Icon(
+              FlutterIslamicIcons.quran2,
+              size: 35,
+              color: kPrimaryColor,
+            ),
           ),
         ),
         automaticallyImplyLeading: false,

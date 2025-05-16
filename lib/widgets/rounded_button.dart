@@ -40,12 +40,14 @@ class RoundedButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(30),
           color:
               isDisabled
-                  ? disabledColor
+                  ? Colors.transparent
                   : isPrimary
                   ? primaryColor
                   : Colors.transparent,
           border:
-              isPrimary || isDisabled
+              isDisabled
+                  ? Border.all(color: Colors.blueGrey, width: 2)
+                  : isPrimary
                   ? null
                   : Border.all(color: primaryColor, width: 2),
         ),

@@ -184,9 +184,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             email: email,
                             password: password,
                           );
-
                           if (user.user != null) {
-                            // Check email verification
                             if (!user.user!.emailVerified) {
                               await user.user!.sendEmailVerification();
                               throw FirebaseAuthException(
@@ -195,8 +193,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                     'الرجاء التحقق من بريدك الإلكتروني أولاً',
                               );
                             }
-
-                            // Save remember me preferences
                             if (_rememberMe) {
                               box.write('rememberMe', true);
                               box.write('email', email);
@@ -204,17 +200,13 @@ class _LoginScreenState extends State<LoginScreen> {
                               box.remove('rememberMe');
                               box.remove('email');
                             }
-
-                            // Verify the user has a display name set
                             if (user.user!.displayName == null ||
                                 user.user!.displayName!.isEmpty) {
-                              // Get the username from Firestore if not set
                               final userDoc =
                                   await FirebaseFirestore.instance
                                       .collection('users')
                                       .doc(user.user!.uid)
                                       .get();
-
                               if (userDoc.exists) {
                                 await user.user!.updateProfile(
                                   displayName: userDoc.data()!['username'],
@@ -222,7 +214,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                 await user.user!.reload();
                               }
                             }
-
                             Navigator.pushNamedAndRemoveUntil(
                               context,
                               HomeScreen.id,
