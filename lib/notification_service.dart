@@ -131,6 +131,8 @@ class NotificationService {
     await _scheduleDailyAsar();
     await _scheduleSaturdyMeeting();
     await _scheduleTuesdayMeeting();
+    await _scheduleMorningDailyRecitation();
+    await _scheduleEveningDailyRecitation();
   }
 
   static Future<void> _cancelAllScheduled() async {
@@ -168,6 +170,42 @@ class NotificationService {
       ),
       schedule: NotificationCalendar(
         hour: 16,
+        minute: 0,
+        second: 0,
+        repeats: true,
+      ),
+    );
+  }
+
+  static Future<void> _scheduleMorningDailyRecitation() async {
+    await AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        id: 2,
+        channelKey: 'basic_channel',
+        title: 'الورد اليومي',
+        body: 'تذكير بالورد اليومي للقرآن',
+        notificationLayout: NotificationLayout.Default,
+      ),
+      schedule: NotificationCalendar(
+        hour: 12,
+        minute: 0,
+        second: 0,
+        repeats: true,
+      ),
+    );
+  }
+
+  static Future<void> _scheduleEveningDailyRecitation() async {
+    await AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        id: 2,
+        channelKey: 'basic_channel',
+        title: 'الورد اليومي',
+        body: 'تذكير بالورد اليومي للقرآن',
+        notificationLayout: NotificationLayout.Default,
+      ),
+      schedule: NotificationCalendar(
+        hour: 20,
         minute: 0,
         second: 0,
         repeats: true,

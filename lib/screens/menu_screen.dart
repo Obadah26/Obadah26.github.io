@@ -119,7 +119,6 @@ class _MenuScreenState extends State<MenuScreen> {
                   children: [
                     MenuButtons(
                       icon: Icons.home,
-                      iconColor: kLightPrimaryColor,
                       text: 'الرئيسية',
                       onPressed: () {
                         Navigator.pushNamed(context, HomeScreen.id);
@@ -128,7 +127,6 @@ class _MenuScreenState extends State<MenuScreen> {
                     SizedBox(width: 30),
                     MenuButtons(
                       icon: Icons.group,
-                      iconColor: Colors.blue,
                       text: 'التسميع اليومي',
                       onPressed: () {
                         Navigator.push(
@@ -145,7 +143,6 @@ class _MenuScreenState extends State<MenuScreen> {
                     SizedBox(width: 30),
                     MenuButtons(
                       icon: Icons.leaderboard,
-                      iconColor: Colors.orange,
                       text: 'نتائج التسميع',
                       onPressed: () {
                         Navigator.push(
@@ -167,7 +164,6 @@ class _MenuScreenState extends State<MenuScreen> {
                   children: [
                     MenuButtons(
                       icon: Icons.person,
-                      iconColor: Colors.purple,
                       text: 'الاجازة',
                       onPressed: () {
                         Navigator.push(
@@ -184,7 +180,6 @@ class _MenuScreenState extends State<MenuScreen> {
                     SizedBox(width: 30),
                     MenuButtons(
                       icon: Icons.leaderboard,
-                      iconColor: Colors.teal,
                       text: 'نتائج الاجازة',
                       onPressed: () {
                         Navigator.pushNamed(
@@ -196,7 +191,6 @@ class _MenuScreenState extends State<MenuScreen> {
                     SizedBox(width: 30),
                     MenuButtons(
                       icon: Icons.dark_mode,
-                      iconColor: Colors.indigo,
                       text: 'رمضان',
                       onPressed: () {
                         showOkAlertDialog(
@@ -215,7 +209,6 @@ class _MenuScreenState extends State<MenuScreen> {
                   children: [
                     MenuButtons(
                       icon: Icons.logout,
-                      iconColor: Colors.red,
                       text: 'تسجيل خروج',
                       onPressed: () async {
                         final box = GetStorage();
@@ -237,7 +230,6 @@ class _MenuScreenState extends State<MenuScreen> {
                     SizedBox(width: 30),
                     MenuButtons(
                       icon: Icons.mosque,
-                      iconColor: Colors.green,
                       text: 'الأذكار',
                       onPressed: () {
                         Navigator.pushNamed(context, AzkarScreen.id);

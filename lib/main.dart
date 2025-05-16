@@ -25,6 +25,8 @@ void main() async {
   await GetStorage.init();
   await initializeDateFormatting('ar', null);
 
+  await NotificationService.initializeNotifications();
+
   // Set up notification listeners
   AwesomeNotifications().setListeners(
     onActionReceivedMethod: NotificationService.onActionReceivedMethod,

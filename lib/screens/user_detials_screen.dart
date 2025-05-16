@@ -67,7 +67,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                           ),
                         ),
                         TextSpan(
-                          text: widget.userName,
+                          text: widget.userName?.split(' ')[0],
                           style: GoogleFonts.elMessiri(
                             textStyle: kHeading1Text,
                             color: kPrimaryColor,

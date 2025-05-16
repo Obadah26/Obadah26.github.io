@@ -1,5 +1,6 @@
 import 'package:alhadiqa/const.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_islamic_icons/flutter_islamic_icons.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:alhadiqa/notification_service.dart';
@@ -105,8 +106,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
             child: Text(
               'تحديد الكل',
               style: GoogleFonts.cairo(
-                color: const Color(0xFF00796B),
-                fontSize: 16,
+                textStyle: kBodyRegularText.copyWith(color: kPrimaryColor),
               ),
             ),
           ),
@@ -129,8 +129,12 @@ class _NotificationScreenState extends State<NotificationScreen> {
                       ),
                       const SizedBox(height: 16),
                       Text(
-                        'لا توجد إشعارات',
-                        style: GoogleFonts.cairo(fontSize: 18),
+                        'لا يوجد إشعارات',
+                        style: GoogleFonts.cairo(
+                          textStyle: kBodyLargeText.copyWith(
+                            color: Colors.grey[400],
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -148,7 +152,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                       background: Container(
                         alignment: Alignment.centerRight,
                         padding: const EdgeInsets.only(right: 20),
-                        color: Colors.red,
+                        color: Colors.redAccent,
                         child: const Icon(Icons.delete, color: Colors.white),
                       ),
                       onDismissed: (direction) async {
@@ -192,13 +196,15 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
   IconData _getIconForNotification(String title) {
     if (title.contains('أذكار الصباح') || title.contains('أذكار المساء')) {
-      return Icons.library_books;
+      return FlutterIslamicIcons.tasbihHand;
     } else if (title.contains('آثار يومية')) {
       return Icons.lightbulb_outline;
     } else if (title.contains('درس مع أستاذ أبو عبيدة')) {
       return Icons.video_call_outlined;
     } else if (title.contains('درس مع أستاذ عبدالرحمن الخن')) {
       return Icons.video_call_outlined;
+    } else if (title.contains('الورد اليومي')) {
+      return FlutterIslamicIcons.quran;
     }
     return Icons.notifications;
   }
@@ -211,14 +217,15 @@ class _NotificationScreenState extends State<NotificationScreen> {
     bool isUnread = false,
     Map<String, dynamic>? payload,
   }) {
-    Color color = isUnread ? const Color(0xFF00796B) : Colors.grey;
+    Color color = isUnread ? kPrimaryColor : Colors.grey;
 
     return Card(
-      elevation: 0,
+      elevation: 2,
+      color: Colors.white,
       margin: EdgeInsets.zero,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: Colors.grey[200]!, width: 1),
+        side: BorderSide(color: kSecondaryBorderColor, width: 1),
       ),
       child: Padding(
         padding: const EdgeInsets.all(12),
@@ -228,7 +235,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
             Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: color.withOpacity(0.1),
+                color: Colors.grey[50],
                 shape: BoxShape.circle,
               ),
               child: Icon(icon, color: color),
@@ -254,7 +261,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                       body,
                       style: GoogleFonts.cairo(
                         fontSize: 14,
-                        color: Colors.grey[600],
+                        color: kLightPrimaryColor,
                       ),
                       textAlign: TextAlign.right,
                     ),
@@ -270,12 +277,12 @@ class _NotificationScreenState extends State<NotificationScreen> {
             ),
             if (isUnread)
               Padding(
-                padding: const EdgeInsets.only(right: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 5),
                 child: Container(
                   width: 8,
                   height: 8,
                   decoration: const BoxDecoration(
-                    color: Colors.red,
+                    color: Colors.redAccent,
                     shape: BoxShape.circle,
                   ),
                 ),

@@ -96,7 +96,7 @@ class _PendingConfirmationsScreenState
                 margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 child: ListTile(
                   title: Text(
-                    'هل قد قمت بالمدارسة مع ${data['user']} من صفحة ${data['first_page']} الى ${data['second_page']} ؟',
+                    'هل قد قمت بالمدارسة مع ${data['user'].split(' ')[0]} من صفحة ${data['first_page']} الى ${data['second_page']} ؟',
                     style: GoogleFonts.cairo(textStyle: kBodySmallText),
                     textAlign: TextAlign.right,
                   ),

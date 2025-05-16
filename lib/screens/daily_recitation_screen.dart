@@ -25,6 +25,7 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
   bool _toVisible = false;
   bool _inputVisible = false;
   bool _saveVisible = false;
+  bool _isTeacher = false;
 
   final TextEditingController firstPageController = TextEditingController();
   final TextEditingController secondPageController = TextEditingController();
@@ -34,12 +35,27 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
     super.initState();
     selectedWithName = withNames.isNotEmpty ? withNames[0] : null;
     selectedToName = toNames.isNotEmpty ? toNames[0] : null;
+    isTeacher();
   }
 
   List<String> filterNames(List<String> names, String? currentUser) {
     if (currentUser == null) return names;
     final filtered = names.where((name) => name != currentUser).toList();
     return filtered.isNotEmpty ? filtered : names;
+  }
+
+  void isTeacher() {
+    print('Checking if teacher. Username: ${widget.userName}');
+    setState(() {
+      if (widget.userName == 'استاذ ابو عبيدة' ||
+          widget.userName == 'استاذ عبدالرحمن الخن') {
+        _isTeacher = true;
+        print('User is a teacher');
+      } else {
+        _isTeacher = false;
+        print('User is not a teacher');
+      }
+    });
   }
 
   void saveData() async {
@@ -480,6 +496,7 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
                               child: Center(
                                 child: RoundedButton(
                                   buttonText: 'حفظ',
+                                  isDisabled: _isTeacher,
                                   isPrimary: false,
                                   onPressed: saveData,
                                 ),
@@ -548,7 +565,7 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
                                         ),
                                         child: ListTile(
                                           title: Text(
-                                            'هل قد قمت بالمدارسة مع ${data['user']} من صفحة ${data['first_page']} الى ${data['second_page']} ؟',
+                                            'هل قد قمت بالمدارسة مع ${data['user'].split(' ')[0]} من صفحة ${data['first_page']} الى ${data['second_page']} ؟',
                                             style: GoogleFonts.cairo(
                                               textStyle: kBodySmallText,
                                             ),
