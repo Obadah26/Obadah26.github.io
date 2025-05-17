@@ -304,22 +304,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   Text.rich(
                     TextSpan(
                       text: 'أهلاً، ',
-                      style: GoogleFonts.cairo(
-                        textStyle: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
+                      style: kBodyLargeText.copyWith(fontSize: 20),
                       children: [
                         TextSpan(
                           text: _loadingUser ? '...جاري التحميل' : _userName,
-                          style: GoogleFonts.cairo(
-                            textStyle: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: kPrimaryColor,
-                            ),
+                          style: kBodyLargeText.copyWith(
+                            fontSize: 20,
+                            color: kPrimaryColor,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                       ],
@@ -327,11 +319,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   Text(
                     arabicDate,
-                    style: GoogleFonts.elMessiri(
-                      textStyle: TextStyle(
-                        fontSize: 15,
-                        color: Colors.grey[600],
-                      ),
+                    style: kBodySmallText.copyWith(
+                      fontSize: 15,
+                      color: Colors.grey[600],
                     ),
                   ),
                 ],
@@ -355,22 +345,17 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: [
                         Text(
                           'أفضل 5 مسمعين خلال الشهر الحالي',
-                          style: GoogleFonts.elMessiri(
-                            textStyle: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: kDarkPrimaryColor,
-                            ),
+                          style: kHeading2Text.copyWith(
+                            fontSize: 18,
+                            color: kDarkPrimaryColor,
                           ),
                         ),
                         SizedBox(height: 30),
                         Text(
                           'لم يتم تسجيل أي تسميع',
-                          style: GoogleFonts.cairo(
-                            textStyle: TextStyle(
-                              fontSize: 15,
-                              color: Colors.grey[400],
-                            ),
+                          style: kBodySmallText.copyWith(
+                            fontSize: 15,
+                            color: Colors.grey[400],
                           ),
                         ),
                         SizedBox(height: 30),
@@ -388,12 +373,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   Text(
                     'آثار يومية',
-                    style: GoogleFonts.elMessiri(
-                      textStyle: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: kDarkPrimaryColor,
-                      ),
+                    style: kHeading2Text.copyWith(
+                      fontSize: 18,
+                      color: kDarkPrimaryColor,
                     ),
                   ),
                   SizedBox(height: 12),
@@ -404,9 +386,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         style: GoogleFonts.notoKufiArabic(
                           textStyle: TextStyle(
                             fontSize: 22,
-                            fontWeight: FontWeight.bold,
                             color: kLightPrimaryColor,
-                            height: 1.8,
                           ),
                         ),
                       ),
@@ -448,7 +428,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         .where('status', isEqualTo: 'confirmed')
                         .snapshots(),
                     (snapshot1, snapshot2) {
-                      // Merge docs from both snapshots into a single list
                       final combinedDocs = <QueryDocumentSnapshot>[];
                       combinedDocs.addAll(snapshot1.docs);
                       combinedDocs.addAll(snapshot2.docs);
@@ -482,23 +461,17 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: [
                         Text(
                           'الهدف الاسبوعي',
-                          style: GoogleFonts.elMessiri(
-                            textStyle: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: kDarkPrimaryColor,
-                            ),
+                          style: kHeading2Text.copyWith(
+                            fontSize: 18,
+                            color: kDarkPrimaryColor,
                           ),
                         ),
-                        const SizedBox(height: 16),
+                        SizedBox(height: 16),
                         RichText(
                           textAlign: TextAlign.center,
                           text: TextSpan(
-                            style: GoogleFonts.cairo(
-                              textStyle: TextStyle(
-                                fontSize: 16,
-                                color: Colors.grey[700],
-                              ),
+                            style: kBodyRegularText.copyWith(
+                              color: Colors.grey[700],
                             ),
                             children: <TextSpan>[
                               TextSpan(text: 'تم انجاز '),
@@ -569,12 +542,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   Text(
                     'الخدمات السريعة',
-                    style: GoogleFonts.elMessiri(
-                      textStyle: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: kDarkPrimaryColor,
-                      ),
+                    style: kHeading2Text.copyWith(
+                      fontSize: 18,
+                      color: kDarkPrimaryColor,
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -670,7 +640,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: 20),
           ],
         ),
       ),

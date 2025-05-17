@@ -6,7 +6,7 @@ class GreenContatiner extends StatelessWidget {
     super.key,
     required this.child,
     this.width = double.infinity,
-    this.color = Colors.white,
+    this.color = kBackgroundColor,
     this.borderColor = kLightPrimaryColor,
   });
 

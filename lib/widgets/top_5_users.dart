@@ -16,12 +16,9 @@ class Top5Users extends StatelessWidget {
         children: [
           Text(
             'أفضل 5 مسمعين خلال هذا الشهر',
-            style: GoogleFonts.elMessiri(
-              textStyle: TextStyle(
-                fontSize: 17,
-                fontWeight: FontWeight.bold,
-                color: kDarkPrimaryColor,
-              ),
+            style: kHeading2Text.copyWith(
+              fontSize: 17,
+              color: kDarkPrimaryColor,
             ),
           ),
           SizedBox(height: 12),
@@ -33,7 +30,7 @@ class Top5Users extends StatelessWidget {
                     entry.key,
                     style: GoogleFonts.cairo(
                       textStyle: TextStyle(
-                        fontSize: 15,
+                        fontSize: 16,
                         color: kLightPrimaryColor,
                       ),
                     ),

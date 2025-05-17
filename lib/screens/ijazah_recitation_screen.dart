@@ -133,7 +133,7 @@ class _IjazahRecitationScreenState extends State<IjazahRecitationScreen> {
           ),
         ),
       ),
-      backgroundColor: Colors.grey[50],
+      backgroundColor: kBackgroundColor,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(

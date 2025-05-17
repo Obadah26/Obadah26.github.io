@@ -28,6 +28,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   String? selectedUserName;
   List<String> availableUserNames = [];
   bool loadingUserNames = true;
+  String? passwordError;
 
   @override
   void initState() {
@@ -64,6 +65,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
         context,
       ).showSnackBar(SnackBar(content: Text('الرجاء اختيار اسم مستخدم')));
       return;
+    }
+
+    if (!_validatePassword(password)) {
+      setState(() {
+        passwordError =
+            '◉ كلمة المرور يجب أن تكون طولها 8 أحرف أو أكثر\n ◉ يجب أن تحتوي على حرف كبير (A-Z)\n ◉ يجب أن تحتوي على حرف صغير (a-z)\n ◉ يجب أن تحتوي على رقم (0-9)\n ◉ يجب أن تحتوي على رمز خاص مثل (!@#&*).';
+      });
+      return;
+    } else {
+      passwordError = null;
     }
 
     setState(() => showSpinner = true);
@@ -103,7 +114,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('تم إنشاء الحساب! الرجاء التحقق من بريدك الإلكتروني'),
+          content: Text(
+            'تم إنشاء الحساب بنجاح! يُرجى التحقق من بريدك الإلكتروني لتفعيل الحساب',
+          ),
           duration: Duration(seconds: 5),
         ),
       );
@@ -115,9 +128,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       );
     } on FirebaseAuthException catch (e) {
       String errorMessage = 'حدث خطأ أثناء التسجيل';
-      if (e.code == 'weak-password') {
-        errorMessage = 'كلمة المرور ضعيفة';
-      } else if (e.code == 'email-already-in-use') {
+      if (e.code == 'email-already-in-use') {
         errorMessage = 'البريد الإلكتروني مستخدم بالفعل';
       } else if (e.code == 'username-taken') {
         errorMessage = e.message ?? 'اسم المستخدم محجوز';
@@ -132,6 +143,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
     } finally {
       setState(() => showSpinner = false);
     }
+  }
+
+  bool _validatePassword(String password) {
+    final passwordRegex = RegExp(
+      r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#\$&*~]).{8,}$',
+    );
+    return passwordRegex.hasMatch(password);
   }
 
   TextEditingController emailController = TextEditingController();
@@ -299,6 +317,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         password = value;
                       },
                     ),
+                    if (passwordError != null)
+                      Padding(
+                        padding: const EdgeInsets.only(right: 30, top: 5),
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: Text(
+                            passwordError!,
+                            style: TextStyle(
+                              color: Colors.redAccent,
+                              fontSize: 10,
+                            ),
+                            textDirection: TextDirection.rtl,
+                          ),
+                        ),
+                      ),
+
                     SizedBox(height: 50),
                     RoundedButton(
                       onPressed: _registerUser,

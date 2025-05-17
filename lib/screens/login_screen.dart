@@ -221,7 +221,24 @@ class _LoginScreenState extends State<LoginScreen> {
                             );
                           }
                         } on FirebaseAuthException catch (e) {
-                          // ... existing error handling ...
+                          String message = '';
+                          if (e.code == 'user-not-found') {
+                            message = 'البريد الإلكتروني غير مسجل';
+                          } else if (e.code == 'wrong-password') {
+                            message = 'كلمة المرور خاطئة';
+                          } else {
+                            message = 'حدث خطأ ما، يرجى المحاولة لاحقاً';
+                          }
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                message,
+                                textAlign: TextAlign.center,
+                              ),
+                              duration: Duration(seconds: 3),
+                            ),
+                          );
                         } finally {
                           setState(() => showSpinner = false);
                         }

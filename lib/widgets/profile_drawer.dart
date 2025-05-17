@@ -37,6 +37,7 @@ class ProfileDrawer extends StatelessWidget {
     return SizedBox(
       width: 250,
       child: Drawer(
+        backgroundColor: kBackgroundColor,
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
@@ -44,7 +45,7 @@ class ProfileDrawer extends StatelessWidget {
               height: 150,
               decoration: BoxDecoration(color: Colors.transparent),
               child: Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.only(right: 10),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.end,
@@ -53,7 +54,8 @@ class ProfileDrawer extends StatelessWidget {
                       userName,
                       style: GoogleFonts.elMessiri(
                         textStyle: kBodyLargeText.copyWith(
-                          color: kPrimaryColor,
+                          fontWeight: FontWeight.w500,
+                          color: kSecondaryTextLight,
                         ),
                       ),
                     ),
@@ -74,7 +76,8 @@ class ProfileDrawer extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 25,
                             letterSpacing: -1.5,
-                            color: kPrimaryColor,
+                            fontWeight: FontWeight.w500,
+                            color: kSecondaryTextLight,
                           ),
                         ),
                       ),
@@ -163,8 +166,9 @@ class ProfileDrawer extends StatelessWidget {
                 );
               },
             ),
-            SizedBox(height: 50),
-            Divider(color: kPrimaryColor, indent: 20, endIndent: 20),
+            SizedBox(height: 20),
+            Divider(color: kLightPrimaryColor, indent: 20, endIndent: 20),
+            SizedBox(height: 20),
             DrawerButtons(
               text: 'الإعدادات',
               icon: Icons.settings,
@@ -225,25 +229,30 @@ class DrawerButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        TextButton(
-          onPressed: onPressed,
-          child: Text(
-            text,
-            style: GoogleFonts.cairo(
-              textStyle: kBodySmallText.copyWith(color: kLightPrimaryColor),
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0, 0, 10, 5),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          TextButton(
+            onPressed: onPressed,
+            child: Text(
+              text,
+              style: GoogleFonts.cairo(
+                textStyle: kBodyRegularText.copyWith(
+                  color: kSecondaryTextLight,
+                ),
+              ),
             ),
           ),
-        ),
-        IconButton(
-          onPressed: onPressed,
-          icon: Icon(icon),
-          color: kPrimaryColor,
-          iconSize: 30,
-        ),
-      ],
+          IconButton(
+            onPressed: onPressed,
+            icon: Icon(icon),
+            color: kLightPrimaryColor,
+            iconSize: 35,
+          ),
+        ],
+      ),
     );
   }
 }

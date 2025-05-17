@@ -76,7 +76,7 @@ class _RecitationLeaderboardScreenState
           ),
         ),
       ),
-      backgroundColor: Colors.white,
+      backgroundColor: kBackgroundColor,
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,

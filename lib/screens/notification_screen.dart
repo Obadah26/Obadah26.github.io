@@ -85,7 +85,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: kBackgroundColor,
       appBar: AppBar(
         title: Text(
           'الإشعارات',
@@ -233,7 +233,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
     return Card(
       elevation: 2,
-      color: Colors.white,
+      color: isUnread ? Colors.white : kBackgroundColor,
       margin: EdgeInsets.zero,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
@@ -266,7 +266,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                       fontSize: 16,
                       fontWeight:
                           isUnread ? FontWeight.bold : FontWeight.normal,
-                      color: isUnread ? Colors.black87 : Colors.black54,
+                      color: kPrimaryTextLight,
                     ),
                     textAlign: TextAlign.right,
                   ),

@@ -23,7 +23,7 @@ class HomeButton extends StatelessWidget {
         children: [
           IconButton(
             onPressed: onPressed,
-            icon: Icon(icon, size: 50, color: kPrimaryColor),
+            icon: Icon(icon, size: 50, color: kDarkPrimaryColor),
           ),
           FittedBox(
             fit: BoxFit.scaleDown,
@@ -31,7 +31,7 @@ class HomeButton extends StatelessWidget {
               text,
               style: GoogleFonts.cairo(
                 textStyle: kBodySmallText.copyWith(
-                  color: kLightPrimaryColor,
+                  color: kPrimaryColor,
                   fontWeight: FontWeight.bold,
                 ),
               ),

@@ -64,32 +64,33 @@ class _AzkarScreenState extends State<AzkarScreen> {
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(16),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Container(
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(color: kDarkPrimaryColor, width: 2),
+                border: Border.all(color: kLightPrimaryColor, width: 2),
               ),
               child: IconButton(
                 onPressed: _previousZikr,
-                icon: Icon(Icons.arrow_back, color: kDarkPrimaryColor),
+                icon: Icon(Icons.arrow_back, color: kLightPrimaryColor),
               ),
             ),
+            SizedBox(width: 20),
             Container(
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(color: kDarkPrimaryColor, width: 2),
+                border: Border.all(color: kLightPrimaryColor, width: 2),
               ),
               child: IconButton(
                 onPressed: _nextZikr,
-                icon: Icon(Icons.arrow_forward, color: kDarkPrimaryColor),
+                icon: Icon(Icons.arrow_forward, color: kLightPrimaryColor),
               ),
             ),
           ],
         ),
       ),
-      backgroundColor: Colors.grey[50],
+      backgroundColor: kBackgroundColor,
       body: SafeArea(
         child: Column(
           children: [
@@ -132,7 +133,7 @@ class _AzkarScreenState extends State<AzkarScreen> {
                     color: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
-                      side: BorderSide(color: kMainBorderColor, width: 2),
+                      side: BorderSide(color: kLightPrimaryColor, width: 2),
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(16),
@@ -143,20 +144,31 @@ class _AzkarScreenState extends State<AzkarScreen> {
                             style: GoogleFonts.cairo(
                               textStyle: kHeading2Text.copyWith(
                                 color: kPrimaryColor,
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
                             textAlign: TextAlign.center,
                           ),
-                          const Divider(color: kSecondaryColor),
+                          const Divider(color: kLightPrimaryColor),
                           Padding(
                             padding: const EdgeInsets.symmetric(vertical: 16),
                             child: Text(
                               text,
-                              style: GoogleFonts.cairo(
-                                textStyle: kBodyLargeText.copyWith(
-                                  fontSize: 22,
-                                ),
-                              ),
+                              style:
+                                  title.startsWith('سورة') ||
+                                          title.startsWith('آية')
+                                      ? GoogleFonts.notoKufiArabic(
+                                        textStyle: kBodyLargeText.copyWith(
+                                          fontSize: 22,
+                                          height: 1.7,
+                                        ),
+                                      )
+                                      : GoogleFonts.cairo(
+                                        textStyle: kBodyLargeText.copyWith(
+                                          fontSize: 22,
+                                          height: 1.7,
+                                        ),
+                                      ),
                               textDirection: TextDirection.rtl,
                               textAlign: TextAlign.center,
                             ),

@@ -19,7 +19,7 @@ class _PendingConfirmationsScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: kBackgroundColor,
       appBar: AppBar(
         title: Center(
           child: Center(

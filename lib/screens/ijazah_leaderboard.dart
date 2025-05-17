@@ -68,7 +68,7 @@ class _IjazahLeaderboardScreenState extends State<IjazahLeaderboardScreen> {
           ),
         ),
       ),
-      backgroundColor: Colors.grey[50],
+      backgroundColor: kBackgroundColor,
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,

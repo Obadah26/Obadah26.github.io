@@ -74,7 +74,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
           ),
         ),
       ),
-      backgroundColor: Colors.grey[50],
+      backgroundColor: kBackgroundColor,
       body: Stack(
         children: [
           SafeArea(
