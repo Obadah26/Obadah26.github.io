@@ -202,7 +202,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     Padding(
                       padding: const EdgeInsets.only(right: 7),
                       child: Container(
-                        width: 345,
+                        width: 370,
                         height: 65,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8),

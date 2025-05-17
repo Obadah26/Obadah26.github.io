@@ -19,22 +19,28 @@ class _PendingConfirmationsScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.grey[50],
       appBar: AppBar(
-        title: Align(
-          alignment: Alignment.centerRight,
-          child: Padding(
-            padding: const EdgeInsets.only(right: 8),
-            child: Center(
-              child: Text(
-                'طلبات التأكيد',
-                style: GoogleFonts.elMessiri(
-                  textStyle: kHeading2Text.copyWith(color: kPrimaryColor),
-                ),
+        title: Center(
+          child: Center(
+            child: Text(
+              'طلبات التأكيد',
+              style: GoogleFonts.elMessiri(
+                textStyle: kHeading2Text.copyWith(color: kDarkPrimaryColor),
               ),
             ),
           ),
         ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 15),
+            child: Icon(
+              Icons.checklist_outlined,
+              color: kDarkPrimaryColor,
+              size: 35,
+            ),
+          ),
+        ],
         automaticallyImplyLeading: false,
         backgroundColor: Colors.transparent,
         toolbarHeight: 100,
@@ -51,12 +57,11 @@ class _PendingConfirmationsScreenState
             icon: Icon(
               Icons.arrow_back_rounded,
               size: 35,
-              color: kPrimaryColor,
+              color: kDarkPrimaryColor,
             ),
           ),
         ),
       ),
-      extendBodyBehindAppBar: true,
       body: StreamBuilder<QuerySnapshot>(
         stream:
             FirebaseFirestore.instance

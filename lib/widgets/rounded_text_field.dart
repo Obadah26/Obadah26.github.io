@@ -8,7 +8,7 @@ class RoundedTextField extends StatefulWidget {
     required this.textHint,
     this.icon,
     required this.keyboardType,
-    this.width = 350,
+    this.width = 375,
     this.height,
     required this.hintColor,
     this.onChanged,
@@ -83,7 +83,10 @@ class _RoundedTextFieldState extends State<RoundedTextField> {
               borderSide: BorderSide(color: kLightPrimaryColor, width: 2),
               borderRadius: BorderRadius.circular(8.0),
             ),
-            prefixIcon: Icon(widget.icon, color: kLightPrimaryColor),
+            prefixIcon:
+                widget.icon != null
+                    ? Icon(widget.icon, color: kLightPrimaryColor)
+                    : null,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8.0),
               borderSide: BorderSide.none,

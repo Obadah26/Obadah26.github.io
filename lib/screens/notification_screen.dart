@@ -85,7 +85,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.grey[50],
       appBar: AppBar(
         title: Text(
           'الإشعارات',
@@ -96,17 +96,29 @@ class _NotificationScreenState extends State<NotificationScreen> {
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: kPrimaryColor),
-          onPressed: () => Navigator.pop(context),
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 5),
+          child: IconButton(
+            icon: const Icon(
+              Icons.arrow_back,
+              color: kDarkPrimaryColor,
+              size: 35,
+            ),
+            onPressed: () => Navigator.pop(context),
+          ),
         ),
         actions: [
-          TextButton(
-            onPressed: _markAllAsRead,
-            child: Text(
-              'تحديد الكل',
-              style: GoogleFonts.cairo(
-                textStyle: kBodyRegularText.copyWith(color: kPrimaryColor),
+          Padding(
+            padding: const EdgeInsets.only(right: 5),
+            child: TextButton(
+              onPressed: _markAllAsRead,
+              child: Text(
+                'تحديد الكل',
+                style: GoogleFonts.cairo(
+                  textStyle: kBodyRegularText.copyWith(
+                    color: kDarkPrimaryColor,
+                  ),
+                ),
               ),
             ),
           ),
@@ -225,7 +237,10 @@ class _NotificationScreenState extends State<NotificationScreen> {
       margin: EdgeInsets.zero,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: kSecondaryBorderColor, width: 1),
+        side: BorderSide(
+          color: isUnread ? kLightPrimaryColor : Colors.grey,
+          width: 1,
+        ),
       ),
       child: Padding(
         padding: const EdgeInsets.all(12),
@@ -261,7 +276,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                       body,
                       style: GoogleFonts.cairo(
                         fontSize: 14,
-                        color: kLightPrimaryColor,
+                        color: isUnread ? kLightPrimaryColor : Colors.grey[600],
                       ),
                       textAlign: TextAlign.right,
                     ),

@@ -31,7 +31,9 @@ class ProfileDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final words = userName.split(' ');
-
+    if (userName.isEmpty || userName == '...جاري التحميل') {
+      return Drawer(child: Center(child: CircularProgressIndicator()));
+    }
     return SizedBox(
       width: 250,
       child: Drawer(
@@ -167,7 +169,16 @@ class ProfileDrawer extends StatelessWidget {
               text: 'الإعدادات',
               icon: Icons.settings,
               onPressed: () {
-                Navigator.pushNamed(context, SettingsScreen.id).then((_) async {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder:
+                        (context) => SettingsScreen(
+                          isTeacher: isTeacher,
+                          userName: userName,
+                        ),
+                  ),
+                ).then((_) async {
                   await NotificationService.reloadScheduledNotifications();
                   loadWeeklyGoal();
                 });

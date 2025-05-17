@@ -1,6 +1,7 @@
 import 'package:alhadiqa/const.dart';
 import 'package:alhadiqa/screens/home_screen.dart';
 import 'package:alhadiqa/screens/user_detials_screen.dart';
+import 'package:alhadiqa/widgets/green_contatiner.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_islamic_icons/flutter_islamic_icons.dart';
@@ -32,17 +33,28 @@ class _RecitationLeaderboardScreenState
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: Align(
-          alignment: Alignment.centerRight,
-          child: Padding(
-            padding: const EdgeInsets.only(right: 8),
-            child: Icon(
-              FlutterIslamicIcons.quran2,
-              size: 30,
-              color: kPrimaryColor,
+        title: Center(
+          child: Text(
+            'إحصائيات التسميع',
+            style: GoogleFonts.elMessiri(
+              textStyle: kHeading2Text.copyWith(color: kPrimaryColor),
             ),
+            textAlign: TextAlign.right,
           ),
         ),
+        actions: [
+          Align(
+            alignment: Alignment.centerRight,
+            child: Padding(
+              padding: const EdgeInsets.only(right: 15),
+              child: Icon(
+                FlutterIslamicIcons.quran2,
+                size: 30,
+                color: kPrimaryColor,
+              ),
+            ),
+          ),
+        ],
         automaticallyImplyLeading: false,
         backgroundColor: Colors.transparent,
         toolbarHeight: 100,
@@ -65,335 +77,287 @@ class _RecitationLeaderboardScreenState
         ),
       ),
       backgroundColor: Colors.white,
-      body: Stack(
-        children: [
-          SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  SizedBox(height: 20),
-                  Text(
-                    'إحصائيات التسميع',
-                    style: GoogleFonts.elMessiri(
-                      textStyle: kHeading2Text.copyWith(color: kPrimaryColor),
-                    ),
-                    textAlign: TextAlign.right,
-                  ),
-                  SizedBox(height: 10),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 12),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(
-                        color: kSecondaryBorderColor,
-                        width: 1.5,
-                      ),
-                    ),
-                    child: DropdownButton<String>(
-                      value: selectedFilter,
-                      isExpanded: true,
-                      underline: Container(),
-                      items:
-                          timeFilters.map((String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Center(
-                                child: Text(
-                                  value,
-                                  textAlign: TextAlign.right,
-                                  style: GoogleFonts.cairo(
-                                    textStyle: kBodyRegularText.copyWith(),
-                                  ),
-                                ),
-                              ),
-                            );
-                          }).toList(),
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          selectedFilter = newValue!;
-                        });
-                      },
-                    ),
-                  ),
-                  SizedBox(height: 10),
-                  Expanded(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Color.fromRGBO(255, 255, 255, 0.8),
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(
-                          color: kSecondaryBorderColor,
-                          width: 2,
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Color.fromRGBO(158, 158, 158, 0.3),
-                            spreadRadius: 2,
-                            blurRadius: 5,
-                            offset: Offset(0, 3),
+      body: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            SizedBox(height: 10),
+            GreenContatiner(
+              child: DropdownButton<String>(
+                value: selectedFilter,
+                isExpanded: true,
+                underline: Container(),
+                items:
+                    timeFilters.map((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Center(
+                          child: Text(
+                            value,
+                            textAlign: TextAlign.right,
+                            style: GoogleFonts.cairo(
+                              textStyle: kBodyRegularText.copyWith(),
+                            ),
                           ),
-                        ],
-                      ),
-                      child: StreamBuilder<QuerySnapshot>(
-                        stream:
-                            FirebaseFirestore.instance
-                                .collection('daily_recitation')
-                                .orderBy('timestamp', descending: true)
-                                .snapshots(),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasError) {
-                            return Center(
-                              child: Text('حدث خطأ: ${snapshot.error}'),
-                            );
-                          }
-
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return Center(child: CircularProgressIndicator());
-                          }
-
-                          final now = DateTime.now();
-                          final filteredDocs =
-                              snapshot.data!.docs.where((doc) {
-                                final timestamp =
-                                    doc['timestamp'] as Timestamp?;
-                                if (timestamp == null) return false;
-
-                                final date = timestamp.toDate();
-
-                                switch (selectedFilter) {
-                                  case 'اليوم':
-                                    return date.isAfter(
-                                      now.subtract(Duration(days: 1)),
-                                    );
-                                  case 'الأسبوع':
-                                    return date.isAfter(
-                                      now.subtract(Duration(days: 7)),
-                                    );
-                                  case 'الشهر':
-                                    return date.isAfter(
-                                      now.subtract(Duration(days: 30)),
-                                    );
-                                  case '3 أشهر':
-                                    return date.isAfter(
-                                      now.subtract(Duration(days: 90)),
-                                    );
-                                  case 'السنة':
-                                    return date.isAfter(
-                                      now.subtract(Duration(days: 365)),
-                                    );
-                                  default:
-                                    return true;
-                                }
-                              }).toList();
-
-                          Map<String, int> pagesPerName = {};
-                          Map<String, List<Timestamp>> recitationDates = {};
-
-                          for (var doc in filteredDocs) {
-                            int firstPage =
-                                doc['first_page'] is String
-                                    ? int.tryParse(doc['first_page']) ?? 0
-                                    : (doc['first_page'] as int? ?? 0);
-                            int secondPage =
-                                doc['second_page'] is String
-                                    ? int.tryParse(doc['second_page']) ?? 0
-                                    : (doc['second_page'] as int? ?? 0);
-                            int pages = (secondPage - firstPage) + 1;
-
-                            if (pages > 0) {
-                              String recitationType =
-                                  doc['recitation_type'] ?? '';
-                              String user = doc['user'];
-                              String status = doc['status'] ?? '';
-
-                              if (recitationType == 'to') {
-                                // Count pages always for 'to'
-                                pagesPerName.update(
-                                  user,
-                                  (value) => value + pages,
-                                  ifAbsent: () => pages,
-                                );
-                              } else if (recitationType == 'with' &&
-                                  status == 'confirmed') {
-                                // Count pages for 'with' only if confirmed
-                                pagesPerName.update(
-                                  user,
-                                  (value) => value + pages,
-                                  ifAbsent: () => pages,
-                                );
-
-                                if (doc['other_User'] != null) {
-                                  String otherUser = doc['other_User'];
-                                  pagesPerName.update(
-                                    otherUser,
-                                    (value) => value + pages,
-                                    ifAbsent: () => pages,
-                                  );
-                                }
-                              }
-
-                              recitationDates
-                                  .putIfAbsent(user, () => [])
-                                  .add(doc['timestamp']);
-                            }
-                          }
-
-                          sortWithNames(pagesPerName);
-
-                          final excludedNames = [
-                            'استاذ عبدالرحمن الخن',
-                            'استاذ ابو عبيدة',
-                          ];
-
-                          final otherUsers =
-                              recitationStudentsName
-                                  .where(
-                                    (name) =>
-                                        name != widget.userName &&
-                                        !excludedNames.contains(name),
-                                  )
-                                  .toList();
-
-                          return Column(
-                            children: [
-                              if (widget.userName != null &&
-                                  widget.userName != 'استاذ عبدالرحمن الخن' &&
-                                  widget.userName != 'استاذ ابو عبيدة')
-                                GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder:
-                                            (context) => UserDetailsScreen(
-                                              userName: widget.userName!,
-                                            ),
-                                      ),
-                                    );
-                                  },
-                                  child: Card(
-                                    elevation: 1,
-                                    color: Colors.white,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                      side: BorderSide(
-                                        color: kMainBorderColor,
-                                        width: 2,
-                                      ),
-                                    ),
-                                    child: ListTile(
-                                      contentPadding: EdgeInsets.symmetric(
-                                        horizontal: 16,
-                                        vertical: 12,
-                                      ),
-                                      title: Text(
-                                        '${widget.userName}',
-                                        style: GoogleFonts.cairo(
-                                          textStyle: kBodyRegularText.copyWith(
-                                            fontSize: 18,
-                                            color: kPrimaryColor,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                      subtitle: Text(
-                                        '${pagesPerName[widget.userName] ?? 0} صفحة',
-                                        style: GoogleFonts.cairo(
-                                          textStyle: kBodyRegularText.copyWith(
-                                            fontSize: 16,
-                                          ),
-                                        ),
-                                        textDirection: TextDirection.rtl,
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              if (widget.userName != null &&
-                                  widget.userName != 'استاذ عبدالرحمن الخن' &&
-                                  widget.userName != 'استاذ ابو عبيدة')
-                                SizedBox(height: 10),
-                              Expanded(
-                                child: ListView.builder(
-                                  padding: EdgeInsets.all(10),
-                                  itemCount: otherUsers.length,
-                                  itemBuilder: (context, index) {
-                                    String name = otherUsers[index];
-                                    int totalPages = pagesPerName[name] ?? 0;
-
-                                    return GestureDetector(
-                                      onTap: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder:
-                                                (context) => UserDetailsScreen(
-                                                  userName: name,
-                                                ),
-                                          ),
-                                        );
-                                      },
-                                      child: Card(
-                                        color: Colors.white,
-                                        elevation: 2,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            12,
-                                          ),
-                                          side: BorderSide(
-                                            color: kMainBorderColor,
-                                            width: 1,
-                                          ),
-                                        ),
-                                        child: ListTile(
-                                          contentPadding: EdgeInsets.symmetric(
-                                            horizontal: 16,
-                                            vertical: 12,
-                                          ),
-                                          title: Text(
-                                            name,
-                                            style: GoogleFonts.cairo(
-                                              textStyle: kBodyRegularText
-                                                  .copyWith(
-                                                    fontSize: 18,
-                                                    color: kPrimaryColor,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                            ),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                          subtitle: Text(
-                                            '$totalPages صفحة',
-                                            style: GoogleFonts.cairo(
-                                              textStyle: kBodyRegularText
-                                                  .copyWith(fontSize: 16),
-                                            ),
-                                            textAlign: TextAlign.center,
-                                            textDirection: TextDirection.rtl,
-                                          ),
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
-                            ],
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 20),
-                ],
+                        ),
+                      );
+                    }).toList(),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    selectedFilter = newValue!;
+                  });
+                },
               ),
             ),
-          ),
-        ],
+            SizedBox(height: 10),
+            Expanded(
+              child: GreenContatiner(
+                child: StreamBuilder<QuerySnapshot>(
+                  stream:
+                      FirebaseFirestore.instance
+                          .collection('daily_recitation')
+                          .orderBy('timestamp', descending: true)
+                          .snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError) {
+                      return Center(child: Text('حدث خطأ: ${snapshot.error}'));
+                    }
+
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
+                    }
+
+                    final now = DateTime.now();
+                    final filteredDocs =
+                        snapshot.data!.docs.where((doc) {
+                          final timestamp = doc['timestamp'] as Timestamp?;
+                          if (timestamp == null) return false;
+
+                          final date = timestamp.toDate();
+
+                          switch (selectedFilter) {
+                            case 'اليوم':
+                              return date.isAfter(
+                                now.subtract(Duration(days: 1)),
+                              );
+                            case 'الأسبوع':
+                              return date.isAfter(
+                                now.subtract(Duration(days: 7)),
+                              );
+                            case 'الشهر':
+                              return date.isAfter(
+                                now.subtract(Duration(days: 30)),
+                              );
+                            case '3 أشهر':
+                              return date.isAfter(
+                                now.subtract(Duration(days: 90)),
+                              );
+                            case 'السنة':
+                              return date.isAfter(
+                                now.subtract(Duration(days: 365)),
+                              );
+                            default:
+                              return true;
+                          }
+                        }).toList();
+
+                    Map<String, int> pagesPerName = {};
+                    Map<String, List<Timestamp>> recitationDates = {};
+
+                    for (var doc in filteredDocs) {
+                      int firstPage =
+                          doc['first_page'] is String
+                              ? int.tryParse(doc['first_page']) ?? 0
+                              : (doc['first_page'] as int? ?? 0);
+                      int secondPage =
+                          doc['second_page'] is String
+                              ? int.tryParse(doc['second_page']) ?? 0
+                              : (doc['second_page'] as int? ?? 0);
+                      int pages = (secondPage - firstPage) + 1;
+
+                      if (pages > 0) {
+                        String recitationType = doc['recitation_type'] ?? '';
+                        String user = doc['user'];
+                        String status = doc['status'] ?? '';
+
+                        if (recitationType == 'to') {
+                          // Count pages always for 'to'
+                          pagesPerName.update(
+                            user,
+                            (value) => value + pages,
+                            ifAbsent: () => pages,
+                          );
+                        } else if (recitationType == 'with' &&
+                            status == 'confirmed') {
+                          // Count pages for 'with' only if confirmed
+                          pagesPerName.update(
+                            user,
+                            (value) => value + pages,
+                            ifAbsent: () => pages,
+                          );
+
+                          if (doc['other_User'] != null) {
+                            String otherUser = doc['other_User'];
+                            pagesPerName.update(
+                              otherUser,
+                              (value) => value + pages,
+                              ifAbsent: () => pages,
+                            );
+                          }
+                        }
+
+                        recitationDates
+                            .putIfAbsent(user, () => [])
+                            .add(doc['timestamp']);
+                      }
+                    }
+
+                    sortWithNames(pagesPerName);
+
+                    final excludedNames = [
+                      'استاذ عبدالرحمن الخن',
+                      'استاذ ابو عبيدة',
+                    ];
+
+                    final otherUsers =
+                        recitationStudentsName
+                            .where(
+                              (name) =>
+                                  name != widget.userName &&
+                                  !excludedNames.contains(name),
+                            )
+                            .toList();
+
+                    return Column(
+                      children: [
+                        if (widget.userName != null &&
+                            widget.userName != 'استاذ عبدالرحمن الخن' &&
+                            widget.userName != 'استاذ ابو عبيدة')
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => UserDetailsScreen(
+                                        userName: widget.userName!,
+                                      ),
+                                ),
+                              );
+                            },
+                            child: Card(
+                              elevation: 1,
+                              color: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                side: BorderSide(
+                                  color: kMainBorderColor,
+                                  width: 1,
+                                ),
+                              ),
+                              child: ListTile(
+                                contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 12,
+                                ),
+                                title: Text(
+                                  '${widget.userName}',
+                                  style: GoogleFonts.cairo(
+                                    textStyle: kBodyRegularText.copyWith(
+                                      fontSize: 18,
+                                      color: kPrimaryColor,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                                subtitle: Text(
+                                  '${pagesPerName[widget.userName] ?? 0} صفحة',
+                                  style: GoogleFonts.cairo(
+                                    textStyle: kBodyRegularText.copyWith(
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  textDirection: TextDirection.rtl,
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ),
+                          ),
+                        if (widget.userName != null &&
+                            widget.userName != 'استاذ عبدالرحمن الخن' &&
+                            widget.userName != 'استاذ ابو عبيدة')
+                          SizedBox(height: 10),
+                        Expanded(
+                          child: ListView.builder(
+                            padding: EdgeInsets.all(10),
+                            itemCount: otherUsers.length,
+                            itemBuilder: (context, index) {
+                              String name = otherUsers[index];
+                              int totalPages = pagesPerName[name] ?? 0;
+
+                              return GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder:
+                                          (context) =>
+                                              UserDetailsScreen(userName: name),
+                                    ),
+                                  );
+                                },
+                                child: Card(
+                                  color: Colors.white,
+                                  elevation: 2,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    side: BorderSide(
+                                      color: kMainBorderColor,
+                                      width: 1,
+                                    ),
+                                  ),
+                                  child: ListTile(
+                                    contentPadding: EdgeInsets.symmetric(
+                                      horizontal: 16,
+                                      vertical: 12,
+                                    ),
+                                    title: Text(
+                                      name,
+                                      style: GoogleFonts.cairo(
+                                        textStyle: kBodyRegularText.copyWith(
+                                          fontSize: 18,
+                                          color: kPrimaryColor,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    subtitle: Text(
+                                      '$totalPages صفحة',
+                                      style: GoogleFonts.cairo(
+                                        textStyle: kBodyRegularText.copyWith(
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                      textAlign: TextAlign.center,
+                                      textDirection: TextDirection.rtl,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ),
+            ),
+            SizedBox(height: 20),
+          ],
+        ),
       ),
     );
   }

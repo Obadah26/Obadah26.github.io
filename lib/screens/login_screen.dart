@@ -143,7 +143,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(right: 8),
+                          padding: const EdgeInsets.only(right: 15),
                           child: Checkbox(
                             value: _rememberMe,
                             activeColor: kLightPrimaryColor,

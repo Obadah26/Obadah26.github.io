@@ -1,5 +1,6 @@
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:alhadiqa/lists.dart';
+import 'package:alhadiqa/widgets/green_contatiner.dart';
 import 'package:alhadiqa/widgets/mutual_recitation_status.dart';
 import 'package:alhadiqa/notification_service.dart';
 import 'package:alhadiqa/screens/azkar_screen.dart';
@@ -10,6 +11,7 @@ import 'package:alhadiqa/screens/notification_screen.dart';
 import 'package:alhadiqa/screens/recitation_leaderboard.dart';
 import 'package:alhadiqa/widgets/home_button.dart';
 import 'package:alhadiqa/widgets/profile_drawer.dart';
+import 'package:alhadiqa/widgets/top_5_users.dart';
 import 'package:badges/badges.dart' as badges;
 import 'package:flutter/material.dart';
 import 'package:alhadiqa/const.dart';
@@ -166,69 +168,10 @@ class _HomeScreenState extends State<HomeScreen> {
         });
   }
 
-  Widget _buildTop5UsersWidget(List<MapEntry<String, int>> topUsers) {
-    return _buildSectionContainer(
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(
-            'أفضل 5 مسمعين خلال هذا الشهر',
-            style: GoogleFonts.elMessiri(
-              textStyle: TextStyle(
-                fontSize: 17,
-                fontWeight: FontWeight.bold,
-                color: kDarkPrimaryColor,
-              ),
-            ),
-          ),
-          SizedBox(height: 12),
-          ...topUsers
-              .map(
-                (entry) => Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 6),
-                  child: Text(
-                    entry.key,
-                    style: GoogleFonts.cairo(
-                      textStyle: TextStyle(
-                        fontSize: 15,
-                        color: kLightPrimaryColor,
-                      ),
-                    ),
-                  ),
-                ),
-              )
-              .toList(),
-        ],
-      ),
-    );
-  }
-
   Future<void> _loadArabicDate() async {
     setState(() {
       arabicDate = DateFormat('EEEE، d MMMM', 'ar').format(DateTime.now());
     });
-  }
-
-  Widget _buildSectionContainer(Widget child) {
-    return Container(
-      width: double.infinity,
-      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Color.fromRGBO(128, 128, 128, 0.1),
-            spreadRadius: 2,
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          ),
-        ],
-        border: Border.all(color: kSecondaryBorderColor),
-      ),
-      child: child,
-    );
   }
 
   MapEntry<String, String> _getDailyAsar() {
@@ -244,21 +187,44 @@ class _HomeScreenState extends State<HomeScreen> {
       key: _scaffoldKey,
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
-        title: Align(
-          alignment: Alignment.centerRight,
-          child: IconButton(
-            icon: Icon(
-              Icons.person_outline,
-              color: kDarkPrimaryColor,
-              size: 30,
+        title: Center(
+          child: Text(
+            'الرئيسية',
+            style: GoogleFonts.elMessiri(
+              textStyle: kHeading2Text.copyWith(color: kDarkPrimaryColor),
             ),
-            onPressed: () {
-              _scaffoldKey.currentState?.openEndDrawer();
-            },
           ),
         ),
+        actions: [
+          Align(
+            alignment: Alignment.centerRight,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(0, 5, 15, 0),
+              child: IconButton(
+                icon: Icon(
+                  Icons.person_outline,
+                  color: kDarkPrimaryColor,
+                  size: 30,
+                ),
+                onPressed: () {
+                  if (_userName.isNotEmpty && _userName != '...جاري التحميل') {
+                    _scaffoldKey.currentState?.openEndDrawer();
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          'يرجى الانتظار حتى يتم تحميل اسم المستخدم',
+                        ),
+                      ),
+                    );
+                  }
+                },
+              ),
+            ),
+          ),
+        ],
         leading: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 5, 0, 0),
+          padding: const EdgeInsets.fromLTRB(15, 5, 0, 0),
           child: StreamBuilder<int>(
             stream: Stream.periodic(const Duration(seconds: 30)).asyncMap((
               _,
@@ -331,7 +297,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             // Greeting Section
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+              padding: const EdgeInsets.fromLTRB(0, 10, 24, 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
@@ -352,7 +318,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             textStyle: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
-                              color: kDarkPrimaryColor,
+                              color: kPrimaryColor,
                             ),
                           ),
                         ),
@@ -383,8 +349,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 }
                 final top5Users = snapshot.data!;
                 if (top5Users.isEmpty) {
-                  return _buildSectionContainer(
-                    Column(
+                  return GreenContatiner(
+                    child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
@@ -412,12 +378,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   );
                 }
-                return _buildTop5UsersWidget(top5Users);
+                return Top5Users(topUsers: top5Users);
               },
             ),
             // Daily Ayah Section
-            _buildSectionContainer(
-              Column(
+            GreenContatiner(
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
@@ -462,8 +428,8 @@ class _HomeScreenState extends State<HomeScreen> {
             // Weekly Target Section
             Visibility(
               visible: _isTeacher ? false : true,
-              child: _buildSectionContainer(
-                StreamBuilder<List<QueryDocumentSnapshot>>(
+              child: GreenContatiner(
+                child: StreamBuilder<List<QueryDocumentSnapshot>>(
                   stream: Rx.combineLatest2<
                     QuerySnapshot,
                     QuerySnapshot,
@@ -598,8 +564,8 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             // Fast buttons
-            _buildSectionContainer(
-              Column(
+            GreenContatiner(
+              child: Column(
                 children: [
                   Text(
                     'الخدمات السريعة',

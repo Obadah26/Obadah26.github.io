@@ -1,5 +1,6 @@
 import 'package:alhadiqa/const.dart';
 import 'package:alhadiqa/screens/home_screen.dart';
+import 'package:alhadiqa/widgets/green_contatiner.dart';
 import 'package:alhadiqa/widgets/rounded_button.dart';
 import 'package:flutter/material.dart';
 import 'package:alhadiqa/widgets/rounded_text_field.dart';
@@ -87,17 +88,30 @@ class _IjazahRecitationScreenState extends State<IjazahRecitationScreen> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: Align(
-          alignment: Alignment.centerRight,
-          child: Padding(
-            padding: const EdgeInsets.only(right: 8),
-            child: Icon(
-              FlutterIslamicIcons.muslim2,
-              size: 35,
-              color: kPrimaryColor,
+        title: Center(
+          child: Text(
+            'تسميع الاجازة',
+            style: GoogleFonts.elMessiri(
+              textStyle: kHeading2Text.copyWith(color: kPrimaryColor),
             ),
           ),
         ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 15),
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: Icon(
+                  FlutterIslamicIcons.muslim2,
+                  size: 35,
+                  color: kPrimaryColor,
+                ),
+              ),
+            ),
+          ),
+        ],
         automaticallyImplyLeading: false,
         backgroundColor: Colors.transparent,
         toolbarHeight: 100,
@@ -119,135 +133,103 @@ class _IjazahRecitationScreenState extends State<IjazahRecitationScreen> {
           ),
         ),
       ),
-      backgroundColor: Colors.white,
-      body: Stack(
-        children: [
-          SafeArea(
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  SizedBox(height: 100),
-                  Center(
-                    child: Text(
-                      'تسميع الاجازة',
-                      style: GoogleFonts.elMessiri(
-                        textStyle: kHeading2Text.copyWith(color: kPrimaryColor),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 10),
-                  Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(
-                          color: kSecondaryBorderColor,
-                          width: 2,
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Color.fromRGBO(158, 158, 158, 0.3),
-                            spreadRadius: 2,
-                            blurRadius: 5,
-                            offset: Offset(0, 3),
-                          ),
-                        ],
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: SingleChildScrollView(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(10),
-                                child: Text(
-                                  ': اضافة تسميع',
-                                  style: GoogleFonts.cairo(
-                                    textStyle: kBodyRegularText.copyWith(
-                                      fontSize: 20,
-                                    ),
-                                  ),
-                                ),
+      backgroundColor: Colors.grey[50],
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(height: 100),
+              GreenContatiner(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Text(
+                            ': اضافة تسميع',
+                            style: GoogleFonts.cairo(
+                              textStyle: kBodyRegularText.copyWith(
+                                fontSize: 20,
                               ),
-                              SizedBox(height: 20),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  RoundedTextField(
-                                    controller: _firstPageController,
-                                    obscure: false,
-                                    textColor: kPrimaryTextLight,
-                                    textHint: '312',
-                                    keyboardType: TextInputType.number,
-                                    width: 150,
-                                    height: 50,
-                                    hintColor: kSecondaryTextLight.withValues(
-                                      alpha: (0.199 * 255),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(10),
-                                    child: Text(
-                                      'من صفحة',
-                                      style: GoogleFonts.cairo(
-                                        textStyle: kBodyRegularText.copyWith(),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 40),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  RoundedTextField(
-                                    controller: _secondPageController,
-                                    obscure: false,
-                                    textColor: kPrimaryTextLight,
-                                    textHint: '330',
-                                    keyboardType: TextInputType.number,
-                                    width: 150,
-                                    height: 50,
-                                    hintColor: kSecondaryTextLight.withValues(
-                                      alpha: (0.199 * 255),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(10),
-                                    child: Text(
-                                      'الى صفحة',
-                                      style: GoogleFonts.cairo(
-                                        textStyle: kBodyRegularText.copyWith(),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 50),
-                              Center(
-                                child: RoundedButton(
-                                  buttonText: 'حفظ',
-                                  isDisabled: _isTeacher,
-                                  isPrimary: false,
-                                  onPressed: saveData,
-                                ),
-                              ),
-                              SizedBox(height: 50),
-                            ],
+                            ),
                           ),
                         ),
-                      ),
+                        SizedBox(height: 20),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            RoundedTextField(
+                              controller: _firstPageController,
+                              obscure: false,
+                              textColor: kPrimaryTextLight,
+                              textHint: '312',
+                              keyboardType: TextInputType.number,
+                              width: 150,
+                              height: 50,
+                              hintColor: kSecondaryTextLight.withValues(
+                                alpha: (0.199 * 255),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: Text(
+                                'من صفحة',
+                                style: GoogleFonts.cairo(
+                                  textStyle: kBodyRegularText.copyWith(),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 40),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            RoundedTextField(
+                              controller: _secondPageController,
+                              obscure: false,
+                              textColor: kPrimaryTextLight,
+                              textHint: '330',
+                              keyboardType: TextInputType.number,
+                              width: 150,
+                              height: 50,
+                              hintColor: kSecondaryTextLight.withValues(
+                                alpha: (0.199 * 255),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: Text(
+                                'الى صفحة',
+                                style: GoogleFonts.cairo(
+                                  textStyle: kBodyRegularText.copyWith(),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 50),
+                        Center(
+                          child: RoundedButton(
+                            buttonText: 'حفظ',
+                            isDisabled: _isTeacher,
+                            isPrimary: false,
+                            onPressed: saveData,
+                          ),
+                        ),
+                        SizedBox(height: 50),
+                      ],
                     ),
                   ),
-                ],
+                ),
               ),
-            ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

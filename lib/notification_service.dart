@@ -26,7 +26,7 @@ class NotificationService {
 
     final morningAzkar =
         _parseTime(storage.read('morningAzkarTime')) ??
-        TimeOfDay(hour: 6, minute: 0);
+        TimeOfDay(hour: 4, minute: 30);
     final eveningAzkar =
         _parseTime(storage.read('eveningAzkarTime')) ??
         TimeOfDay(hour: 16, minute: 0);
@@ -242,8 +242,8 @@ class NotificationService {
         payload: {'type': 'azkar', 'time': 'morning'},
       ),
       schedule: NotificationCalendar(
-        hour: 6,
-        minute: 0,
+        hour: 4,
+        minute: 30,
         second: 0,
         repeats: true,
       ),
@@ -338,8 +338,8 @@ class NotificationService {
       ),
       schedule: NotificationCalendar(
         weekday: DateTime.saturday,
-        hour: 13,
-        minute: 30,
+        hour: 17,
+        minute: 0,
         second: 0,
         repeats: true,
       ),
@@ -357,8 +357,8 @@ class NotificationService {
       ),
       schedule: NotificationCalendar(
         weekday: DateTime.tuesday,
-        hour: 13,
-        minute: 30,
+        hour: 17,
+        minute: 0,
         second: 0,
         repeats: true,
       ),

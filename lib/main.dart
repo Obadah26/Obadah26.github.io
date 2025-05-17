@@ -72,7 +72,6 @@ class MyApp extends StatelessWidget {
         UserDetailsScreen.id: (context) => const UserDetailsScreen(),
         AzkarScreen.id: (context) => const AzkarScreen(),
         NotificationScreen.id: (context) => const NotificationScreen(),
-        SettingsScreen.id: (context) => const SettingsScreen(),
         PendingConfirmationsScreen.id: (context) => const NotificationScreen(),
       },
     );

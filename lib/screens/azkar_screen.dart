@@ -89,7 +89,7 @@ class _AzkarScreenState extends State<AzkarScreen> {
           ],
         ),
       ),
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.grey[50],
       body: SafeArea(
         child: Column(
           children: [
