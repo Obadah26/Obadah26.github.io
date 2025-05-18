@@ -61,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
         final refreshedUser = _auth.currentUser;
         setState(() {
           _userName = refreshedUser?.displayName ?? "User";
-          if (_userName == 'أستاذ ابو عبيدة' ||
+          if (_userName == 'أستاذ أبو عبيدة' ||
               _userName == 'أستاذ عبدالرحمن الخن') {
             _isTeacher = true;
           } else {
@@ -75,7 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
         if (doc.exists) {
           setState(() {
             _userName = doc['username'] ?? "User";
-            if (_userName == 'أستاذ ابو عبيدة' ||
+            if (_userName == 'أستاذ أبو عبيدة' ||
                 _userName == 'أستاذ عبدالرحمن الخن') {
               _isTeacher = true;
             } else {
@@ -176,7 +176,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   MapEntry<String, String> _getDailyAsar() {
     final now = DateTime.now();
-    final dayOfYear = now.difference(DateTime(now.year, 5, 14)).inDays;
+    final dayOfYear = now.difference(DateTime(now.year, 5, 18)).inDays;
     final index = dayOfYear % asar.length;
     return asar.entries.elementAt(index);
   }

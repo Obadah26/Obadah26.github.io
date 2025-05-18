@@ -1,7 +1,6 @@
 import 'package:alhadiqa/notification_service.dart';
 import 'package:alhadiqa/screens/azkar_screen.dart';
 import 'package:alhadiqa/screens/notification_screen.dart';
-import 'package:alhadiqa/screens/settings_screen.dart';
 import 'package:alhadiqa/screens/user_detials_screen.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';

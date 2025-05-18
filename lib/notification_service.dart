@@ -307,7 +307,7 @@ class NotificationService {
 
   static Future<void> _scheduleDailyAsar() async {
     final now = DateTime.now();
-    final dayOfYear = now.difference(DateTime(now.year, 1, 1)).inDays;
+    final dayOfYear = now.difference(DateTime(now.year, 5, 18)).inDays;
     final asarEntry = asar.entries.elementAt(dayOfYear % asar.length);
 
     await AwesomeNotifications().createNotification(

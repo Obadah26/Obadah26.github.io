@@ -216,7 +216,7 @@ class _RecitationLeaderboardScreenState
 
                     final excludedNames = [
                       'أستاذ عبدالرحمن الخن',
-                      'أستاذ ابو عبيدة',
+                      'أستاذ أبو عبيدة',
                     ];
 
                     final otherUsers =
@@ -232,7 +232,7 @@ class _RecitationLeaderboardScreenState
                       children: [
                         if (widget.userName != null &&
                             widget.userName != 'أستاذ عبدالرحمن الخن' &&
-                            widget.userName != 'أستاذ ابو عبيدة')
+                            widget.userName != 'أستاذ أبو عبيدة')
                           GestureDetector(
                             onTap: () {
                               Navigator.push(
@@ -286,7 +286,7 @@ class _RecitationLeaderboardScreenState
                           ),
                         if (widget.userName != null &&
                             widget.userName != 'أستاذ عبدالرحمن الخن' &&
-                            widget.userName != 'أستاذ ابو عبيدة')
+                            widget.userName != 'أستاذ أبو عبيدة')
                           SizedBox(height: 10),
                         Expanded(
                           child: ListView.builder(
