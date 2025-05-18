@@ -86,18 +86,22 @@ class ProfileDrawer extends StatelessWidget {
                 ),
               ),
             ),
-            DrawerButtons(
-              icon: FlutterIslamicIcons.solidQuran2,
-              text: 'التسميع اليومي',
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder:
-                        (context) => DailyRecitationScreen(userName: userName),
-                  ),
-                );
-              },
+            Visibility(
+              visible: isTeacher ? false : true,
+              child: DrawerButtons(
+                icon: FlutterIslamicIcons.solidQuran2,
+                text: 'التسميع اليومي',
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder:
+                          (context) =>
+                              DailyRecitationScreen(userName: userName),
+                    ),
+                  );
+                },
+              ),
             ),
             DrawerButtons(
               icon: Icons.bar_chart,
@@ -113,18 +117,22 @@ class ProfileDrawer extends StatelessWidget {
                 );
               },
             ),
-            DrawerButtons(
-              icon: FlutterIslamicIcons.solidMuslim2,
-              text: 'الاجازة',
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder:
-                        (context) => IjazahRecitationScreen(userName: userName),
-                  ),
-                );
-              },
+            Visibility(
+              visible: isTeacher ? false : true,
+              child: DrawerButtons(
+                icon: FlutterIslamicIcons.solidMuslim2,
+                text: 'الاجازة',
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder:
+                          (context) =>
+                              IjazahRecitationScreen(userName: userName),
+                    ),
+                  );
+                },
+              ),
             ),
             DrawerButtons(
               icon: Icons.bar_chart,
@@ -152,17 +160,32 @@ class ProfileDrawer extends StatelessWidget {
                 Navigator.pushNamed(context, AzkarScreen.id);
               },
             ),
+            Visibility(
+              visible: isTeacher ? false : true,
+              child: DrawerButtons(
+                icon: Icons.checklist_rounded,
+                text: 'الطلبات',
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder:
+                          (context) =>
+                              PendingConfirmationsScreen(userName: userName),
+                    ),
+                  );
+                },
+              ),
+            ),
             DrawerButtons(
-              icon: Icons.checklist_rounded,
-              text: 'الطلبات',
+              icon: Icons.photo_library,
+              text: 'البوم الصور',
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder:
-                        (context) =>
-                            PendingConfirmationsScreen(userName: userName),
-                  ),
+                showOkAlertDialog(
+                  context: context,
+                  title: 'غير متوفر حالياً',
+                  message: 'سيتم التفعيل قريباً',
+                  okLabel: 'حسناً',
                 );
               },
             ),

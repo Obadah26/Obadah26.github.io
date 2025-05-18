@@ -215,8 +215,8 @@ class _RecitationLeaderboardScreenState
                     sortWithNames(pagesPerName);
 
                     final excludedNames = [
-                      'استاذ عبدالرحمن الخن',
-                      'استاذ ابو عبيدة',
+                      'أستاذ عبدالرحمن الخن',
+                      'أستاذ ابو عبيدة',
                     ];
 
                     final otherUsers =
@@ -231,8 +231,8 @@ class _RecitationLeaderboardScreenState
                     return Column(
                       children: [
                         if (widget.userName != null &&
-                            widget.userName != 'استاذ عبدالرحمن الخن' &&
-                            widget.userName != 'استاذ ابو عبيدة')
+                            widget.userName != 'أستاذ عبدالرحمن الخن' &&
+                            widget.userName != 'أستاذ ابو عبيدة')
                           GestureDetector(
                             onTap: () {
                               Navigator.push(
@@ -285,8 +285,8 @@ class _RecitationLeaderboardScreenState
                             ),
                           ),
                         if (widget.userName != null &&
-                            widget.userName != 'استاذ عبدالرحمن الخن' &&
-                            widget.userName != 'استاذ ابو عبيدة')
+                            widget.userName != 'أستاذ عبدالرحمن الخن' &&
+                            widget.userName != 'أستاذ ابو عبيدة')
                           SizedBox(height: 10),
                         Expanded(
                           child: ListView.builder(

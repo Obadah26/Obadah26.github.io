@@ -9,7 +9,6 @@ import 'package:alhadiqa/screens/welcome_screen.dart';
 import 'package:alhadiqa/screens/login_screen.dart';
 import 'package:alhadiqa/screens/register_screen.dart';
 import 'package:alhadiqa/screens/home_screen.dart';
-import 'package:alhadiqa/screens/menu_screen.dart';
 import 'package:alhadiqa/screens/ijazah_recitation_screen.dart';
 import 'package:alhadiqa/screens/daily_recitation_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -62,7 +61,6 @@ class MyApp extends StatelessWidget {
         RegisterScreen.id: (context) => const RegisterScreen(),
         LoginScreen.id: (context) => const LoginScreen(),
         HomeScreen.id: (context) => const HomeScreen(),
-        MenuScreen.id: (context) => const MenuScreen(),
         DailyRecitationScreen.id: (context) => const DailyRecitationScreen(),
         IjazahRecitationScreen.id: (context) => const IjazahRecitationScreen(),
         RecitationLeaderboardScreen.id:

@@ -15,20 +15,31 @@ class AzkarScreen extends StatefulWidget {
 class _AzkarScreenState extends State<AzkarScreen> {
   int _currentIndex = 0;
   bool _isMorning = true;
+  int _currentCount = 0;
 
   Map<String, Map<String, dynamic>> get currentAzkar =>
       _isMorning ? azkarAsbah : azkarAlmasa;
   List<String> get currentTitles => currentAzkar.keys.toList();
 
+  void _resetCount() {
+    final repeats =
+        currentAzkar[currentTitles[_currentIndex]]?['عدد التكرار'] ?? 1;
+    setState(() {
+      _currentCount = repeats;
+    });
+  }
+
   void _nextZikr() {
     setState(() {
       _currentIndex = (_currentIndex + 1) % currentTitles.length;
+      _resetCount();
     });
   }
 
   void _previousZikr() {
     setState(() {
       _currentIndex = (_currentIndex - 1) % currentTitles.length;
+      _resetCount();
     });
   }
 
@@ -36,6 +47,23 @@ class _AzkarScreenState extends State<AzkarScreen> {
     setState(() {
       _isMorning = !_isMorning;
       _currentIndex = 0;
+      _resetCount();
+    });
+  }
+
+  void _decrementCount() {
+    setState(() {
+      if (_currentCount > 0) {
+        _currentCount--;
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _resetCount();
     });
   }
 
@@ -174,12 +202,18 @@ class _AzkarScreenState extends State<AzkarScreen> {
                             ),
                           ),
                           Text(
-                            'عدد التكرار: $repeats',
+                            'عدد التكرار المتبقي: $_currentCount من $repeats',
                             style: GoogleFonts.cairo(
                               textStyle: kBodyRegularText.copyWith(
                                 color: kLightPrimaryColor,
                               ),
                             ),
+                          ),
+                          SizedBox(height: 10),
+                          RoundedButton(
+                            onPressed: _decrementCount,
+                            buttonText: 'تم',
+                            width: 100,
                           ),
                         ],
                       ),

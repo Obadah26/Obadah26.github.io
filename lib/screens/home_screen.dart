@@ -61,8 +61,8 @@ class _HomeScreenState extends State<HomeScreen> {
         final refreshedUser = _auth.currentUser;
         setState(() {
           _userName = refreshedUser?.displayName ?? "User";
-          if (_userName == 'استاذ ابو عبيدة' ||
-              _userName == 'استاذ عبدالرحمن الخن') {
+          if (_userName == 'أستاذ ابو عبيدة' ||
+              _userName == 'أستاذ عبدالرحمن الخن') {
             _isTeacher = true;
           } else {
             _isTeacher = false;
@@ -75,8 +75,8 @@ class _HomeScreenState extends State<HomeScreen> {
         if (doc.exists) {
           setState(() {
             _userName = doc['username'] ?? "User";
-            if (_userName == 'استاذ ابو عبيدة' ||
-                _userName == 'استاذ عبدالرحمن الخن') {
+            if (_userName == 'أستاذ ابو عبيدة' ||
+                _userName == 'أستاذ عبدالرحمن الخن') {
               _isTeacher = true;
             } else {
               _isTeacher = false;
@@ -346,7 +346,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         Text(
                           'أفضل 5 مسمعين خلال الشهر الحالي',
                           style: kHeading2Text.copyWith(
-                            fontSize: 18,
+                            fontSize: 16,
                             color: kDarkPrimaryColor,
                           ),
                         ),
@@ -383,6 +383,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       Text(
                         _getDailyAsar().key,
+                        textAlign: TextAlign.center,
                         style: GoogleFonts.notoKufiArabic(
                           textStyle: TextStyle(
                             fontSize: 22,
@@ -548,95 +549,162 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  GridView.count(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    crossAxisCount: 3,
-                    childAspectRatio: 0.9,
-                    mainAxisSpacing: 12,
-                    crossAxisSpacing: 12,
-                    children: [
-                      HomeButton(
-                        icon: FlutterIslamicIcons.quran2,
-                        text: 'التسميع اليومي',
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder:
-                                  (context) => DailyRecitationScreen(
-                                    userName: _userName,
+                  if (_isTeacher)
+                    Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            HomeButton(
+                              icon: Icons.bar_chart,
+                              text: 'نتائج التسميع',
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder:
+                                        (context) =>
+                                            RecitationLeaderboardScreen(
+                                              userName: _userName,
+                                            ),
                                   ),
+                                );
+                              },
                             ),
-                          );
-                        },
-                      ),
-                      HomeButton(
-                        icon: Icons.bar_chart,
-                        text: 'نتائج التسميع',
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder:
-                                  (context) => RecitationLeaderboardScreen(
-                                    userName: _userName,
+                            HomeButton(
+                              icon: FlutterIslamicIcons.tasbihHand,
+                              text: 'الاذكار',
+                              onPressed: () {
+                                Navigator.pushNamed(context, AzkarScreen.id);
+                              },
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            HomeButton(
+                              icon: Icons.bar_chart,
+                              text: 'نتائج الاجازة',
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder:
+                                        (context) => IjazahLeaderboardScreen(
+                                          userName: _userName,
+                                        ),
                                   ),
+                                );
+                              },
                             ),
-                          );
-                        },
-                      ),
-                      HomeButton(
-                        icon: FlutterIslamicIcons.tasbihHand,
-                        text: 'الاذكار',
-                        onPressed: () {
-                          Navigator.pushNamed(context, AzkarScreen.id);
-                        },
-                      ),
-                      HomeButton(
-                        icon: FlutterIslamicIcons.muslim2,
-                        text: 'الاجازة',
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder:
-                                  (context) => IjazahRecitationScreen(
-                                    userName: _userName,
-                                  ),
+                            HomeButton(
+                              icon: FlutterIslamicIcons.lantern,
+                              text: 'رمضان',
+                              onPressed: () {
+                                showOkAlertDialog(
+                                  context: context,
+                                  title: 'غير فعال',
+                                  message: 'يتفعل خلال رمضان فقط',
+                                  okLabel: 'حسناً',
+                                );
+                              },
                             ),
-                          );
-                        },
-                      ),
-                      HomeButton(
-                        icon: Icons.bar_chart,
-                        text: 'نتائج الاجازة',
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder:
-                                  (context) => IjazahLeaderboardScreen(
-                                    userName: _userName,
-                                  ),
-                            ),
-                          );
-                        },
-                      ),
-                      HomeButton(
-                        icon: FlutterIslamicIcons.lantern,
-                        text: 'رمضان',
-                        onPressed: () {
-                          showOkAlertDialog(
-                            context: context,
-                            title: 'غير فعال',
-                            message: 'يتفعل خلال رمضان فقط',
-                            okLabel: 'حسناً',
-                          );
-                        },
-                      ),
-                    ],
-                  ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  if (!_isTeacher)
+                    GridView.count(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      crossAxisCount: 3,
+                      childAspectRatio: 0.9,
+                      mainAxisSpacing: 12,
+                      crossAxisSpacing: 12,
+                      children: [
+                        HomeButton(
+                          icon: FlutterIslamicIcons.quran2,
+                          text: 'التسميع اليومي',
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder:
+                                    (context) => DailyRecitationScreen(
+                                      userName: _userName,
+                                    ),
+                              ),
+                            );
+                          },
+                        ),
+                        HomeButton(
+                          icon: Icons.bar_chart,
+                          text: 'نتائج التسميع',
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder:
+                                    (context) => RecitationLeaderboardScreen(
+                                      userName: _userName,
+                                    ),
+                              ),
+                            );
+                          },
+                        ),
+                        HomeButton(
+                          icon: FlutterIslamicIcons.tasbihHand,
+                          text: 'الاذكار',
+                          onPressed: () {
+                            Navigator.pushNamed(context, AzkarScreen.id);
+                          },
+                        ),
+                        HomeButton(
+                          icon: FlutterIslamicIcons.muslim2,
+                          text: 'الاجازة',
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder:
+                                    (context) => IjazahRecitationScreen(
+                                      userName: _userName,
+                                    ),
+                              ),
+                            );
+                          },
+                        ),
+                        HomeButton(
+                          icon: Icons.bar_chart,
+                          text: 'نتائج الاجازة',
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder:
+                                    (context) => IjazahLeaderboardScreen(
+                                      userName: _userName,
+                                    ),
+                              ),
+                            );
+                          },
+                        ),
+                        HomeButton(
+                          icon: FlutterIslamicIcons.lantern,
+                          text: 'رمضان',
+                          onPressed: () {
+                            showOkAlertDialog(
+                              context: context,
+                              title: 'غير فعال',
+                              message: 'يتفعل خلال رمضان فقط',
+                              okLabel: 'حسناً',
+                            );
+                          },
+                        ),
+                      ],
+                    ),
                 ],
               ),
             ),

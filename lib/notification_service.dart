@@ -328,6 +328,10 @@ class NotificationService {
   }
 
   static Future<void> _scheduleSaturdyMeeting() async {
+    final storage = GetStorage();
+    final time =
+        _parseTime(storage.read('saturdayMeetingTime')) ??
+        TimeOfDay(hour: 19, minute: 30);
     await AwesomeNotifications().createNotification(
       content: NotificationContent(
         id: 4,
@@ -338,8 +342,8 @@ class NotificationService {
       ),
       schedule: NotificationCalendar(
         weekday: DateTime.saturday,
-        hour: 17,
-        minute: 0,
+        hour: time.hour,
+        minute: time.minute,
         second: 0,
         repeats: true,
       ),
@@ -347,6 +351,10 @@ class NotificationService {
   }
 
   static Future<void> _scheduleTuesdayMeeting() async {
+    final storage = GetStorage();
+    final time =
+        _parseTime(storage.read('tuesdayMeetingTime')) ??
+        TimeOfDay(hour: 21, minute: 0);
     await AwesomeNotifications().createNotification(
       content: NotificationContent(
         id: 5,
@@ -357,8 +365,8 @@ class NotificationService {
       ),
       schedule: NotificationCalendar(
         weekday: DateTime.tuesday,
-        hour: 17,
-        minute: 0,
+        hour: time.hour,
+        minute: time.minute,
         second: 0,
         repeats: true,
       ),

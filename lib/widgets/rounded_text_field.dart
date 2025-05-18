@@ -17,6 +17,7 @@ class RoundedTextField extends StatefulWidget {
     this.suffixIcon,
     this.onPressedIcon,
     required this.obscure,
+    this.hasError = false,
   });
 
   final String textHint;
@@ -31,6 +32,7 @@ class RoundedTextField extends StatefulWidget {
   final Function()? onPressedIcon;
   final TextEditingController? controller;
   final bool obscure;
+  final bool hasError;
 
   @override
   State<RoundedTextField> createState() => _RoundedTextFieldState();
@@ -76,11 +78,17 @@ class _RoundedTextFieldState extends State<RoundedTextField> {
             filled: true,
             fillColor: Colors.white,
             enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: kLightPrimaryColor, width: 1.5),
+              borderSide: BorderSide(
+                color: widget.hasError ? Colors.redAccent : kLightPrimaryColor,
+                width: 1.5,
+              ),
               borderRadius: BorderRadius.circular(8.0),
             ),
             focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: kLightPrimaryColor, width: 2),
+              borderSide: BorderSide(
+                color: widget.hasError ? Colors.redAccent : kLightPrimaryColor,
+                width: 2,
+              ),
               borderRadius: BorderRadius.circular(8.0),
             ),
             prefixIcon:

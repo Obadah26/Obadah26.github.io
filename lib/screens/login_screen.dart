@@ -26,6 +26,7 @@ class _LoginScreenState extends State<LoginScreen> {
   String password = '';
   bool _rememberMe = false;
   bool showSpinner = false;
+  bool _passwordHasError = false;
 
   @override
   void initState() {
@@ -129,7 +130,13 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       onChanged: (value) {
                         password = value;
+                        if (_passwordHasError) {
+                          setState(() {
+                            _passwordHasError = false;
+                          });
+                        }
                       },
+                      hasError: _passwordHasError,
                     ),
                     SizedBox(height: 10),
                     Row(
@@ -184,6 +191,10 @@ class _LoginScreenState extends State<LoginScreen> {
                             email: email,
                             password: password,
                           );
+                          setState(() {
+                            _passwordHasError = false;
+                          });
+
                           if (user.user != null) {
                             if (!user.user!.emailVerified) {
                               await user.user!.sendEmailVerification();
@@ -224,10 +235,20 @@ class _LoginScreenState extends State<LoginScreen> {
                           String message = '';
                           if (e.code == 'user-not-found') {
                             message = 'البريد الإلكتروني غير مسجل';
-                          } else if (e.code == 'wrong-password') {
+                            setState(() {
+                              _passwordHasError = false;
+                            });
+                          } else if (e.code == 'wrong-password' ||
+                              e.code == 'invalid-credential') {
                             message = 'كلمة المرور خاطئة';
+                            setState(() {
+                              _passwordHasError = true;
+                            });
                           } else {
                             message = 'حدث خطأ ما، يرجى المحاولة لاحقاً';
+                            setState(() {
+                              _passwordHasError = false;
+                            });
                           }
 
                           ScaffoldMessenger.of(context).showSnackBar(

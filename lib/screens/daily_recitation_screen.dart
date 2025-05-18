@@ -27,7 +27,6 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
   bool _toVisible = false;
   bool _inputVisible = false;
   bool _saveVisible = false;
-  bool _isTeacher = false;
 
   final TextEditingController firstPageController = TextEditingController();
   final TextEditingController secondPageController = TextEditingController();
@@ -37,24 +36,12 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
     super.initState();
     selectedWithName = withNames.isNotEmpty ? withNames[0] : null;
     selectedToName = toNames.isNotEmpty ? toNames[0] : null;
-    isTeacher();
   }
 
   List<String> filterNames(List<String> names, String? currentUser) {
     if (currentUser == null) return names;
     final filtered = names.where((name) => name != currentUser).toList();
     return filtered.isNotEmpty ? filtered : names;
-  }
-
-  void isTeacher() {
-    setState(() {
-      if (widget.userName == 'استاذ ابو عبيدة' ||
-          widget.userName == 'استاذ عبدالرحمن الخن') {
-        _isTeacher = true;
-      } else {
-        _isTeacher = false;
-      }
-    });
   }
 
   void saveData() async {
@@ -484,7 +471,6 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
                             child: Center(
                               child: RoundedButton(
                                 buttonText: 'حفظ',
-                                isDisabled: _isTeacher,
                                 isPrimary: false,
                                 onPressed: saveData,
                               ),

@@ -29,6 +29,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   List<String> availableUserNames = [];
   bool loadingUserNames = true;
   String? passwordError;
+  String? emailError;
+  String? userNameError;
 
   @override
   void initState() {
@@ -60,21 +62,40 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   Future<void> _registerUser() async {
+    bool hasError = false;
     if (selectedUserName == null || selectedUserName!.isEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('الرجاء اختيار اسم مستخدم')));
-      return;
+      setState(() {
+        userNameError = '◉ الرجاء اختيار اسم مستخدم.';
+      });
+      hasError = true;
+    } else {
+      userNameError = null;
+    }
+
+    if (email.trim().isEmpty) {
+      setState(() {
+        emailError = '◉ الرجاء إدخال البريد الإلكتروني.';
+      });
+      hasError = true;
+    } else {
+      emailError = null;
     }
 
     if (!_validatePassword(password)) {
       setState(() {
-        passwordError =
-            '◉ كلمة المرور يجب أن تكون طولها 8 أحرف أو أكثر\n ◉ يجب أن تحتوي على حرف كبير (A-Z)\n ◉ يجب أن تحتوي على حرف صغير (a-z)\n ◉ يجب أن تحتوي على رقم (0-9)\n ◉ يجب أن تحتوي على رمز خاص مثل (!@#&*).';
+        passwordError = '◉ كلمة المرور يجب أن تكون 6 أحرف أو أكثر.';
       });
+      hasError = true;
       return;
     } else {
       passwordError = null;
+    }
+
+    if (hasError) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('حدث خطأ ما، يرجى تصحيح البيانات')),
+      );
+      return;
     }
 
     setState(() => showSpinner = true);
@@ -146,10 +167,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   bool _validatePassword(String password) {
-    final passwordRegex = RegExp(
-      r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#\$&*~]).{8,}$',
-    );
-    return passwordRegex.hasMatch(password);
+    return password.length >= 6;
   }
 
   TextEditingController emailController = TextEditingController();
@@ -225,7 +243,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(
-                            color: kLightPrimaryColor,
+                            color:
+                                userNameError != null
+                                    ? Colors.redAccent
+                                    : kLightPrimaryColor,
                             width: 1.5,
                           ),
                         ),
@@ -266,6 +287,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 onChanged: (String? newValue) {
                                   setState(() {
                                     selectedUserName = newValue!;
+                                    userNameError = null;
                                   });
                                 },
                                 dropdownColor: Colors.white,
@@ -287,6 +309,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                       ),
                     ),
+                    if (userNameError != null)
+                      Padding(
+                        padding: const EdgeInsets.only(right: 30, top: 5),
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: Text(
+                            userNameError!,
+                            style: TextStyle(
+                              color: Colors.redAccent,
+                              fontSize: 10,
+                            ),
+                            textDirection: TextDirection.rtl,
+                          ),
+                        ),
+                      ),
                     SizedBox(height: 30),
                     RoundedTextField(
                       obscure: false,
@@ -300,8 +337,27 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                       onChanged: (value) {
                         email = value;
+                        if (emailError != null) {
+                          setState(() => emailError = null);
+                        }
                       },
+                      hasError: emailError != null,
                     ),
+                    if (emailError != null)
+                      Padding(
+                        padding: const EdgeInsets.only(right: 30, top: 5),
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: Text(
+                            emailError!,
+                            style: TextStyle(
+                              color: Colors.redAccent,
+                              fontSize: 10,
+                            ),
+                            textDirection: TextDirection.rtl,
+                          ),
+                        ),
+                      ),
                     SizedBox(height: 30),
                     RoundedTextField(
                       obscure: true,
@@ -316,6 +372,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       onChanged: (value) {
                         password = value;
                       },
+                      hasError: passwordError != null,
                     ),
                     if (passwordError != null)
                       Padding(

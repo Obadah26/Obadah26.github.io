@@ -18,14 +18,12 @@ class IjazahRecitationScreen extends StatefulWidget {
 }
 
 class _IjazahRecitationScreenState extends State<IjazahRecitationScreen> {
-  bool _isTeacher = false;
   final TextEditingController _firstPageController = TextEditingController();
   final TextEditingController _secondPageController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    isTeacher();
   }
 
   @override
@@ -33,17 +31,6 @@ class _IjazahRecitationScreenState extends State<IjazahRecitationScreen> {
     _firstPageController.dispose();
     _secondPageController.dispose();
     super.dispose();
-  }
-
-  void isTeacher() {
-    setState(() {
-      if (widget.userName == 'استاذ ابو عبيدة' ||
-          widget.userName == 'استاذ عبدالرحمن الخن') {
-        _isTeacher = true;
-      } else {
-        _isTeacher = false;
-      }
-    });
   }
 
   void saveData() async {
@@ -216,7 +203,6 @@ class _IjazahRecitationScreenState extends State<IjazahRecitationScreen> {
                         Center(
                           child: RoundedButton(
                             buttonText: 'حفظ',
-                            isDisabled: _isTeacher,
                             isPrimary: false,
                             onPressed: saveData,
                           ),

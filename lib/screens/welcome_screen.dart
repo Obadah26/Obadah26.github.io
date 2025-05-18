@@ -24,8 +24,8 @@ class WelcomeScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  SizedBox(height: 50),
-                  Image.asset('images/example2.png'),
+                  SizedBox(height: 20),
+                  Image.asset('images/welcome_image.png'),
                   Text.rich(
                     TextSpan(
                       text: '! مرحبا بكم في ',

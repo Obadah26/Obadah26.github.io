@@ -30,6 +30,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
   TimeOfDay eveningAzkarTime = const TimeOfDay(hour: 16, minute: 0);
   TimeOfDay morningRecitationTime = const TimeOfDay(hour: 12, minute: 0);
   TimeOfDay eveningRecitationTime = const TimeOfDay(hour: 20, minute: 0);
+  TimeOfDay saturdayMeetingTime = const TimeOfDay(hour: 19, minute: 30);
+  TimeOfDay tuesdayMeetingTime = const TimeOfDay(hour: 21, minute: 0);
+
   int weeklyGoal = 40;
   bool isOn = true;
 
@@ -49,6 +52,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
           _getTimeFromStorage('morningRecitationTime') ?? morningRecitationTime;
       eveningRecitationTime =
           _getTimeFromStorage('eveningRecitationTime') ?? eveningRecitationTime;
+      saturdayMeetingTime =
+          _getTimeFromStorage('saturdayMeetingTime') ?? saturdayMeetingTime;
+      tuesdayMeetingTime =
+          _getTimeFromStorage('tuesdayMeetingTime') ?? tuesdayMeetingTime;
+
       weeklyGoal = _storage.read('weeklyGoal') ?? weeklyGoal;
       isOn = _storage.read('notifications_enabled_${widget.userName}') ?? true;
     });
@@ -61,7 +69,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return TimeOfDay(hour: int.parse(parts[0]), minute: int.parse(parts[1]));
   }
 
-  Future<void> _pickTime(String key, TimeOfDay currentTime) async {
+  Future<TimeOfDay?> _pickTime(String key, TimeOfDay currentTime) async {
     final picked = await showTimePicker(
       context: context,
       initialTime: currentTime,
@@ -104,22 +112,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
       },
     );
     if (picked != null) {
-      setState(() {
-        switch (key) {
-          case 'morningAzkarTime':
-            morningAzkarTime = picked;
-            break;
-          case 'eveningAzkarTime':
-            eveningAzkarTime = picked;
-            break;
-          case 'morningRecitationTime':
-            morningRecitationTime = picked;
-            break;
-          case 'eveningRecitationTime':
-            eveningRecitationTime = picked;
-            break;
-        }
-      });
+      switch (key) {
+        case 'morningAzkarTime':
+          morningAzkarTime = picked;
+          break;
+        case 'eveningAzkarTime':
+          eveningAzkarTime = picked;
+          break;
+        case 'morningRecitationTime':
+          morningRecitationTime = picked;
+          break;
+        case 'eveningRecitationTime':
+          eveningRecitationTime = picked;
+          break;
+        case 'saturdayMeetingTime':
+          saturdayMeetingTime = picked;
+          break;
+        case 'tuesdayMeetingTime':
+          tuesdayMeetingTime = picked;
+          break;
+      }
+      setState(() {});
     }
   }
 
@@ -140,6 +153,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
       'eveningRecitationTime',
       '${eveningRecitationTime.hour}:${eveningRecitationTime.minute}',
     );
+    await _storage.write(
+      'saturdayMeetingTime',
+      '${saturdayMeetingTime.hour}:${saturdayMeetingTime.minute}',
+    );
+    await _storage.write(
+      'tuesdayMeetingTime',
+      '${tuesdayMeetingTime.hour}:${tuesdayMeetingTime.minute}',
+    );
+
     await _storage.write('weeklyGoal', weeklyGoal);
 
     await NotificationService.reloadScheduledNotifications();
@@ -285,6 +307,59 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ],
                 ),
               ),
+              if (widget.isTeacher) ...[
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Padding(
+                    padding: EdgeInsets.only(right: 25, top: 20),
+                    child: Text(
+                      'أوقات الدروس',
+                      style: GoogleFonts.elMessiri(
+                        color: kPrimaryColor,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        height: 1.5,
+                      ),
+                    ),
+                  ),
+                ),
+                GreenContatiner(
+                  child: Column(
+                    children: [
+                      BuildTimePickerTile(
+                        title: 'وقت درس السبت',
+                        time: saturdayMeetingTime,
+                        onTap: () async {
+                          final picked = await _pickTime(
+                            'saturdayMeetingTime',
+                            saturdayMeetingTime,
+                          );
+                          if (picked != null) {
+                            setState(() {
+                              saturdayMeetingTime = picked;
+                            });
+                          }
+                        },
+                      ),
+                      BuildTimePickerTile(
+                        title: 'وقت درس الثلاثاء',
+                        time: tuesdayMeetingTime,
+                        onTap: () async {
+                          final picked = await _pickTime(
+                            'tuesdayMeetingTime',
+                            tuesdayMeetingTime,
+                          );
+                          if (picked != null) {
+                            setState(() {
+                              tuesdayMeetingTime = picked;
+                            });
+                          }
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ],
               Visibility(
                 visible: widget.isTeacher ? false : true,
                 child: Align(
