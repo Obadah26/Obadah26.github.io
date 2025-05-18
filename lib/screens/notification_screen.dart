@@ -215,6 +215,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
       return Icons.video_call_outlined;
     } else if (title.contains('درس مع أستاذ عبدالرحمن الخن')) {
       return Icons.video_call_outlined;
+    } else if (title.contains('تذكير بحضور الدرس')) {
+      return Icons.video_call_outlined;
     } else if (title.contains('الورد اليومي')) {
       return FlutterIslamicIcons.quran;
     }

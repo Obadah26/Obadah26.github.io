@@ -1,9 +1,10 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:alhadiqa/lists.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 
 class NotificationService {
+  static final _firestore = FirebaseFirestore.instance;
   static final GetStorage _storage = GetStorage();
   static const String _notificationKey = 'notifications';
 
@@ -218,104 +219,47 @@ class NotificationService {
 
   static Future<void> _scheduleNotifications() async {
     await _cancelAllScheduled();
-    await _scheduleMorningAzkar();
-    await _scheduleEveningAzkar();
     await _scheduleDailyAsar();
     await _scheduleSaturdyMeeting();
     await _scheduleTuesdayMeeting();
-    await _scheduleMorningDailyRecitation();
-    await _scheduleEveningDailyRecitation();
+    await _scheduleSaturdyMeetingReminder();
+    await _scheduleTuesdayMeetingReminder();
   }
 
   static Future<void> _cancelAllScheduled() async {
     await AwesomeNotifications().cancelAllSchedules();
   }
 
-  static Future<void> _scheduleMorningAzkar() async {
-    await AwesomeNotifications().createNotification(
-      content: NotificationContent(
-        id: 1,
-        channelKey: 'basic_channel',
-        title: 'أذكار الصباح',
-        body: 'حان وقت قراءة أذكار الصباح',
-        notificationLayout: NotificationLayout.Default,
-        payload: {'type': 'azkar', 'time': 'morning'},
-      ),
-      schedule: NotificationCalendar(
-        hour: 4,
-        minute: 30,
-        second: 0,
-        repeats: true,
-      ),
-    );
-  }
+  static Future<MapEntry<String, String>> _getDailyAsarQuote() async {
+    try {
+      final snapshot = await _firestore.collection('daily_quotes').get();
+      final quotes = snapshot.docs;
 
-  static Future<void> _scheduleEveningAzkar() async {
-    await AwesomeNotifications().createNotification(
-      content: NotificationContent(
-        id: 2,
-        channelKey: 'basic_channel',
-        title: 'أذكار المساء',
-        body: 'حان وقت قراءة أذكار المساء',
-        notificationLayout: NotificationLayout.Default,
-        payload: {'type': 'azkar', 'time': 'evening'},
-      ),
-      schedule: NotificationCalendar(
-        hour: 16,
-        minute: 0,
-        second: 0,
-        repeats: true,
-      ),
-    );
-  }
+      if (quotes.isEmpty) {
+        return const MapEntry('', '');
+      }
 
-  static Future<void> _scheduleMorningDailyRecitation() async {
-    await AwesomeNotifications().createNotification(
-      content: NotificationContent(
-        id: 2,
-        channelKey: 'basic_channel',
-        title: 'الورد اليومي',
-        body: 'تذكير بالورد اليومي للقرآن',
-        notificationLayout: NotificationLayout.Default,
-      ),
-      schedule: NotificationCalendar(
-        hour: 12,
-        minute: 0,
-        second: 0,
-        repeats: true,
-      ),
-    );
-  }
+      final now = DateTime.now();
+      final dayOfYear = now.difference(DateTime(now.year, 5, 18)).inDays;
+      final index = dayOfYear % quotes.length;
 
-  static Future<void> _scheduleEveningDailyRecitation() async {
-    await AwesomeNotifications().createNotification(
-      content: NotificationContent(
-        id: 2,
-        channelKey: 'basic_channel',
-        title: 'الورد اليومي',
-        body: 'تذكير بالورد اليومي للقرآن',
-        notificationLayout: NotificationLayout.Default,
-      ),
-      schedule: NotificationCalendar(
-        hour: 20,
-        minute: 0,
-        second: 0,
-        repeats: true,
-      ),
-    );
+      return MapEntry(quotes[index]['text'], quotes[index]['reference']);
+    } catch (e) {
+      debugPrint('Error getting daily quote: $e');
+      return const MapEntry('', '');
+    }
   }
 
   static Future<void> _scheduleDailyAsar() async {
-    final now = DateTime.now();
-    final dayOfYear = now.difference(DateTime(now.year, 5, 18)).inDays;
-    final asarEntry = asar.entries.elementAt(dayOfYear % asar.length);
+    final quote = await _getDailyAsarQuote();
+    if (quote.key.isEmpty) return;
 
     await AwesomeNotifications().createNotification(
       content: NotificationContent(
         id: 3,
         channelKey: 'basic_channel',
         title: 'آثار يومية',
-        body: '${asarEntry.key}\n${asarEntry.value}',
+        body: '${quote.key}\n${quote.value}',
         notificationLayout: NotificationLayout.BigText,
       ),
       schedule: NotificationCalendar(
@@ -337,7 +281,7 @@ class NotificationService {
         id: 4,
         channelKey: 'basic_channel',
         title: 'درس مع أستاذ أبو عبيدة',
-        body: 'تذكير بحضور الدرس',
+        body: 'الدرس قد بدأ! يرجى الحضور',
         notificationLayout: NotificationLayout.BigText,
       ),
       schedule: NotificationCalendar(
@@ -360,13 +304,51 @@ class NotificationService {
         id: 5,
         channelKey: 'basic_channel',
         title: 'درس مع أستاذ عبدالرحمن الخن',
-        body: 'تذكير بحضور الدرس',
+        body: 'الدرس قد بدأ! يرجى الحضور',
         notificationLayout: NotificationLayout.BigText,
       ),
       schedule: NotificationCalendar(
         weekday: DateTime.tuesday,
         hour: time.hour,
         minute: time.minute,
+        second: 0,
+        repeats: true,
+      ),
+    );
+  }
+
+  static Future<void> _scheduleSaturdyMeetingReminder() async {
+    await AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        id: 6,
+        channelKey: 'basic_channel',
+        title: 'تذكير بحضور الدرس',
+        body: 'تذكير بحضور درس اليوم',
+        notificationLayout: NotificationLayout.BigText,
+      ),
+      schedule: NotificationCalendar(
+        weekday: DateTime.saturday,
+        hour: 17,
+        minute: 0,
+        second: 0,
+        repeats: true,
+      ),
+    );
+  }
+
+  static Future<void> _scheduleTuesdayMeetingReminder() async {
+    await AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        id: 7,
+        channelKey: 'basic_channel',
+        title: 'تذكير بحضور الدرس',
+        body: 'تذكير بحضور درس اليوم',
+        notificationLayout: NotificationLayout.BigText,
+      ),
+      schedule: NotificationCalendar(
+        weekday: DateTime.tuesday,
+        hour: 17,
+        minute: 0,
         second: 0,
         repeats: true,
       ),

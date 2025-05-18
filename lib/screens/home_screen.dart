@@ -1,5 +1,4 @@
 import 'package:adaptive_dialog/adaptive_dialog.dart';
-import 'package:alhadiqa/lists.dart';
 import 'package:alhadiqa/widgets/green_contatiner.dart';
 import 'package:alhadiqa/widgets/mutual_recitation_status.dart';
 import 'package:alhadiqa/notification_service.dart';
@@ -23,6 +22,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:linear_progress_bar/linear_progress_bar.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:alhadiqa/daily_quotes_service.dart';
 
 final _firestore = FirebaseFirestore.instance;
 late User loggedInUser;
@@ -37,6 +37,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final _auth = FirebaseAuth.instance;
+  MapEntry<String, String> _dailyQuote = const MapEntry('', '');
   String arabicDate = '';
   String _userName = '';
   bool _loadingUser = true;
@@ -50,6 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
     getCurrentUser();
     _loadArabicDate();
     _loadWeeklyGoal();
+    _loadDailyQuote();
   }
 
   void getCurrentUser() async {
@@ -91,6 +93,11 @@ class _HomeScreenState extends State<HomeScreen> {
       });
     }
     setState(() => _loadingUser = false);
+  }
+
+  Future<void> _loadDailyQuote() async {
+    final quote = await DailyQuotesService.getTodaysQuote();
+    setState(() => _dailyQuote = quote);
   }
 
   void _loadWeeklyGoal() {
@@ -172,13 +179,6 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       arabicDate = DateFormat('EEEE، d MMMM', 'ar').format(DateTime.now());
     });
-  }
-
-  MapEntry<String, String> _getDailyAsar() {
-    final now = DateTime.now();
-    final dayOfYear = now.difference(DateTime(now.year, 5, 18)).inDays;
-    final index = dayOfYear % asar.length;
-    return asar.entries.elementAt(index);
   }
 
   @override
@@ -382,7 +382,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   Column(
                     children: [
                       Text(
-                        _getDailyAsar().key,
+                        _dailyQuote.key,
                         textAlign: TextAlign.center,
                         style: GoogleFonts.notoKufiArabic(
                           textStyle: TextStyle(
@@ -393,7 +393,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       SizedBox(height: 8),
                       Text(
-                        _getDailyAsar().value,
+                        _dailyQuote.value,
                         style: GoogleFonts.notoKufiArabic(
                           textStyle: TextStyle(
                             fontSize: 16,
