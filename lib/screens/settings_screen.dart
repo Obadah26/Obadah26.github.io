@@ -134,6 +134,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       }
       setState(() {});
     }
+    return picked;
   }
 
   void _saveSettings() async {
