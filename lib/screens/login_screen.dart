@@ -201,7 +201,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               throw FirebaseAuthException(
                                 code: 'email-not-verified',
                                 message:
-                                    'الرجاء التحقق من بريدك الإلكتروني أولاً',
+                                    'يرجى التحقق من بريدك الإلكتروني من أجل تفعيل حسابك',
                               );
                             }
                             if (_rememberMe) {
@@ -244,6 +244,10 @@ class _LoginScreenState extends State<LoginScreen> {
                             setState(() {
                               _passwordHasError = true;
                             });
+                          } else if (e.code == 'email-not-verified') {
+                            message =
+                                'يرجى التحقق من بريدك الإلكتروني أولاً من أجل تفعيل حسابك';
+                            _passwordHasError = false;
                           } else {
                             message = 'حدث خطأ ما، يرجى المحاولة لاحقاً';
                             setState(() {

@@ -158,6 +158,18 @@ class ProfileDrawer extends StatelessWidget {
               },
             ),
             DrawerButtons(
+              icon: FlutterIslamicIcons.solidMosque,
+              text: 'أوقات الصلاة',
+              onPressed: () {
+                showOkAlertDialog(
+                  context: context,
+                  title: 'غير متوفر حالياً',
+                  message: 'سيتم التفعيل قريباً',
+                  okLabel: 'حسناً',
+                );
+              },
+            ),
+            DrawerButtons(
               icon: FlutterIslamicIcons.solidTasbihHand,
               text: 'الأذكار',
               onPressed: () {

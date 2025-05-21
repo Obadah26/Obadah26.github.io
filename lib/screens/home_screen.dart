@@ -184,6 +184,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final keyText =
+        (_dailyQuote.value.contains(RegExp(r'\d')))
+            ? '{ ${_dailyQuote.key} }'
+            : '( ${_dailyQuote.key} )';
+
+    final rtlWrappedText = '\u200F$keyText\u200F';
+
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: Colors.grey[50],
@@ -385,25 +392,31 @@ class _HomeScreenState extends State<HomeScreen> {
                   SizedBox(height: 12),
                   Column(
                     children: [
-                      Text(
-                        _dailyQuote.key,
+                      AutoSizeText(
+                        rtlWrappedText,
                         textAlign: TextAlign.center,
                         style: GoogleFonts.notoKufiArabic(
                           textStyle: TextStyle(
-                            fontSize: 22,
+                            fontSize: 20,
                             color: kLightPrimaryColor,
                           ),
                         ),
+                        maxLines: 2,
+                        minFontSize: 12,
+                        overflow: TextOverflow.ellipsis,
                       ),
                       SizedBox(height: 8),
-                      Text(
+                      AutoSizeText(
                         _dailyQuote.value,
                         style: GoogleFonts.notoKufiArabic(
                           textStyle: TextStyle(
-                            fontSize: 16,
+                            fontSize: 11,
                             color: kPrimaryColor,
                           ),
                         ),
+                        maxLines: 1,
+                        minFontSize: 10,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ],
                   ),
@@ -554,68 +567,86 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   const SizedBox(height: 16),
                   if (_isTeacher)
-                    Column(
+                    GridView.count(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      crossAxisCount: 3,
+                      childAspectRatio: 0.9,
+                      mainAxisSpacing: 12,
+                      crossAxisSpacing: 12,
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            HomeButton(
-                              icon: Icons.bar_chart,
-                              text: 'نتائج التسميع',
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder:
-                                        (context) =>
-                                            RecitationLeaderboardScreen(
-                                              userName: _userName,
-                                            ),
-                                  ),
-                                );
-                              },
-                            ),
-                            HomeButton(
-                              icon: FlutterIslamicIcons.tasbihHand,
-                              text: 'الاذكار',
-                              onPressed: () {
-                                Navigator.pushNamed(context, AzkarScreen.id);
-                              },
-                            ),
-                          ],
+                        HomeButton(
+                          icon: FlutterIslamicIcons.mosque,
+                          text: 'أوقات الصلاة',
+                          onPressed: () {
+                            showOkAlertDialog(
+                              context: context,
+                              title: 'غير متوفر حالياً',
+                              message: 'سيتم التفعيل قريباً',
+                              okLabel: 'حسناً',
+                            );
+                          },
                         ),
-                        const SizedBox(height: 12),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            HomeButton(
-                              icon: Icons.bar_chart,
-                              text: 'نتائج الاجازة',
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder:
-                                        (context) => IjazahLeaderboardScreen(
-                                          userName: _userName,
-                                        ),
-                                  ),
-                                );
-                              },
-                            ),
-                            HomeButton(
-                              icon: FlutterIslamicIcons.lantern,
-                              text: 'رمضان',
-                              onPressed: () {
-                                showOkAlertDialog(
-                                  context: context,
-                                  title: 'غير فعال',
-                                  message: 'يتفعل خلال رمضان فقط',
-                                  okLabel: 'حسناً',
-                                );
-                              },
-                            ),
-                          ],
+                        HomeButton(
+                          icon: Icons.bar_chart,
+                          text: 'نتائج التسميع',
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder:
+                                    (context) => RecitationLeaderboardScreen(
+                                      userName: _userName,
+                                    ),
+                              ),
+                            );
+                          },
+                        ),
+                        HomeButton(
+                          icon: FlutterIslamicIcons.tasbihHand,
+                          text: 'الاذكار',
+                          onPressed: () {
+                            Navigator.pushNamed(context, AzkarScreen.id);
+                          },
+                        ),
+                        HomeButton(
+                          icon: Icons.photo_library_outlined,
+                          text: 'البوم الصور',
+                          onPressed: () {
+                            showOkAlertDialog(
+                              context: context,
+                              title: 'غير متوفر حالياً',
+                              message: 'سيتم التفعيل قريباً',
+                              okLabel: 'حسناً',
+                            );
+                          },
+                        ),
+                        HomeButton(
+                          icon: Icons.bar_chart,
+                          text: 'نتائج الاجازة',
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder:
+                                    (context) => IjazahLeaderboardScreen(
+                                      userName: _userName,
+                                    ),
+                              ),
+                            );
+                          },
+                        ),
+                        HomeButton(
+                          icon: FlutterIslamicIcons.lantern,
+                          text: 'رمضان',
+                          onPressed: () {
+                            showOkAlertDialog(
+                              context: context,
+                              title: 'غير فعال',
+                              message: 'يتفعل خلال رمضان فقط',
+                              okLabel: 'حسناً',
+                            );
+                          },
                         ),
                       ],
                     ),

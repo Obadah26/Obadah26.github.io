@@ -29,7 +29,7 @@ class DailyQuotesService {
       }
 
       final now = DateTime.now();
-      final dayOfYear = now.difference(DateTime(now.year, 5, 18)).inDays;
+      final dayOfYear = now.difference(DateTime(now.year, 5, 22)).inDays;
       final index = dayOfYear % quotes.length;
 
       return MapEntry(quotes[index]['text'], quotes[index]['reference']);
