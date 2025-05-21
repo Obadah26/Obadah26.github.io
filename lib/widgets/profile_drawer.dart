@@ -8,6 +8,7 @@ import 'package:alhadiqa/screens/pending_confirmations_screen.dart';
 import 'package:alhadiqa/screens/recitation_leaderboard.dart';
 import 'package:alhadiqa/screens/settings_screen.dart';
 import 'package:alhadiqa/screens/welcome_screen.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:alhadiqa/const.dart';
@@ -50,7 +51,7 @@ class ProfileDrawer extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Text(
+                    AutoSizeText(
                       userName,
                       style: GoogleFonts.elMessiri(
                         textStyle: kBodyLargeText.copyWith(
@@ -58,6 +59,9 @@ class ProfileDrawer extends StatelessWidget {
                           color: kSecondaryTextLight,
                         ),
                       ),
+                      maxLines: 1,
+                      minFontSize: 12,
+                      overflow: TextOverflow.ellipsis,
                     ),
                     SizedBox(width: 10),
                     Container(

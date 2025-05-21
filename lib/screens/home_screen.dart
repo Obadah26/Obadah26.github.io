@@ -11,6 +11,7 @@ import 'package:alhadiqa/screens/recitation_leaderboard.dart';
 import 'package:alhadiqa/widgets/home_button.dart';
 import 'package:alhadiqa/widgets/profile_drawer.dart';
 import 'package:alhadiqa/widgets/top_5_users.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:badges/badges.dart' as badges;
 import 'package:flutter/material.dart';
 import 'package:alhadiqa/const.dart';
@@ -301,7 +302,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Text.rich(
+                  AutoSizeText.rich(
                     TextSpan(
                       text: 'أهلاً، ',
                       style: kBodyLargeText.copyWith(fontSize: 20),
@@ -316,6 +317,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ],
                     ),
+                    maxLines: 1,
+                    minFontSize: 12,
+                    overflow: TextOverflow.ellipsis,
                   ),
                   Text(
                     arabicDate,

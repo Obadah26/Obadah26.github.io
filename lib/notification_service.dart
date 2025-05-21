@@ -220,14 +220,92 @@ class NotificationService {
   static Future<void> _scheduleNotifications() async {
     await _cancelAllScheduled();
     await _scheduleDailyAsar();
+    await _scheduleMorningAzkar();
+    await _scheduleEveningAzkar();
     await _scheduleSaturdyMeeting();
     await _scheduleTuesdayMeeting();
     await _scheduleSaturdyMeetingReminder();
     await _scheduleTuesdayMeetingReminder();
+    await _scheduleMorningDailyRecitation();
+    await _scheduleEveningDailyRecitation();
   }
 
   static Future<void> _cancelAllScheduled() async {
     await AwesomeNotifications().cancelAllSchedules();
+  }
+
+  static Future<void> _scheduleMorningAzkar() async {
+    await AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        id: 10,
+        channelKey: 'basic_channel',
+        title: 'أذكار الصباح',
+        body: 'حان وقت قراءة أذكار الصباح',
+        notificationLayout: NotificationLayout.Default,
+        payload: {'type': 'azkar', 'time': 'morning'},
+      ),
+      schedule: NotificationCalendar(
+        hour: 4,
+        minute: 30,
+        second: 0,
+        repeats: true,
+      ),
+    );
+  }
+
+  static Future<void> _scheduleEveningAzkar() async {
+    await AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        id: 20,
+        channelKey: 'basic_channel',
+        title: 'أذكار المساء',
+        body: 'حان وقت قراءة أذكار المساء',
+        notificationLayout: NotificationLayout.Default,
+        payload: {'type': 'azkar', 'time': 'evening'},
+      ),
+      schedule: NotificationCalendar(
+        hour: 16,
+        minute: 0,
+        second: 0,
+        repeats: true,
+      ),
+    );
+  }
+
+  static Future<void> _scheduleMorningDailyRecitation() async {
+    await AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        id: 30,
+        channelKey: 'basic_channel',
+        title: 'الورد اليومي',
+        body: 'تذكير بالورد اليومي للقرآن',
+        notificationLayout: NotificationLayout.Default,
+      ),
+      schedule: NotificationCalendar(
+        hour: 12,
+        minute: 0,
+        second: 0,
+        repeats: true,
+      ),
+    );
+  }
+
+  static Future<void> _scheduleEveningDailyRecitation() async {
+    await AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        id: 40,
+        channelKey: 'basic_channel',
+        title: 'الورد اليومي',
+        body: 'تذكير بالورد اليومي للقرآن',
+        notificationLayout: NotificationLayout.Default,
+      ),
+      schedule: NotificationCalendar(
+        hour: 20,
+        minute: 0,
+        second: 0,
+        repeats: true,
+      ),
+    );
   }
 
   static Future<MapEntry<String, String>> _getDailyAsarQuote() async {
@@ -256,7 +334,7 @@ class NotificationService {
 
     await AwesomeNotifications().createNotification(
       content: NotificationContent(
-        id: 3,
+        id: 5,
         channelKey: 'basic_channel',
         title: 'آثار يومية',
         body: '${quote.key}\n${quote.value}',
@@ -278,7 +356,7 @@ class NotificationService {
         TimeOfDay(hour: 19, minute: 30);
     await AwesomeNotifications().createNotification(
       content: NotificationContent(
-        id: 4,
+        id: 6,
         channelKey: 'basic_channel',
         title: 'درس مع أستاذ أبو عبيدة',
         body: 'الدرس قد بدأ! يرجى الحضور',
@@ -301,7 +379,7 @@ class NotificationService {
         TimeOfDay(hour: 21, minute: 0);
     await AwesomeNotifications().createNotification(
       content: NotificationContent(
-        id: 5,
+        id: 7,
         channelKey: 'basic_channel',
         title: 'درس مع أستاذ عبدالرحمن الخن',
         body: 'الدرس قد بدأ! يرجى الحضور',
@@ -320,7 +398,7 @@ class NotificationService {
   static Future<void> _scheduleSaturdyMeetingReminder() async {
     await AwesomeNotifications().createNotification(
       content: NotificationContent(
-        id: 6,
+        id: 8,
         channelKey: 'basic_channel',
         title: 'تذكير بحضور الدرس',
         body: 'تذكير بحضور درس اليوم',
@@ -339,7 +417,7 @@ class NotificationService {
   static Future<void> _scheduleTuesdayMeetingReminder() async {
     await AwesomeNotifications().createNotification(
       content: NotificationContent(
-        id: 7,
+        id: 9,
         channelKey: 'basic_channel',
         title: 'تذكير بحضور الدرس',
         body: 'تذكير بحضور درس اليوم',

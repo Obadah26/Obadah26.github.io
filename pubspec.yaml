@@ -29,6 +29,7 @@ dependencies:
   rxdart: ^0.28.0
   flutter_islamic_icons: ^1.0.2
   provider: ^6.1.5
+  auto_size_text: ^3.0.0
 
 dev_dependencies:
   flutter_test:
