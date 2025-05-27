@@ -202,19 +202,20 @@ class NotificationService {
   }
 
   static Future<void> _setupNotificationChannels() async {
-    await AwesomeNotifications().initialize(null, [
-      NotificationChannel(
-        channelKey: 'basic_channel',
-        channelName: 'Basic notifications',
-        channelDescription: 'Notification channel for basic reminders',
-        importance: NotificationImportance.High,
-        defaultColor: const Color(0xFF00796B),
-        ledColor: Colors.white,
-        playSound: true,
-        enableLights: true,
-        enableVibration: true,
-      ),
-    ]);
+    await AwesomeNotifications()
+        .initialize('resource://drawable/ic_stat_notification_icon_v2', [
+          NotificationChannel(
+            channelKey: 'basic_channel',
+            channelName: 'Basic notifications',
+            channelDescription: 'Notification channel for basic reminders',
+            importance: NotificationImportance.High,
+            defaultColor: const Color(0xFF00796B),
+            ledColor: Colors.white,
+            playSound: true,
+            enableLights: true,
+            enableVibration: true,
+          ),
+        ]);
   }
 
   static Future<void> _scheduleNotifications() async {

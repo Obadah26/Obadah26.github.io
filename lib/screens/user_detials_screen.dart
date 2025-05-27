@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_islamic_icons/flutter_islamic_icons.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:alhadiqa/lists.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 
 class UserDetailsScreen extends StatefulWidget {
   static String id = 'user_details_screen';
@@ -437,113 +438,135 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceEvenly,
                                         children: [
-                                          Column(
-                                            children: [
-                                              Text(
-                                                'من صفحة $firstPage إلى $secondPage',
-                                                style: GoogleFonts.cairo(
-                                                  textStyle: kBodySmallText,
+                                          Expanded(
+                                            child: Column(
+                                              children: [
+                                                Text(
+                                                  'من صفحة $firstPage إلى $secondPage',
+                                                  style: GoogleFonts.cairo(
+                                                    textStyle: kBodySmallText,
+                                                  ),
+                                                  textAlign: TextAlign.right,
                                                 ),
-                                                textAlign: TextAlign.right,
-                                              ),
-                                              Padding(
-                                                padding: const EdgeInsets.all(
-                                                  8.0,
+                                                Padding(
+                                                  padding: const EdgeInsets.all(
+                                                    8.0,
+                                                  ),
+                                                  child: Text(
+                                                    recitation['date']
+                                                        .toString()
+                                                        .substring(0, 10),
+                                                    style: GoogleFonts.cairo(
+                                                      textStyle: kBodyRegularText
+                                                          .copyWith(
+                                                            fontSize: 14,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            color:
+                                                                kLightPrimaryColor,
+                                                          ),
+                                                    ),
+                                                  ),
                                                 ),
-                                                child: Text(
-                                                  recitation['date']
-                                                      .toString()
-                                                      .substring(0, 10),
+                                              ],
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: Column(
+                                              children: [
+                                                Text(
+                                                  textDirection:
+                                                      TextDirection.rtl,
+                                                  '${recitation['pages']} صفحة',
                                                   style: GoogleFonts.cairo(
                                                     textStyle: kBodyRegularText
                                                         .copyWith(
-                                                          fontSize: 14,
+                                                          color: kPrimaryColor,
                                                           fontWeight:
                                                               FontWeight.bold,
-                                                          color:
-                                                              kLightPrimaryColor,
                                                         ),
                                                   ),
                                                 ),
-                                              ),
-                                            ],
-                                          ),
-                                          Column(
-                                            children: [
-                                              Text(
-                                                textDirection:
-                                                    TextDirection.rtl,
-                                                '${recitation['pages']} صفحة',
-                                                style: GoogleFonts.cairo(
-                                                  textStyle: kBodyRegularText
-                                                      .copyWith(
-                                                        color: kPrimaryColor,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
+                                                SizedBox(height: 5),
+                                                AutoSizeText(
+                                                  recitation['type'] == 'with'
+                                                      ? 'نوع التسميع: مدارسة'
+                                                      : 'نوع التسميع: تسميع',
+                                                  style: GoogleFonts.cairo(
+                                                    textStyle: TextStyle(
+                                                      fontSize: 10,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                  maxLines: 1,
+                                                  minFontSize: 5,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
                                                 ),
-                                              ),
-                                              SizedBox(height: 5),
-                                              Text(
-                                                recitation['type'] == 'with'
-                                                    ? 'نوع التسميع: مدارسة'
-                                                    : 'نوع التسميع: تسميع',
-                                                style: GoogleFonts.cairo(
-                                                  textStyle: kBodySmallText
-                                                      .copyWith(
+
+                                                if (recitation['type'] ==
+                                                        'with' &&
+                                                    recitation['with']
+                                                            ?.isNotEmpty ==
+                                                        true)
+                                                  AutoSizeText(
+                                                    'مع ${recitation['with']}',
+                                                    style: GoogleFonts.cairo(
+                                                      textStyle: TextStyle(
                                                         fontSize: 10,
                                                         fontWeight:
                                                             FontWeight.bold,
                                                       ),
-                                                ),
-                                              ),
-                                              if (recitation['type'] ==
-                                                      'with' &&
-                                                  recitation['with']
-                                                          ?.isNotEmpty ==
-                                                      true)
-                                                Text(
-                                                  'مع ${recitation['with']}',
-                                                  style: GoogleFonts.cairo(
-                                                    textStyle: kBodySmallText
-                                                        .copyWith(
-                                                          fontSize: 10,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        ),
+                                                    ),
+                                                    maxLines: 1,
+                                                    minFontSize: 5,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
                                                   ),
-                                                ),
-                                              if (recitation['type'] == 'to' &&
-                                                  recitation['with']
-                                                          ?.isNotEmpty ==
-                                                      true)
-                                                Text(
-                                                  'عند ${recitation['with']}',
-                                                  style: GoogleFonts.cairo(
-                                                    textStyle: kBodySmallText
-                                                        .copyWith(
-                                                          fontSize: 10,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        ),
+
+                                                if (recitation['type'] ==
+                                                        'to' &&
+                                                    recitation['with']
+                                                            ?.isNotEmpty ==
+                                                        true)
+                                                  AutoSizeText(
+                                                    'عند ${recitation['with']}',
+                                                    style: GoogleFonts.cairo(
+                                                      textStyle: TextStyle(
+                                                        fontSize: 10,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                    maxLines: 1,
+                                                    minFontSize: 5,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
                                                   ),
-                                                ),
-                                              if (recitation['type'] == 'to' &&
-                                                  recitation['listened_by']
-                                                          ?.isNotEmpty ==
-                                                      true)
-                                                Text(
-                                                  ' عند: ${recitation['listened_by']}',
-                                                  style: GoogleFonts.cairo(
-                                                    textStyle: kBodySmallText
-                                                        .copyWith(
-                                                          fontSize: 10,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        ),
+
+                                                if (recitation['type'] ==
+                                                        'to' &&
+                                                    recitation['listened_by']
+                                                            ?.isNotEmpty ==
+                                                        true)
+                                                  AutoSizeText(
+                                                    ' عند: ${recitation['listened_by']}',
+                                                    style: GoogleFonts.cairo(
+                                                      textStyle: kBodySmallText
+                                                          .copyWith(
+                                                            fontSize: 10,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                    ),
+                                                    maxLines: 1,
+                                                    minFontSize: 8,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
                                                   ),
-                                                ),
-                                            ],
+                                              ],
+                                            ),
                                           ),
                                         ],
                                       ),
