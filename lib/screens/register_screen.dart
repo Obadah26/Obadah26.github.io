@@ -44,7 +44,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     try {
       final snapshot =
           await FirebaseFirestore.instance.collection('usernames').get();
-
       final takenNames = snapshot.docs.map((doc) => doc.id).toSet();
 
       setState(() {
@@ -177,246 +176,273 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        toolbarHeight: 100,
-        title: Align(
-          alignment: Alignment.centerRight,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Icon(Icons.person_outlined, size: 35),
-                  SizedBox(width: 10),
-                  Text(
-                    'إنشاء حساب جديد',
-                    style: GoogleFonts.cairo(
-                      textStyle: kHeading1Text.copyWith(fontSize: 25),
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(100),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final isWeb = constraints.maxWidth > 600;
+
+            return AppBar(
+              automaticallyImplyLeading: false,
+              toolbarHeight: isWeb ? 120 : 100,
+              title: Align(
+                alignment: Alignment.centerRight,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Icon(
+                          Icons.person_outline_rounded,
+                          size: isWeb ? 42 : 35,
+                        ),
+                        SizedBox(width: isWeb ? 12 : 10),
+                        Text(
+                          'إنشاء حساب جديد',
+                          style: GoogleFonts.cairo(
+                            textStyle: kHeading1Text.copyWith(
+                              fontSize: isWeb ? 35 : 25,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
+                    Text(
+                      '! مرحبا بك في تطبيق الحديقة',
+                      style: GoogleFonts.cairo(
+                        textStyle: kBodyRegularText.copyWith(
+                          fontSize: isWeb ? 19 : 16,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              Text(
-                '! مرحبا بك في تطبيق الحديقة',
-                style: GoogleFonts.cairo(textStyle: kBodyRegularText),
-              ),
-            ],
-          ),
+              leading: null,
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+            );
+          },
         ),
-        leading: null,
-        backgroundColor: Colors.transparent,
       ),
       resizeToAvoidBottomInset: true,
       backgroundColor: Colors.white,
       body: ModalProgressHUD(
         inAsyncCall: showSpinner,
-        child: Stack(
-          children: [
-            CustomPaint(
-              painter: CircleIntersectionPainter(),
-              size: Size(400, 400),
-            ),
-            SafeArea(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    SizedBox(height: 70),
-                    Center(
-                      child: Text(
-                        'الحديقة',
-                        style: GoogleFonts.elMessiri(
-                          textStyle: kHeading1Text.copyWith(
-                            color: kLightPrimaryColor,
-                            fontSize: 40,
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 30),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 7),
-                      child: Container(
-                        width: 370,
-                        height: 65,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(
-                            color:
-                                userNameError != null
-                                    ? Colors.redAccent
-                                    : kLightPrimaryColor,
-                            width: 1.5,
-                          ),
-                        ),
-                        padding: EdgeInsets.symmetric(horizontal: 8),
-                        child: Row(
-                          children: [
-                            Icon(Icons.person, color: kLightPrimaryColor),
-                            SizedBox(width: 8),
-                            Expanded(
-                              child: DropdownButton<String>(
-                                isExpanded: true,
-                                hint: Center(
-                                  child:
-                                      loadingUserNames
-                                          ? CircularProgressIndicator(
-                                            strokeWidth: 2,
-                                          )
-                                          : availableUserNames.isEmpty
-                                          ? Text(
-                                            'لا توجد أسماء متاحة',
-                                            style: TextStyle(
-                                              color: Colors.grey,
-                                            ),
-                                          )
-                                          : Text('اختر اسم المستخدم'),
-                                ),
-                                value: selectedUserName,
-                                icon: const Icon(
-                                  Icons.arrow_drop_down,
-                                  color: kLightPrimaryColor,
-                                ),
-                                iconSize: 24,
-                                elevation: 4,
-                                style: GoogleFonts.cairo(
-                                  textStyle: kBodyRegularText.copyWith(),
-                                ),
-                                underline: Container(),
-                                onChanged: (String? newValue) {
-                                  setState(() {
-                                    selectedUserName = newValue!;
-                                    userNameError = null;
-                                  });
-                                },
-                                dropdownColor: Colors.white,
-                                items:
-                                    availableUserNames
-                                        .map(
-                                          (name) => DropdownMenuItem(
-                                            value: name,
-                                            child: Align(
-                                              alignment: Alignment.center,
-                                              child: Text(name),
-                                            ),
-                                          ),
-                                        )
-                                        .toList(),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final isWeb = constraints.maxWidth > 600;
+
+            return Stack(
+              children: [
+                Visibility(
+                  visible: isWeb ? false : true,
+                  child: CustomPaint(
+                    painter: CircleIntersectionPainter(),
+                    size: Size(400, 400),
+                  ),
+                ),
+                SafeArea(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        SizedBox(height: isWeb ? 0 : 70),
+                        Center(
+                          child: Text(
+                            'الحديقة',
+                            style: GoogleFonts.elMessiri(
+                              textStyle: kHeading1Text.copyWith(
+                                color: kLightPrimaryColor,
+                                fontSize: isWeb ? 50 : 40,
                               ),
                             ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    if (userNameError != null)
-                      Padding(
-                        padding: const EdgeInsets.only(right: 30, top: 5),
-                        child: Align(
-                          alignment: Alignment.centerRight,
-                          child: Text(
-                            userNameError!,
-                            style: TextStyle(
-                              color: Colors.redAccent,
-                              fontSize: 10,
-                            ),
-                            textDirection: TextDirection.rtl,
                           ),
                         ),
-                      ),
-                    SizedBox(height: 30),
-                    RoundedTextField(
-                      obscure: false,
-                      textColor: kPrimaryTextLight,
-                      controller: emailController,
-                      icon: Icons.mail,
-                      textHint: 'الايميل',
-                      keyboardType: TextInputType.emailAddress,
-                      hintColor: kPrimaryTextLight.withValues(
-                        alpha: (0.199 * 255),
-                      ),
-                      onChanged: (value) {
-                        email = value;
-                        if (emailError != null) {
-                          setState(() => emailError = null);
-                        }
-                      },
-                      hasError: emailError != null,
-                    ),
-                    if (emailError != null)
-                      Padding(
-                        padding: const EdgeInsets.only(right: 30, top: 5),
-                        child: Align(
-                          alignment: Alignment.centerRight,
-                          child: Text(
-                            emailError!,
-                            style: TextStyle(
-                              color: Colors.redAccent,
-                              fontSize: 10,
+                        SizedBox(height: 50),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 7),
+                          child: Container(
+                            width: 370,
+                            height: 65,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(
+                                color:
+                                    userNameError != null
+                                        ? Colors.redAccent
+                                        : kLightPrimaryColor,
+                                width: 1.5,
+                              ),
                             ),
-                            textDirection: TextDirection.rtl,
+                            padding: EdgeInsets.symmetric(horizontal: 8),
+                            child: Row(
+                              children: [
+                                Icon(Icons.person, color: kLightPrimaryColor),
+                                SizedBox(width: 8),
+                                Expanded(
+                                  child: DropdownButton<String>(
+                                    isExpanded: true,
+                                    hint: Center(
+                                      child:
+                                          loadingUserNames
+                                              ? CircularProgressIndicator(
+                                                strokeWidth: 2,
+                                              )
+                                              : availableUserNames.isEmpty
+                                              ? Text(
+                                                'لا توجد أسماء متاحة',
+                                                style: TextStyle(
+                                                  color: Colors.grey,
+                                                ),
+                                              )
+                                              : Text('اختر اسم المستخدم'),
+                                    ),
+                                    value: selectedUserName,
+                                    icon: const Icon(
+                                      Icons.arrow_drop_down,
+                                      color: kLightPrimaryColor,
+                                    ),
+                                    iconSize: 24,
+                                    elevation: 4,
+                                    style: GoogleFonts.cairo(
+                                      textStyle: kBodyRegularText.copyWith(),
+                                    ),
+                                    underline: Container(),
+                                    onChanged: (String? newValue) {
+                                      setState(() {
+                                        selectedUserName = newValue!;
+                                        userNameError = null;
+                                      });
+                                    },
+                                    dropdownColor: Colors.white,
+                                    items:
+                                        availableUserNames
+                                            .map(
+                                              (name) => DropdownMenuItem(
+                                                value: name,
+                                                child: Align(
+                                                  alignment: Alignment.center,
+                                                  child: Text(name),
+                                                ),
+                                              ),
+                                            )
+                                            .toList(),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    SizedBox(height: 30),
-                    RoundedTextField(
-                      obscure: true,
-                      textColor: kPrimaryTextLight,
-                      controller: passwordController,
-                      textHint: 'كلمة المرور',
-                      icon: Icons.lock,
-                      keyboardType: TextInputType.visiblePassword,
-                      hintColor: kPrimaryTextLight.withValues(
-                        alpha: (0.199 * 255),
-                      ),
-                      onChanged: (value) {
-                        password = value;
-                      },
-                      hasError: passwordError != null,
-                    ),
-                    if (passwordError != null)
-                      Padding(
-                        padding: const EdgeInsets.only(right: 30, top: 5),
-                        child: Align(
-                          alignment: Alignment.centerRight,
-                          child: Text(
-                            passwordError!,
-                            style: TextStyle(
-                              color: Colors.redAccent,
-                              fontSize: 10,
+                        if (userNameError != null)
+                          Padding(
+                            padding: const EdgeInsets.only(right: 30, top: 5),
+                            child: Align(
+                              alignment: Alignment.centerRight,
+                              child: Text(
+                                userNameError!,
+                                style: TextStyle(
+                                  color: Colors.redAccent,
+                                  fontSize: 10,
+                                ),
+                                textDirection: TextDirection.rtl,
+                              ),
                             ),
-                            textDirection: TextDirection.rtl,
+                          ),
+                        SizedBox(height: 30),
+                        RoundedTextField(
+                          obscure: false,
+                          textColor: kPrimaryTextLight,
+                          controller: emailController,
+                          icon: Icons.mail,
+                          textHint: 'الايميل',
+                          keyboardType: TextInputType.emailAddress,
+                          hintColor: kPrimaryTextLight.withValues(
+                            alpha: (0.199 * 255),
+                          ),
+                          onChanged: (value) {
+                            email = value;
+                            if (emailError != null) {
+                              setState(() => emailError = null);
+                            }
+                          },
+                          hasError: emailError != null,
+                        ),
+                        if (emailError != null)
+                          Padding(
+                            padding: const EdgeInsets.only(right: 30, top: 5),
+                            child: Align(
+                              alignment: Alignment.centerRight,
+                              child: Text(
+                                emailError!,
+                                style: TextStyle(
+                                  color: Colors.redAccent,
+                                  fontSize: 10,
+                                ),
+                                textDirection: TextDirection.rtl,
+                              ),
+                            ),
+                          ),
+                        SizedBox(height: 30),
+                        RoundedTextField(
+                          obscure: true,
+                          textColor: kPrimaryTextLight,
+                          controller: passwordController,
+                          textHint: 'كلمة المرور',
+                          icon: Icons.lock,
+                          keyboardType: TextInputType.visiblePassword,
+                          hintColor: kPrimaryTextLight.withValues(
+                            alpha: (0.199 * 255),
+                          ),
+                          onChanged: (value) {
+                            password = value;
+                          },
+                          hasError: passwordError != null,
+                        ),
+                        if (passwordError != null)
+                          Padding(
+                            padding: const EdgeInsets.only(right: 30, top: 5),
+                            child: Align(
+                              alignment: Alignment.centerRight,
+                              child: Text(
+                                passwordError!,
+                                style: TextStyle(
+                                  color: Colors.redAccent,
+                                  fontSize: 10,
+                                ),
+                                textDirection: TextDirection.rtl,
+                              ),
+                            ),
+                          ),
+                        SizedBox(height: 50),
+                        RoundedButton(
+                          onPressed: _registerUser,
+                          buttonText: 'إنشاء حساب',
+                        ),
+                        SizedBox(height: 20),
+                        Center(
+                          child: Text(
+                            'هل لديك حساب من قبل ؟',
+                            style: GoogleFonts.cairo(textStyle: kBodySmallText),
                           ),
                         ),
-                      ),
-
-                    SizedBox(height: 50),
-                    RoundedButton(
-                      onPressed: _registerUser,
-                      buttonText: 'إنشاء حساب',
+                        SizedBox(height: 20),
+                        RoundedButton(
+                          onPressed: () {
+                            Navigator.pushNamed(context, LoginScreen.id);
+                            emailController.clear();
+                            passwordController.clear();
+                          },
+                          buttonText: 'تسجيل دخول',
+                          isPrimary: false,
+                        ),
+                      ],
                     ),
-                    SizedBox(height: 20),
-                    Center(
-                      child: Text(
-                        'هل لديك حساب من قبل ؟',
-                        style: GoogleFonts.cairo(textStyle: kBodySmallText),
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                    RoundedButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, LoginScreen.id);
-                        emailController.clear();
-                        passwordController.clear();
-                      },
-                      buttonText: 'تسجيل دخول',
-                      isPrimary: false,
-                    ),
-                  ],
+                  ),
                 ),
-              ),
-            ),
-          ],
+              ],
+            );
+          },
         ),
       ),
     );

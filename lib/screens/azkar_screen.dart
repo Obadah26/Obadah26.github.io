@@ -1,5 +1,6 @@
 import 'package:alhadiqa/const.dart';
 import 'package:alhadiqa/screens/home_screen.dart';
+import 'package:alhadiqa/widgets/green_contatiner.dart';
 import 'package:alhadiqa/widgets/rounded_button.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -119,111 +120,114 @@ class _AzkarScreenState extends State<AzkarScreen> {
         ),
       ),
       backgroundColor: kBackgroundColor,
-      body: SafeArea(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  RoundedButton(
-                    width: 150,
-                    onPressed: _isMorning ? null : _toggleAzkarType,
-                    buttonText: 'أذكار الصباح',
-                    isPrimary: _isMorning ? true : false,
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final isWeb = constraints.maxWidth > 600;
+          return SafeArea(
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      RoundedButton(
+                        width: 150,
+                        onPressed: _isMorning ? null : _toggleAzkarType,
+                        buttonText: 'أذكار الصباح',
+                        isPrimary: _isMorning ? true : false,
+                      ),
+                      const SizedBox(width: 16),
+                      RoundedButton(
+                        width: 150,
+                        onPressed: _isMorning ? _toggleAzkarType : null,
+                        buttonText: 'أذكار المساء',
+                        isPrimary: _isMorning ? false : true,
+                      ),
+                    ],
                   ),
-                  const SizedBox(width: 16),
-                  RoundedButton(
-                    width: 150,
-                    onPressed: _isMorning ? _toggleAzkarType : null,
-                    buttonText: 'أذكار المساء',
-                    isPrimary: _isMorning ? false : true,
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Text(
-                _isMorning ? 'أذكار الصباح' : 'أذكار المساء',
-                style: GoogleFonts.elMessiri(
-                  textStyle: kHeading1Text.copyWith(color: kDarkPrimaryColor),
                 ),
-              ),
-            ),
-            Expanded(
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Card(
-                    elevation: 2,
-                    color: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                      side: BorderSide(color: kLightPrimaryColor, width: 2),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        children: [
-                          Text(
-                            title,
-                            style: GoogleFonts.cairo(
-                              textStyle: kHeading2Text.copyWith(
-                                color: kPrimaryColor,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                          const Divider(color: kLightPrimaryColor),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            child: Text(
-                              text,
-                              style:
-                                  title.startsWith('سورة') ||
-                                          title.startsWith('آية')
-                                      ? GoogleFonts.notoKufiArabic(
-                                        textStyle: kBodyLargeText.copyWith(
-                                          fontSize: 22,
-                                          height: 1.7,
-                                        ),
-                                      )
-                                      : GoogleFonts.cairo(
-                                        textStyle: kBodyLargeText.copyWith(
-                                          fontSize: 22,
-                                          height: 1.7,
-                                        ),
-                                      ),
-                              textDirection: TextDirection.rtl,
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                          Text(
-                            'عدد التكرار المتبقي: $_currentCount من $repeats',
-                            style: GoogleFonts.cairo(
-                              textStyle: kBodyRegularText.copyWith(
-                                color: kLightPrimaryColor,
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 10),
-                          RoundedButton(
-                            onPressed: _decrementCount,
-                            buttonText: 'تم',
-                            width: 100,
-                          ),
-                        ],
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Text(
+                    _isMorning ? 'أذكار الصباح' : 'أذكار المساء',
+                    style: GoogleFonts.elMessiri(
+                      textStyle: kHeading1Text.copyWith(
+                        color: kDarkPrimaryColor,
                       ),
                     ),
                   ),
                 ),
-              ),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Center(
+                      child: GreenContatiner(
+                        width: isWeb ? 800 : double.infinity,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            children: [
+                              Text(
+                                title,
+                                style: GoogleFonts.cairo(
+                                  textStyle: kHeading2Text.copyWith(
+                                    color: kPrimaryColor,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                              const Divider(color: kLightPrimaryColor),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 16,
+                                ),
+                                child: Text(
+                                  text,
+                                  style:
+                                      title.startsWith('سورة') ||
+                                              title.startsWith('آية')
+                                          ? GoogleFonts.notoKufiArabic(
+                                            textStyle: kBodyLargeText.copyWith(
+                                              fontSize: 22,
+                                              height: 1.7,
+                                            ),
+                                          )
+                                          : GoogleFonts.cairo(
+                                            textStyle: kBodyLargeText.copyWith(
+                                              fontSize: 22,
+                                              height: 1.7,
+                                            ),
+                                          ),
+                                  textDirection: TextDirection.rtl,
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                              Text(
+                                'عدد التكرار المتبقي: $_currentCount من $repeats',
+                                style: GoogleFonts.cairo(
+                                  textStyle: kBodyRegularText.copyWith(
+                                    color: kLightPrimaryColor,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 10),
+                              RoundedButton(
+                                onPressed: _decrementCount,
+                                buttonText: 'تم',
+                                width: 100,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }

@@ -17,7 +17,6 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'firebase_options.dart';
 import 'package:alhadiqa/screens/ijazah_leaderboard.dart';
 import 'package:alhadiqa/screens/recitation_leaderboard.dart';
-import 'package:alhadiqa/screens/pending_confirmations_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -69,7 +68,6 @@ class MyApp extends StatelessWidget {
         UserDetailsScreen.id: (context) => const UserDetailsScreen(),
         AzkarScreen.id: (context) => const AzkarScreen(),
         NotificationScreen.id: (context) => const NotificationScreen(),
-        PendingConfirmationsScreen.id: (context) => const NotificationScreen(),
       },
     );
   }

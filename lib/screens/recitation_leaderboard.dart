@@ -35,7 +35,7 @@ class _RecitationLeaderboardScreenState
       appBar: AppBar(
         title: Center(
           child: Text(
-            'إحصائيات التسميع',
+            'نتائج التسميع',
             style: GoogleFonts.elMessiri(
               textStyle: kHeading2Text.copyWith(color: kPrimaryColor),
             ),
@@ -77,287 +77,310 @@ class _RecitationLeaderboardScreenState
         ),
       ),
       backgroundColor: kBackgroundColor,
-      body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            SizedBox(height: 10),
-            GreenContatiner(
-              child: DropdownButton<String>(
-                value: selectedFilter,
-                isExpanded: true,
-                underline: Container(),
-                items:
-                    timeFilters.map((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Center(
-                          child: Text(
-                            value,
-                            textAlign: TextAlign.right,
-                            style: GoogleFonts.cairo(
-                              textStyle: kBodyRegularText.copyWith(),
-                            ),
-                          ),
-                        ),
-                      );
-                    }).toList(),
-                onChanged: (String? newValue) {
-                  setState(() {
-                    selectedFilter = newValue!;
-                  });
-                },
-              ),
-            ),
-            SizedBox(height: 10),
-            Expanded(
-              child: GreenContatiner(
-                child: StreamBuilder<QuerySnapshot>(
-                  stream:
-                      FirebaseFirestore.instance
-                          .collection('daily_recitation')
-                          .orderBy('timestamp', descending: true)
-                          .snapshots(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasError) {
-                      return Center(child: Text('حدث خطأ: ${snapshot.error}'));
-                    }
-
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: CircularProgressIndicator());
-                    }
-
-                    final now = DateTime.now();
-                    final filteredDocs =
-                        snapshot.data!.docs.where((doc) {
-                          final timestamp = doc['timestamp'] as Timestamp?;
-                          if (timestamp == null) return false;
-
-                          final date = timestamp.toDate();
-
-                          switch (selectedFilter) {
-                            case 'اليوم':
-                              return date.isAfter(
-                                now.subtract(Duration(days: 1)),
-                              );
-                            case 'الأسبوع':
-                              return date.isAfter(
-                                now.subtract(Duration(days: 7)),
-                              );
-                            case 'الشهر':
-                              return date.isAfter(
-                                now.subtract(Duration(days: 30)),
-                              );
-                            case '3 أشهر':
-                              return date.isAfter(
-                                now.subtract(Duration(days: 90)),
-                              );
-                            case 'السنة':
-                              return date.isAfter(
-                                now.subtract(Duration(days: 365)),
-                              );
-                            default:
-                              return true;
-                          }
-                        }).toList();
-
-                    Map<String, int> pagesPerName = {};
-                    Map<String, List<Timestamp>> recitationDates = {};
-
-                    for (var doc in filteredDocs) {
-                      int firstPage =
-                          doc['first_page'] is String
-                              ? int.tryParse(doc['first_page']) ?? 0
-                              : (doc['first_page'] as int? ?? 0);
-                      int secondPage =
-                          doc['second_page'] is String
-                              ? int.tryParse(doc['second_page']) ?? 0
-                              : (doc['second_page'] as int? ?? 0);
-                      int pages = (secondPage - firstPage) + 1;
-
-                      if (pages > 0) {
-                        String recitationType = doc['recitation_type'] ?? '';
-                        String user = doc['user'];
-                        String status = doc['status'] ?? '';
-
-                        if (recitationType == 'to') {
-                          // Count pages always for 'to'
-                          pagesPerName.update(
-                            user,
-                            (value) => value + pages,
-                            ifAbsent: () => pages,
-                          );
-                        } else if (recitationType == 'with' &&
-                            status == 'confirmed') {
-                          // Count pages for 'with' only if confirmed
-                          pagesPerName.update(
-                            user,
-                            (value) => value + pages,
-                            ifAbsent: () => pages,
-                          );
-
-                          if (doc['other_User'] != null) {
-                            String otherUser = doc['other_User'];
-                            pagesPerName.update(
-                              otherUser,
-                              (value) => value + pages,
-                              ifAbsent: () => pages,
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final isWeb = constraints.maxWidth > 600;
+          return SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                SizedBox(height: 10),
+                Center(
+                  child: GreenContatiner(
+                    width: isWeb ? 600 : double.infinity,
+                    child: DropdownButton<String>(
+                      value: selectedFilter,
+                      isExpanded: true,
+                      underline: Container(),
+                      items:
+                          timeFilters.map((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Center(
+                                child: Text(
+                                  value,
+                                  textAlign: TextAlign.right,
+                                  style: GoogleFonts.cairo(
+                                    textStyle: kBodyRegularText.copyWith(
+                                      fontSize: isWeb ? 19 : 16,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          selectedFilter = newValue!;
+                        });
+                      },
+                    ),
+                  ),
+                ),
+                SizedBox(height: 10),
+                Expanded(
+                  child: Center(
+                    child: GreenContatiner(
+                      width: isWeb ? 600 : double.infinity,
+                      child: StreamBuilder<QuerySnapshot>(
+                        stream:
+                            FirebaseFirestore.instance
+                                .collection('daily_recitation')
+                                .orderBy('timestamp', descending: true)
+                                .snapshots(),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasError) {
+                            return Center(
+                              child: Text('حدث خطأ: ${snapshot.error}'),
                             );
                           }
-                        }
 
-                        recitationDates
-                            .putIfAbsent(user, () => [])
-                            .add(doc['timestamp']);
-                      }
-                    }
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return Center(child: CircularProgressIndicator());
+                          }
 
-                    sortWithNames(pagesPerName);
+                          final now = DateTime.now();
+                          final filteredDocs =
+                              snapshot.data!.docs.where((doc) {
+                                final timestamp =
+                                    doc['timestamp'] as Timestamp?;
+                                if (timestamp == null) return false;
 
-                    final excludedNames = [
-                      'أستاذ عبدالرحمن الخن',
-                      'أستاذ أبو عبيدة',
-                    ];
+                                final date = timestamp.toDate();
 
-                    final otherUsers =
-                        recitationStudentsName
-                            .where(
-                              (name) =>
-                                  name != widget.userName &&
-                                  !excludedNames.contains(name),
-                            )
-                            .toList();
+                                switch (selectedFilter) {
+                                  case 'اليوم':
+                                    return date.isAfter(
+                                      now.subtract(Duration(days: 1)),
+                                    );
+                                  case 'الأسبوع':
+                                    return date.isAfter(
+                                      now.subtract(Duration(days: 7)),
+                                    );
+                                  case 'الشهر':
+                                    return date.isAfter(
+                                      now.subtract(Duration(days: 30)),
+                                    );
+                                  case '3 أشهر':
+                                    return date.isAfter(
+                                      now.subtract(Duration(days: 90)),
+                                    );
+                                  case 'السنة':
+                                    return date.isAfter(
+                                      now.subtract(Duration(days: 365)),
+                                    );
+                                  default:
+                                    return true;
+                                }
+                              }).toList();
 
-                    return Column(
-                      children: [
-                        if (widget.userName != null &&
-                            widget.userName != 'أستاذ عبدالرحمن الخن' &&
-                            widget.userName != 'أستاذ أبو عبيدة')
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder:
-                                      (context) => UserDetailsScreen(
-                                        userName: widget.userName!,
-                                      ),
-                                ),
-                              );
-                            },
-                            child: Card(
-                              elevation: 1,
-                              color: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                                side: BorderSide(
-                                  color: kMainBorderColor,
-                                  width: 1,
-                                ),
-                              ),
-                              child: ListTile(
-                                contentPadding: EdgeInsets.symmetric(
-                                  horizontal: 16,
-                                  vertical: 12,
-                                ),
-                                title: Text(
-                                  '${widget.userName}',
-                                  style: GoogleFonts.cairo(
-                                    textStyle: kBodyRegularText.copyWith(
-                                      fontSize: 18,
-                                      color: kPrimaryColor,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  textAlign: TextAlign.center,
-                                ),
-                                subtitle: Text(
-                                  '${pagesPerName[widget.userName] ?? 0} صفحة',
-                                  style: GoogleFonts.cairo(
-                                    textStyle: kBodyRegularText.copyWith(
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                  textDirection: TextDirection.rtl,
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                            ),
-                          ),
-                        if (widget.userName != null &&
-                            widget.userName != 'أستاذ عبدالرحمن الخن' &&
-                            widget.userName != 'أستاذ أبو عبيدة')
-                          SizedBox(height: 10),
-                        Expanded(
-                          child: ListView.builder(
-                            padding: EdgeInsets.all(10),
-                            itemCount: otherUsers.length,
-                            itemBuilder: (context, index) {
-                              String name = otherUsers[index];
-                              int totalPages = pagesPerName[name] ?? 0;
+                          Map<String, int> pagesPerName = {};
+                          Map<String, List<Timestamp>> recitationDates = {};
 
-                              return GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder:
-                                          (context) =>
-                                              UserDetailsScreen(userName: name),
-                                    ),
+                          for (var doc in filteredDocs) {
+                            int firstPage =
+                                doc['first_page'] is String
+                                    ? int.tryParse(doc['first_page']) ?? 0
+                                    : (doc['first_page'] as int? ?? 0);
+                            int secondPage =
+                                doc['second_page'] is String
+                                    ? int.tryParse(doc['second_page']) ?? 0
+                                    : (doc['second_page'] as int? ?? 0);
+                            int pages = (secondPage - firstPage) + 1;
+
+                            if (pages > 0) {
+                              String recitationType =
+                                  doc['recitation_type'] ?? '';
+                              String user = doc['user'];
+                              String status = doc['status'] ?? '';
+
+                              if (recitationType == 'to') {
+                                // Count pages always for 'to'
+                                pagesPerName.update(
+                                  user,
+                                  (value) => value + pages,
+                                  ifAbsent: () => pages,
+                                );
+                              } else if (recitationType == 'with' &&
+                                  status == 'confirmed') {
+                                // Count pages for 'with' only if confirmed
+                                pagesPerName.update(
+                                  user,
+                                  (value) => value + pages,
+                                  ifAbsent: () => pages,
+                                );
+
+                                if (doc['other_User'] != null) {
+                                  String otherUser = doc['other_User'];
+                                  pagesPerName.update(
+                                    otherUser,
+                                    (value) => value + pages,
+                                    ifAbsent: () => pages,
                                   );
-                                },
-                                child: Card(
-                                  color: Colors.white,
-                                  elevation: 2,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                    side: BorderSide(
-                                      color: kMainBorderColor,
-                                      width: 1,
-                                    ),
-                                  ),
-                                  child: ListTile(
-                                    contentPadding: EdgeInsets.symmetric(
-                                      horizontal: 16,
-                                      vertical: 12,
-                                    ),
-                                    title: Text(
-                                      name,
-                                      style: GoogleFonts.cairo(
-                                        textStyle: kBodyRegularText.copyWith(
-                                          fontSize: 18,
-                                          color: kPrimaryColor,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                }
+                              }
+
+                              recitationDates
+                                  .putIfAbsent(user, () => [])
+                                  .add(doc['timestamp']);
+                            }
+                          }
+
+                          sortWithNames(pagesPerName);
+
+                          final excludedNames = [
+                            'أستاذ عبدالرحمن الخن',
+                            'أستاذ أبو عبيدة',
+                          ];
+
+                          final otherUsers =
+                              recitationStudentsName
+                                  .where(
+                                    (name) =>
+                                        name != widget.userName &&
+                                        !excludedNames.contains(name),
+                                  )
+                                  .toList();
+
+                          return Column(
+                            children: [
+                              if (widget.userName != null &&
+                                  widget.userName != 'أستاذ عبدالرحمن الخن' &&
+                                  widget.userName != 'أستاذ أبو عبيدة')
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder:
+                                            (context) => UserDetailsScreen(
+                                              userName: widget.userName!,
+                                            ),
                                       ),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                    subtitle: Text(
-                                      '$totalPages صفحة',
-                                      style: GoogleFonts.cairo(
-                                        textStyle: kBodyRegularText.copyWith(
-                                          fontSize: 16,
-                                        ),
+                                    );
+                                  },
+                                  child: Card(
+                                    elevation: 1,
+                                    color: Colors.white,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                      side: BorderSide(
+                                        color: kMainBorderColor,
+                                        width: 1,
                                       ),
-                                      textAlign: TextAlign.center,
-                                      textDirection: TextDirection.rtl,
+                                    ),
+                                    child: ListTile(
+                                      contentPadding: EdgeInsets.symmetric(
+                                        horizontal: 16,
+                                        vertical: 12,
+                                      ),
+                                      title: Text(
+                                        '${widget.userName}',
+                                        style: GoogleFonts.cairo(
+                                          textStyle: kBodyRegularText.copyWith(
+                                            fontSize: isWeb ? 22 : 18,
+                                            color: kPrimaryColor,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      subtitle: Text(
+                                        '${pagesPerName[widget.userName] ?? 0} صفحة',
+                                        style: GoogleFonts.cairo(
+                                          textStyle: kBodyRegularText.copyWith(
+                                            fontSize: isWeb ? 20 : 16,
+                                          ),
+                                        ),
+                                        textDirection: TextDirection.rtl,
+                                        textAlign: TextAlign.center,
+                                      ),
                                     ),
                                   ),
                                 ),
-                              );
-                            },
-                          ),
-                        ),
-                      ],
-                    );
-                  },
+                              if (widget.userName != null &&
+                                  widget.userName != 'أستاذ عبدالرحمن الخن' &&
+                                  widget.userName != 'أستاذ أبو عبيدة')
+                                SizedBox(height: 10),
+                              Expanded(
+                                child: ListView.builder(
+                                  padding: EdgeInsets.all(10),
+                                  itemCount: otherUsers.length,
+                                  itemBuilder: (context, index) {
+                                    String name = otherUsers[index];
+                                    int totalPages = pagesPerName[name] ?? 0;
+
+                                    return GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder:
+                                                (context) => UserDetailsScreen(
+                                                  userName: name,
+                                                ),
+                                          ),
+                                        );
+                                      },
+                                      child: Card(
+                                        color: Colors.white,
+                                        elevation: 2,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
+                                          side: BorderSide(
+                                            color: kMainBorderColor,
+                                            width: 1,
+                                          ),
+                                        ),
+                                        child: ListTile(
+                                          contentPadding: EdgeInsets.symmetric(
+                                            horizontal: 16,
+                                            vertical: 12,
+                                          ),
+                                          title: Text(
+                                            name,
+                                            style: GoogleFonts.cairo(
+                                              textStyle: kBodyRegularText
+                                                  .copyWith(
+                                                    fontSize: isWeb ? 22 : 18,
+                                                    color: kPrimaryColor,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                            ),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                          subtitle: Text(
+                                            '$totalPages صفحة',
+                                            style: GoogleFonts.cairo(
+                                              textStyle: kBodyRegularText
+                                                  .copyWith(
+                                                    fontSize: isWeb ? 20 : 16,
+                                                  ),
+                                            ),
+                                            textAlign: TextAlign.center,
+                                            textDirection: TextDirection.rtl,
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+                  ),
                 ),
-              ),
+                SizedBox(height: 20),
+              ],
             ),
-            SizedBox(height: 20),
-          ],
-        ),
+          );
+        },
       ),
     );
   }

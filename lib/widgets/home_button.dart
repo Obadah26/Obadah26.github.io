@@ -9,21 +9,24 @@ class HomeButton extends StatelessWidget {
     required this.text,
     required this.onPressed,
   });
+
   final IconData icon;
   final String text;
   final Function() onPressed;
 
   @override
   Widget build(BuildContext context) {
+    bool isWeb = MediaQuery.of(context).size.width > 600;
+
     return SizedBox(
-      height: 100,
-      width: 100,
+      height: isWeb ? 120 : 100,
+      width: isWeb ? 120 : 100,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           IconButton(
             onPressed: onPressed,
-            icon: Icon(icon, size: 50, color: kDarkPrimaryColor),
+            icon: Icon(icon, size: isWeb ? 60 : 50, color: kDarkPrimaryColor),
           ),
           FittedBox(
             fit: BoxFit.scaleDown,
@@ -33,6 +36,7 @@ class HomeButton extends StatelessWidget {
                 textStyle: kBodySmallText.copyWith(
                   color: kPrimaryColor,
                   fontWeight: FontWeight.bold,
+                  fontSize: isWeb ? 18 : 14,
                 ),
               ),
               maxLines: 1,

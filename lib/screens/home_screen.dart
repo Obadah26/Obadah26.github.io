@@ -299,453 +299,496 @@ class _HomeScreenState extends State<HomeScreen> {
         isTeacher: _isTeacher,
         loadWeeklyGoal: _loadWeeklyGoal,
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            // Greeting Section
-            Padding(
-              padding: const EdgeInsets.fromLTRB(0, 10, 24, 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  AutoSizeText.rich(
-                    TextSpan(
-                      text: 'أهلاً، ',
-                      style: kBodyLargeText.copyWith(fontSize: 20),
-                      children: [
-                        TextSpan(
-                          text: _loadingUser ? '...جاري التحميل' : _userName,
-                          style: kBodyLargeText.copyWith(
-                            fontSize: 20,
-                            color: kPrimaryColor,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                    maxLines: 1,
-                    minFontSize: 12,
-                    overflow: TextOverflow.ellipsis,
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final isWeb = constraints.maxWidth > 600;
+          return SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                // Greeting Section
+                Padding(
+                  padding: EdgeInsets.fromLTRB(
+                    0,
+                    isWeb ? 0 : 10,
+                    isWeb ? 450 : 24,
+                    isWeb ? 12 : 10,
                   ),
-                  Text(
-                    arabicDate,
-                    style: kBodySmallText.copyWith(
-                      fontSize: 15,
-                      color: Colors.grey[600],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            MutualRecitationStatus(userName: _userName),
-            // Best 5 students
-            StreamBuilder<List<MapEntry<String, int>>>(
-              stream: getTop5UsersThisMonthStream(),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return Center(
-                    child: CircularProgressIndicator(color: kPrimaryColor),
-                  );
-                }
-                final top5Users = snapshot.data!;
-                if (top5Users.isEmpty) {
-                  return GreenContatiner(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          'أفضل 5 مسمعين خلال الشهر الحالي',
-                          style: kHeading2Text.copyWith(
-                            fontSize: 16,
-                            color: kDarkPrimaryColor,
-                          ),
-                        ),
-                        SizedBox(height: 30),
-                        Text(
-                          'لم يتم تسجيل أي تسميع',
-                          style: kBodySmallText.copyWith(
-                            fontSize: 15,
-                            color: Colors.grey[400],
-                          ),
-                        ),
-                        SizedBox(height: 30),
-                      ],
-                    ),
-                  );
-                }
-                return Top5Users(topUsers: top5Users);
-              },
-            ),
-            // Daily Ayah Section
-            GreenContatiner(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    'آثار يومية',
-                    style: kHeading2Text.copyWith(
-                      fontSize: 18,
-                      color: kDarkPrimaryColor,
-                    ),
-                  ),
-                  SizedBox(height: 12),
-                  Column(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      AutoSizeText(
-                        rtlWrappedText,
-                        textAlign: TextAlign.center,
-                        style: GoogleFonts.notoKufiArabic(
-                          textStyle: TextStyle(
-                            fontSize: 20,
-                            color: kLightPrimaryColor,
+                      AutoSizeText.rich(
+                        TextSpan(
+                          text: 'أهلاً، ',
+                          style: kBodyLargeText.copyWith(
+                            fontSize: isWeb ? 24 : 20,
                           ),
-                        ),
-                        maxLines: 2,
-                        minFontSize: 12,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      SizedBox(height: 8),
-                      AutoSizeText(
-                        _dailyQuote.value,
-                        style: GoogleFonts.notoKufiArabic(
-                          textStyle: TextStyle(
-                            fontSize: 11,
-                            color: kPrimaryColor,
-                          ),
+                          children: [
+                            TextSpan(
+                              text:
+                                  _loadingUser ? '...جاري التحميل' : _userName,
+                              style: kBodyLargeText.copyWith(
+                                fontSize: isWeb ? 24 : 20,
+                                color: kPrimaryColor,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
                         ),
                         maxLines: 1,
-                        minFontSize: 10,
+                        minFontSize: isWeb ? 14 : 12,
                         overflow: TextOverflow.ellipsis,
+                      ),
+                      Text(
+                        arabicDate,
+                        style: kBodySmallText.copyWith(
+                          fontSize: isWeb ? 18 : 15,
+                          color: Colors.grey[600],
+                        ),
                       ),
                     ],
                   ),
-                ],
-              ),
-            ),
-            // Weekly Target Section
-            Visibility(
-              visible: _isTeacher ? false : true,
-              child: GreenContatiner(
-                child: StreamBuilder<List<QueryDocumentSnapshot>>(
-                  stream: Rx.combineLatest2<
-                    QuerySnapshot,
-                    QuerySnapshot,
-                    List<QueryDocumentSnapshot>
-                  >(
-                    _firestore
-                        .collection('daily_recitation')
-                        .where('user', isEqualTo: _userName)
-                        .where('recitation_type', whereIn: ['to', 'with'])
-                        .where('status', isEqualTo: 'confirmed')
-                        .snapshots(),
-                    _firestore
-                        .collection('daily_recitation')
-                        .where('other_User', isEqualTo: _userName)
-                        .where('recitation_type', whereIn: ['to', 'with'])
-                        .where('status', isEqualTo: 'confirmed')
-                        .snapshots(),
-                    (snapshot1, snapshot2) {
-                      final combinedDocs = <QueryDocumentSnapshot>[];
-                      combinedDocs.addAll(snapshot1.docs);
-                      combinedDocs.addAll(snapshot2.docs);
-                      return combinedDocs;
-                    },
-                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(right: isWeb ? 450 : 0),
+                  child: MutualRecitationStatus(userName: _userName),
+                ),
+                // Best 5 students
+                StreamBuilder<List<MapEntry<String, int>>>(
+                  stream: getTop5UsersThisMonthStream(),
                   builder: (context, snapshot) {
                     if (!snapshot.hasData) {
                       return Center(
                         child: CircularProgressIndicator(color: kPrimaryColor),
                       );
                     }
-
-                    int totalPages = 0;
-                    final docs = snapshot.data!;
-
-                    for (var doc in docs) {
-                      int firstPage =
-                          doc['first_page'] is String
-                              ? int.tryParse(doc['first_page']) ?? 0
-                              : (doc['first_page'] as int? ?? 0);
-                      int secondPage =
-                          doc['second_page'] is String
-                              ? int.tryParse(doc['second_page']) ?? 0
-                              : (doc['second_page'] as int? ?? 0);
-                      totalPages += ((secondPage - firstPage) + 1);
-                    }
-
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          'الهدف الاسبوعي',
-                          style: kHeading2Text.copyWith(
-                            fontSize: 18,
-                            color: kDarkPrimaryColor,
-                          ),
-                        ),
-                        SizedBox(height: 16),
-                        RichText(
-                          textAlign: TextAlign.center,
-                          text: TextSpan(
-                            style: kBodyRegularText.copyWith(
-                              color: Colors.grey[700],
-                            ),
-                            children: <TextSpan>[
-                              TextSpan(text: 'تم انجاز '),
-                              TextSpan(
-                                text: '$totalPages',
-                                style: TextStyle(
-                                  color: kPrimaryColor,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
+                    final top5Users = snapshot.data!;
+                    if (top5Users.isEmpty) {
+                      return Center(
+                        child: GreenContatiner(
+                          width: isWeb ? 600 : double.infinity,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                'أفضل 5 مسمعين خلال الشهر الحالي',
+                                style: kHeading2Text.copyWith(
+                                  fontSize: isWeb ? 19 : 16,
+                                  color: kDarkPrimaryColor,
                                 ),
                               ),
-                              TextSpan(text: ' صفحة من أصل $weeklyGoal صفحة'),
+                              SizedBox(height: 30),
+                              Text(
+                                'لم يتم تسجيل أي تسميع',
+                                style: kBodySmallText.copyWith(
+                                  fontSize: isWeb ? 18 : 15,
+                                  color: Colors.grey[400],
+                                ),
+                              ),
+                              SizedBox(height: 30),
                             ],
                           ),
                         ),
-                        const SizedBox(height: 16),
-                        LinearProgressBar(
-                          maxSteps: weeklyGoal,
-                          progressType: LinearProgressBar.progressTypeLinear,
-                          currentStep: totalPages,
-                          progressColor: kLightPrimaryColor,
-                          backgroundColor: Colors.grey[200],
-                          borderRadius: BorderRadius.circular(10),
+                      );
+                    }
+                    return Top5Users(topUsers: top5Users);
+                  },
+                ),
+                // Daily Ayah Section
+                Center(
+                  child: GreenContatiner(
+                    width: isWeb ? 600 : double.infinity,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          'آثار يومية',
+                          style: kHeading2Text.copyWith(
+                            fontSize: isWeb ? 22 : 18,
+                            color: kDarkPrimaryColor,
+                          ),
                         ),
-                        const SizedBox(height: 8),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        SizedBox(height: 12),
+                        Column(
                           children: [
-                            Text(
-                              '0',
-                              style: TextStyle(color: Colors.grey[600]),
+                            AutoSizeText(
+                              rtlWrappedText,
+                              textAlign: TextAlign.center,
+                              style: GoogleFonts.notoKufiArabic(
+                                textStyle: TextStyle(
+                                  fontSize: isWeb ? 24 : 20,
+                                  color: kLightPrimaryColor,
+                                ),
+                              ),
+                              maxLines: 2,
+                              minFontSize: isWeb ? 14 : 12,
+                              overflow: TextOverflow.ellipsis,
                             ),
-                            Text(
-                              '$weeklyGoal',
-                              style: TextStyle(color: Colors.grey[600]),
+                            SizedBox(height: 8),
+                            AutoSizeText(
+                              _dailyQuote.value,
+                              style: GoogleFonts.notoKufiArabic(
+                                textStyle: TextStyle(
+                                  fontSize: isWeb ? 13.5 : 11,
+                                  color: kPrimaryColor,
+                                ),
+                              ),
+                              maxLines: 1,
+                              minFontSize: isWeb ? 12 : 10,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ],
                         ),
-                        const SizedBox(height: 16),
-                        Text(
-                          totalPages <= (weeklyGoal * 0.25)
-                              ? 'الصبر والمداومة مفتاح النجاح في حفظ كتاب الله'
-                              : totalPages <= (weeklyGoal * 0.5)
-                              ? 'القليل الدائم خير من الكثير المنقطع'
-                              : totalPages <= (weeklyGoal * 0.75)
-                              ? 'استمر في الإنجاز'
-                              : totalPages <= (weeklyGoal * 0.75)
-                              ? 'خطوات قليلة تفصلك عن الهدف'
-                              : 'مبارك! لقد أتممت الهدف',
-                          style: GoogleFonts.cairo(
-                            textStyle: TextStyle(
-                              fontSize: 14,
-                              color: kPrimaryColor,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
                       ],
-                    );
-                  },
-                ),
-              ),
-            ),
-            // Fast buttons
-            GreenContatiner(
-              child: Column(
-                children: [
-                  Text(
-                    'الخدمات السريعة',
-                    style: kHeading2Text.copyWith(
-                      fontSize: 18,
-                      color: kDarkPrimaryColor,
                     ),
                   ),
-                  const SizedBox(height: 16),
-                  if (_isTeacher)
-                    GridView.count(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      crossAxisCount: 3,
-                      childAspectRatio: 0.9,
-                      mainAxisSpacing: 12,
-                      crossAxisSpacing: 12,
+                ),
+                // Weekly Target Section
+                Visibility(
+                  visible: _isTeacher ? false : true,
+                  child: Center(
+                    child: GreenContatiner(
+                      width: isWeb ? 600 : double.infinity,
+                      child: StreamBuilder<List<QueryDocumentSnapshot>>(
+                        stream: Rx.combineLatest2<
+                          QuerySnapshot,
+                          QuerySnapshot,
+                          List<QueryDocumentSnapshot>
+                        >(
+                          _firestore
+                              .collection('daily_recitation')
+                              .where('user', isEqualTo: _userName)
+                              .where('recitation_type', whereIn: ['to', 'with'])
+                              .where('status', isEqualTo: 'confirmed')
+                              .snapshots(),
+                          _firestore
+                              .collection('daily_recitation')
+                              .where('other_User', isEqualTo: _userName)
+                              .where('recitation_type', whereIn: ['to', 'with'])
+                              .where('status', isEqualTo: 'confirmed')
+                              .snapshots(),
+                          (snapshot1, snapshot2) {
+                            final combinedDocs = <QueryDocumentSnapshot>[];
+                            combinedDocs.addAll(snapshot1.docs);
+                            combinedDocs.addAll(snapshot2.docs);
+                            return combinedDocs;
+                          },
+                        ),
+                        builder: (context, snapshot) {
+                          if (!snapshot.hasData) {
+                            return Center(
+                              child: CircularProgressIndicator(
+                                color: kPrimaryColor,
+                              ),
+                            );
+                          }
+
+                          int totalPages = 0;
+                          final docs = snapshot.data!;
+
+                          for (var doc in docs) {
+                            int firstPage =
+                                doc['first_page'] is String
+                                    ? int.tryParse(doc['first_page']) ?? 0
+                                    : (doc['first_page'] as int? ?? 0);
+                            int secondPage =
+                                doc['second_page'] is String
+                                    ? int.tryParse(doc['second_page']) ?? 0
+                                    : (doc['second_page'] as int? ?? 0);
+                            totalPages += ((secondPage - firstPage) + 1);
+                          }
+
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                'الهدف الاسبوعي',
+                                style: kHeading2Text.copyWith(
+                                  fontSize: isWeb ? 22 : 18,
+                                  color: kDarkPrimaryColor,
+                                ),
+                              ),
+                              SizedBox(height: 16),
+                              RichText(
+                                textAlign: TextAlign.center,
+                                text: TextSpan(
+                                  style: kBodyRegularText.copyWith(
+                                    color: Colors.grey[700],
+                                    fontSize: isWeb ? 19 : 16,
+                                  ),
+                                  children: <TextSpan>[
+                                    TextSpan(text: 'تم انجاز '),
+                                    TextSpan(
+                                      text: '$totalPages',
+                                      style: TextStyle(
+                                        color: kPrimaryColor,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: isWeb ? 23 : 20,
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text: ' صفحة من أصل $weeklyGoal صفحة',
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              LinearProgressBar(
+                                maxSteps: weeklyGoal,
+                                progressType:
+                                    LinearProgressBar.progressTypeLinear,
+                                currentStep: totalPages,
+                                progressColor: kLightPrimaryColor,
+                                backgroundColor: Colors.grey[200],
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              const SizedBox(height: 8),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    '0',
+                                    style: TextStyle(
+                                      color: Colors.grey[600],
+                                      fontSize: isWeb ? 17 : 14,
+                                    ),
+                                  ),
+                                  Text(
+                                    '$weeklyGoal',
+                                    style: TextStyle(
+                                      color: Colors.grey[600],
+                                      fontSize: isWeb ? 17 : 14,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 16),
+                              Text(
+                                totalPages <= (weeklyGoal * 0.25)
+                                    ? 'الصبر والمداومة مفتاح النجاح في حفظ كتاب الله'
+                                    : totalPages <= (weeklyGoal * 0.5)
+                                    ? 'القليل الدائم خير من الكثير المنقطع'
+                                    : totalPages <= (weeklyGoal * 0.75)
+                                    ? 'استمر في الإنجاز'
+                                    : totalPages <= (weeklyGoal * 0.75)
+                                    ? 'خطوات قليلة تفصلك عن الهدف'
+                                    : 'مبارك! لقد أتممت الهدف',
+                                style: GoogleFonts.cairo(
+                                  textStyle: TextStyle(
+                                    fontSize: isWeb ? 17 : 14,
+                                    color: kPrimaryColor,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+                // Fast buttons
+                Center(
+                  child: GreenContatiner(
+                    width: isWeb ? 600 : double.infinity,
+                    child: Column(
                       children: [
-                        HomeButton(
-                          icon: FlutterIslamicIcons.mosque,
-                          text: 'أوقات الصلاة',
-                          onPressed: () {
-                            showOkAlertDialog(
-                              context: context,
-                              title: 'غير متوفر حالياً',
-                              message: 'سيتم التفعيل قريباً',
-                              okLabel: 'حسناً',
-                            );
-                          },
+                        Text(
+                          'الخدمات السريعة',
+                          style: kHeading2Text.copyWith(
+                            fontSize: isWeb ? 22 : 18,
+                            color: kDarkPrimaryColor,
+                          ),
                         ),
-                        HomeButton(
-                          icon: Icons.bar_chart,
-                          text: 'نتائج التسميع',
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder:
-                                    (context) => RecitationLeaderboardScreen(
-                                      userName: _userName,
-                                    ),
+                        const SizedBox(height: 16),
+                        if (_isTeacher)
+                          GridView.count(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            crossAxisCount: 3,
+                            childAspectRatio: 0.9,
+                            mainAxisSpacing: 12,
+                            crossAxisSpacing: 12,
+                            children: [
+                              HomeButton(
+                                icon: FlutterIslamicIcons.mosque,
+                                text: 'أوقات الصلاة',
+                                onPressed: () {
+                                  showOkAlertDialog(
+                                    context: context,
+                                    title: 'غير متوفر حالياً',
+                                    message: 'سيتم التفعيل قريباً',
+                                    okLabel: 'حسناً',
+                                  );
+                                },
                               ),
-                            );
-                          },
-                        ),
-                        HomeButton(
-                          icon: FlutterIslamicIcons.tasbihHand,
-                          text: 'الاذكار',
-                          onPressed: () {
-                            Navigator.pushNamed(context, AzkarScreen.id);
-                          },
-                        ),
-                        HomeButton(
-                          icon: Icons.photo_library_outlined,
-                          text: 'البوم الصور',
-                          onPressed: () {
-                            showOkAlertDialog(
-                              context: context,
-                              title: 'غير متوفر حالياً',
-                              message: 'سيتم التفعيل قريباً',
-                              okLabel: 'حسناً',
-                            );
-                          },
-                        ),
-                        HomeButton(
-                          icon: Icons.bar_chart,
-                          text: 'نتائج الاجازة',
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder:
-                                    (context) => IjazahLeaderboardScreen(
-                                      userName: _userName,
+                              HomeButton(
+                                icon: Icons.bar_chart,
+                                text: 'نتائج التسميع',
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder:
+                                          (context) =>
+                                              RecitationLeaderboardScreen(
+                                                userName: _userName,
+                                              ),
                                     ),
+                                  );
+                                },
                               ),
-                            );
-                          },
-                        ),
-                        HomeButton(
-                          icon: FlutterIslamicIcons.lantern,
-                          text: 'رمضان',
-                          onPressed: () {
-                            showOkAlertDialog(
-                              context: context,
-                              title: 'غير فعال',
-                              message: 'يتفعل خلال رمضان فقط',
-                              okLabel: 'حسناً',
-                            );
-                          },
-                        ),
+                              HomeButton(
+                                icon: FlutterIslamicIcons.tasbihHand,
+                                text: 'الاذكار',
+                                onPressed: () {
+                                  Navigator.pushNamed(context, AzkarScreen.id);
+                                },
+                              ),
+                              HomeButton(
+                                icon: Icons.photo_library_outlined,
+                                text: 'البوم الصور',
+                                onPressed: () {
+                                  showOkAlertDialog(
+                                    context: context,
+                                    title: 'غير متوفر حالياً',
+                                    message: 'سيتم التفعيل قريباً',
+                                    okLabel: 'حسناً',
+                                  );
+                                },
+                              ),
+                              HomeButton(
+                                icon: Icons.bar_chart,
+                                text: 'نتائج الاجازة',
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder:
+                                          (context) => IjazahLeaderboardScreen(
+                                            userName: _userName,
+                                          ),
+                                    ),
+                                  );
+                                },
+                              ),
+                              HomeButton(
+                                icon: FlutterIslamicIcons.lantern,
+                                text: 'رمضان',
+                                onPressed: () {
+                                  showOkAlertDialog(
+                                    context: context,
+                                    title: 'غير فعال',
+                                    message: 'يتفعل خلال رمضان فقط',
+                                    okLabel: 'حسناً',
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                        if (!_isTeacher)
+                          GridView.count(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            crossAxisCount: 3,
+                            childAspectRatio: 0.9,
+                            mainAxisSpacing: 12,
+                            crossAxisSpacing: 12,
+                            children: [
+                              HomeButton(
+                                icon: FlutterIslamicIcons.quran2,
+                                text: 'التسميع اليومي',
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder:
+                                          (context) => DailyRecitationScreen(
+                                            userName: _userName,
+                                          ),
+                                    ),
+                                  );
+                                },
+                              ),
+                              HomeButton(
+                                icon: Icons.bar_chart,
+                                text: 'نتائج التسميع',
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder:
+                                          (context) =>
+                                              RecitationLeaderboardScreen(
+                                                userName: _userName,
+                                              ),
+                                    ),
+                                  );
+                                },
+                              ),
+                              HomeButton(
+                                icon: FlutterIslamicIcons.tasbihHand,
+                                text: 'الاذكار',
+                                onPressed: () {
+                                  Navigator.pushNamed(context, AzkarScreen.id);
+                                },
+                              ),
+                              HomeButton(
+                                icon: FlutterIslamicIcons.muslim2,
+                                text: 'الاجازة',
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder:
+                                          (context) => IjazahRecitationScreen(
+                                            userName: _userName,
+                                          ),
+                                    ),
+                                  );
+                                },
+                              ),
+                              HomeButton(
+                                icon: Icons.bar_chart,
+                                text: 'نتائج الاجازة',
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder:
+                                          (context) => IjazahLeaderboardScreen(
+                                            userName: _userName,
+                                          ),
+                                    ),
+                                  );
+                                },
+                              ),
+                              HomeButton(
+                                icon: FlutterIslamicIcons.lantern,
+                                text: 'رمضان',
+                                onPressed: () {
+                                  showOkAlertDialog(
+                                    context: context,
+                                    title: 'غير فعال',
+                                    message: 'يتفعل خلال رمضان فقط',
+                                    okLabel: 'حسناً',
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
                       ],
                     ),
-                  if (!_isTeacher)
-                    GridView.count(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      crossAxisCount: 3,
-                      childAspectRatio: 0.9,
-                      mainAxisSpacing: 12,
-                      crossAxisSpacing: 12,
-                      children: [
-                        HomeButton(
-                          icon: FlutterIslamicIcons.quran2,
-                          text: 'التسميع اليومي',
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder:
-                                    (context) => DailyRecitationScreen(
-                                      userName: _userName,
-                                    ),
-                              ),
-                            );
-                          },
-                        ),
-                        HomeButton(
-                          icon: Icons.bar_chart,
-                          text: 'نتائج التسميع',
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder:
-                                    (context) => RecitationLeaderboardScreen(
-                                      userName: _userName,
-                                    ),
-                              ),
-                            );
-                          },
-                        ),
-                        HomeButton(
-                          icon: FlutterIslamicIcons.tasbihHand,
-                          text: 'الاذكار',
-                          onPressed: () {
-                            Navigator.pushNamed(context, AzkarScreen.id);
-                          },
-                        ),
-                        HomeButton(
-                          icon: FlutterIslamicIcons.muslim2,
-                          text: 'الاجازة',
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder:
-                                    (context) => IjazahRecitationScreen(
-                                      userName: _userName,
-                                    ),
-                              ),
-                            );
-                          },
-                        ),
-                        HomeButton(
-                          icon: Icons.bar_chart,
-                          text: 'نتائج الاجازة',
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder:
-                                    (context) => IjazahLeaderboardScreen(
-                                      userName: _userName,
-                                    ),
-                              ),
-                            );
-                          },
-                        ),
-                        HomeButton(
-                          icon: FlutterIslamicIcons.lantern,
-                          text: 'رمضان',
-                          onPressed: () {
-                            showOkAlertDialog(
-                              context: context,
-                              title: 'غير فعال',
-                              message: 'يتفعل خلال رمضان فقط',
-                              okLabel: 'حسناً',
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                ],
-              ),
+                  ),
+                ),
+                SizedBox(height: 20),
+              ],
             ),
-            SizedBox(height: 20),
-          ],
-        ),
+          );
+        },
       ),
     );
   }

@@ -68,7 +68,6 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
     try {
       String? otherUserId;
 
-      // Only fetch other user's ID if type is 'with' (selectedButtonIndex == 0)
       if (selectedButtonIndex == 0) {
         final otherUserDoc =
             await FirebaseFirestore.instance
@@ -93,7 +92,6 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
         'status': selectedButtonIndex == 0 ? 'pending' : 'confirmed',
       };
 
-      // Include other_userId only if available
       if (otherUserId != null) {
         data['other_userId'] = otherUserId;
       }
@@ -111,7 +109,6 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
         ),
       );
 
-      // Clear inputs and reset UI
       firstPageController.clear();
       secondPageController.clear();
       setState(() {
@@ -205,384 +202,431 @@ class _DailyRecitationScreenState extends State<DailyRecitationScreen> {
         ),
       ),
       backgroundColor: kBackgroundColor,
-      body: Stack(
-        children: [
-          SingleChildScrollView(
-            child: SafeArea(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  SizedBox(height: 100),
-                  GreenContatiner(
-                    child: Padding(
-                      padding: const EdgeInsets.all(4),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: List.generate(buttonTexts.length, (
-                              index,
-                            ) {
-                              return Padding(
-                                padding: EdgeInsets.only(right: 8),
-                                child: TextButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      if (selectedButtonIndex != index) {
-                                        selectedButtonIndex = index;
-                                        _withVisible = (index == 0);
-                                        _toVisible = (index == 1);
-                                        _inputVisible = true;
-                                        _saveVisible = true;
-                                      }
-                                    });
-                                  },
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(16),
-                                      color:
-                                          selectedButtonIndex == index
-                                              ? kLightPrimaryColor
-                                              : Colors.transparent,
-                                      border: Border.all(
-                                        color: kLightPrimaryColor,
-                                        width: 2,
-                                      ),
-                                    ),
-                                    height: 35,
-                                    width: 105,
-                                    child: Text(
-                                      buttonTexts[index],
-                                      style: GoogleFonts.cairo(
-                                        textStyle: kBodySmallTextDark.copyWith(
-                                          color:
-                                              selectedButtonIndex == index
-                                                  ? Colors.white
-                                                  : kLightPrimaryColor,
-                                          fontSize: 12,
-                                        ),
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),
-                                ),
-                              );
-                            }),
-                          ),
-                          SizedBox(height: 20),
-                          Visibility(
-                            visible: _withVisible,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final isWeb = constraints.maxWidth > 600;
+          return Stack(
+            children: [
+              SingleChildScrollView(
+                child: SafeArea(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      SizedBox(height: isWeb ? 50 : 100),
+                      Center(
+                        child: GreenContatiner(
+                          width: isWeb ? 600 : double.infinity,
+                          child: Padding(
+                            padding: const EdgeInsets.all(4),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
-                                Container(
-                                  width: 250,
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 12,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(8),
-                                    border: Border.all(
-                                      color: kLightPrimaryColor,
-                                      width: 1.5,
-                                    ),
-                                  ),
-                                  child: DropdownButton<String>(
-                                    isExpanded: true,
-                                    value: selectedWithName,
-                                    icon: const Icon(
-                                      Icons.arrow_drop_down,
-                                      color: kLightPrimaryColor,
-                                    ),
-                                    iconSize: 24,
-                                    elevation: 4,
-                                    style: GoogleFonts.cairo(
-                                      textStyle: kBodyRegularText.copyWith(),
-                                    ),
-                                    underline: Container(),
-                                    onChanged: (String? newValue) {
-                                      setState(() {
-                                        selectedWithName = newValue!;
-                                      });
-                                    },
-                                    dropdownColor: Colors.white,
-                                    items:
-                                        filterNames(
-                                          withNames,
-                                          widget.userName,
-                                        ).map<DropdownMenuItem<String>>((
-                                          String value,
-                                        ) {
-                                          return DropdownMenuItem<String>(
-                                            value: value,
-                                            child: Align(
-                                              alignment: Alignment.center,
-                                              child: Text(value),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: List.generate(buttonTexts.length, (
+                                    index,
+                                  ) {
+                                    return Padding(
+                                      padding: EdgeInsets.only(right: 8),
+                                      child: TextButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            if (selectedButtonIndex != index) {
+                                              selectedButtonIndex = index;
+                                              _withVisible = (index == 0);
+                                              _toVisible = (index == 1);
+                                              _inputVisible = true;
+                                              _saveVisible = true;
+                                            }
+                                          });
+                                        },
+                                        child: Align(
+                                          alignment: Alignment.center,
+                                          child: Container(
+                                            padding: EdgeInsets.symmetric(
+                                              vertical: 8,
                                             ),
-                                          );
-                                        }).toList(),
-                                  ),
-                                ),
-                                SizedBox(width: 10),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 5),
-                                  child: Text(
-                                    'مع',
-                                    style: GoogleFonts.cairo(
-                                      textStyle: kBodySmallText,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Visibility(
-                            visible: _toVisible,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Container(
-                                  width: 250,
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 12,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(8),
-                                    border: Border.all(
-                                      color: kLightPrimaryColor,
-                                      width: 1.5,
-                                    ),
-                                  ),
-                                  child: DropdownButton<String>(
-                                    isExpanded: true,
-                                    value: selectedToName,
-                                    icon: const Icon(
-                                      Icons.arrow_drop_down,
-                                      color: kLightPrimaryColor,
-                                    ),
-                                    iconSize: 24,
-                                    elevation: 4,
-                                    style: GoogleFonts.cairo(
-                                      textStyle: kBodyRegularText.copyWith(),
-                                    ),
-                                    underline: Container(),
-                                    onChanged: (String? newValue) {
-                                      setState(() {
-                                        selectedToName = newValue!;
-                                      });
-                                    },
-                                    dropdownColor: Colors.white,
-                                    items:
-                                        filterNames(
-                                          toNames,
-                                          widget.userName,
-                                        ).map<DropdownMenuItem<String>>((
-                                          String value,
-                                        ) {
-                                          return DropdownMenuItem<String>(
-                                            value: value,
-                                            child: Align(
-                                              alignment: Alignment.center,
-                                              child: Text(value),
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(16),
+                                              color:
+                                                  selectedButtonIndex == index
+                                                      ? kLightPrimaryColor
+                                                      : Colors.transparent,
+                                              border: Border.all(
+                                                color: kLightPrimaryColor,
+                                                width: 2,
+                                              ),
                                             ),
-                                          );
-                                        }).toList(),
-                                  ),
-                                ),
-                                SizedBox(width: 10),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 5),
-                                  child: Text(
-                                    'عند',
-                                    style: GoogleFonts.cairo(
-                                      textStyle: kBodySmallText,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(height: 20),
-                          Visibility(
-                            visible: _inputVisible,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                RoundedTextField(
-                                  controller: firstPageController,
-                                  obscure: false,
-                                  textColor: kPrimaryTextLight,
-                                  textHint: '312',
-                                  keyboardType: TextInputType.number,
-                                  width: 150,
-                                  height: 50,
-                                  hintColor: kSecondaryTextLight.withValues(
-                                    alpha: (0.199 * 255),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    'من صفحة',
-                                    style: GoogleFonts.cairo(
-                                      textStyle: kBodyRegularText,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(height: 20),
-                          Visibility(
-                            visible: _inputVisible,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                RoundedTextField(
-                                  controller: secondPageController,
-                                  obscure: false,
-                                  textColor: kPrimaryTextLight,
-                                  textHint: '330',
-                                  keyboardType: TextInputType.number,
-                                  width: 150,
-                                  height: 50,
-                                  hintColor: kSecondaryTextLight.withValues(
-                                    alpha: (0.199 * 255),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    'الى صفحة',
-                                    style: GoogleFonts.cairo(
-                                      textStyle: kBodyRegularText,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(height: 50),
-                          Visibility(
-                            visible: _saveVisible,
-                            child: Center(
-                              child: RoundedButton(
-                                buttonText: 'حفظ',
-                                isPrimary: false,
-                                onPressed: saveData,
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 50),
-                          StreamBuilder<QuerySnapshot>(
-                            stream:
-                                FirebaseFirestore.instance
-                                    .collection('daily_recitation')
-                                    .where(
-                                      'other_User',
-                                      isEqualTo: widget.userName,
-                                    )
-                                    .where('recitation_type', isEqualTo: 'with')
-                                    .where('status', isEqualTo: 'pending')
-                                    .orderBy('timestamp', descending: true)
-                                    .snapshots(),
-                            builder: (context, snapshot) {
-                              if (!snapshot.hasData) {
-                                return const SizedBox();
-                              }
-
-                              final pendingItems = snapshot.data!.docs;
-
-                              if (pendingItems.isEmpty) {
-                                return const SizedBox();
-                              }
-
-                              return Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 16,
-                                      vertical: 8,
-                                    ),
-                                    child: Text(
-                                      'طلبات في انتظار التأكيد',
-                                      style: GoogleFonts.elMessiri(
-                                        textStyle: kBodyLargeText.copyWith(
-                                          color: kPrimaryColor,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  ...pendingItems.map((doc) {
-                                    final data =
-                                        doc.data() as Map<String, dynamic>;
-                                    return Card(
-                                      color: Colors.white,
-                                      shape: RoundedRectangleBorder(
-                                        side: BorderSide(
-                                          color: kSecondaryBorderColor,
-                                        ),
-                                        borderRadius: BorderRadius.circular(20),
-                                      ),
-                                      margin: const EdgeInsets.symmetric(
-                                        horizontal: 16,
-                                        vertical: 4,
-                                      ),
-                                      child: ListTile(
-                                        title: Text(
-                                          'هل قد قمت بالمدارسة مع ${data['user'].split(' ')[0]} من صفحة ${data['first_page']} الى ${data['second_page']} ؟',
-                                          style: GoogleFonts.cairo(
-                                            textStyle: kBodySmallText,
+                                            height: isWeb ? 42 : 35,
+                                            width: isWeb ? 126 : 105,
+                                            child: Text(
+                                              buttonTexts[index],
+                                              style: GoogleFonts.cairo(
+                                                textStyle: kBodySmallTextDark
+                                                    .copyWith(
+                                                      color:
+                                                          selectedButtonIndex ==
+                                                                  index
+                                                              ? Colors.white
+                                                              : kLightPrimaryColor,
+                                                      fontSize: 12,
+                                                    ),
+                                              ),
+                                              textAlign: TextAlign.center,
+                                            ),
                                           ),
-                                          textAlign: TextAlign.right,
-                                        ),
-                                        leading: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            IconButton(
-                                              icon: const Icon(
-                                                Icons.close,
-                                                color: Colors.red,
-                                              ),
-                                              onPressed:
-                                                  () => _handleConfirmation(
-                                                    doc.id,
-                                                    false,
-                                                  ),
-                                            ),
-                                            IconButton(
-                                              icon: const Icon(
-                                                Icons.check,
-                                                color: Colors.green,
-                                              ),
-                                              onPressed:
-                                                  () => _handleConfirmation(
-                                                    doc.id,
-                                                    true,
-                                                  ),
-                                            ),
-                                          ],
                                         ),
                                       ),
                                     );
-                                  }).toList(),
-                                ],
-                              );
-                            },
+                                  }),
+                                ),
+                                SizedBox(height: isWeb ? 50 : 20),
+                                Visibility(
+                                  visible: _withVisible,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Container(
+                                        width: 250,
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 12,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                          border: Border.all(
+                                            color: kLightPrimaryColor,
+                                            width: 1.5,
+                                          ),
+                                        ),
+                                        child: DropdownButton<String>(
+                                          isExpanded: true,
+                                          value: selectedWithName,
+                                          icon: const Icon(
+                                            Icons.arrow_drop_down,
+                                            color: kLightPrimaryColor,
+                                          ),
+                                          iconSize: 24,
+                                          elevation: 4,
+                                          style: GoogleFonts.cairo(
+                                            textStyle:
+                                                kBodyRegularText.copyWith(),
+                                          ),
+                                          underline: Container(),
+                                          onChanged: (String? newValue) {
+                                            setState(() {
+                                              selectedWithName = newValue!;
+                                            });
+                                          },
+                                          dropdownColor: Colors.white,
+                                          items:
+                                              filterNames(
+                                                withNames,
+                                                widget.userName,
+                                              ).map<DropdownMenuItem<String>>((
+                                                String value,
+                                              ) {
+                                                return DropdownMenuItem<String>(
+                                                  value: value,
+                                                  child: Align(
+                                                    alignment: Alignment.center,
+                                                    child: Text(value),
+                                                  ),
+                                                );
+                                              }).toList(),
+                                        ),
+                                      ),
+                                      SizedBox(width: 10),
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 5,
+                                        ),
+                                        child: Text(
+                                          'مع',
+                                          style: GoogleFonts.cairo(
+                                            textStyle: kBodySmallText.copyWith(
+                                              fontSize: isWeb ? 17 : 14,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Visibility(
+                                  visible: _toVisible,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Container(
+                                        width: 250,
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 12,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                          border: Border.all(
+                                            color: kLightPrimaryColor,
+                                            width: 1.5,
+                                          ),
+                                        ),
+                                        child: DropdownButton<String>(
+                                          isExpanded: true,
+                                          value: selectedToName,
+                                          icon: const Icon(
+                                            Icons.arrow_drop_down,
+                                            color: kLightPrimaryColor,
+                                          ),
+                                          iconSize: 24,
+                                          elevation: 4,
+                                          style: GoogleFonts.cairo(
+                                            textStyle:
+                                                kBodyRegularText.copyWith(),
+                                          ),
+                                          underline: Container(),
+                                          onChanged: (String? newValue) {
+                                            setState(() {
+                                              selectedToName = newValue!;
+                                            });
+                                          },
+                                          dropdownColor: Colors.white,
+                                          items:
+                                              filterNames(
+                                                toNames,
+                                                widget.userName,
+                                              ).map<DropdownMenuItem<String>>((
+                                                String value,
+                                              ) {
+                                                return DropdownMenuItem<String>(
+                                                  value: value,
+                                                  child: Align(
+                                                    alignment: Alignment.center,
+                                                    child: Text(value),
+                                                  ),
+                                                );
+                                              }).toList(),
+                                        ),
+                                      ),
+                                      SizedBox(width: 10),
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 5,
+                                        ),
+                                        child: Text(
+                                          'عند',
+                                          style: GoogleFonts.cairo(
+                                            textStyle: kBodySmallText.copyWith(
+                                              fontSize: isWeb ? 17 : 14,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(height: 20),
+                                Visibility(
+                                  visible: _inputVisible,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      RoundedTextField(
+                                        controller: firstPageController,
+                                        obscure: false,
+                                        textColor: kPrimaryTextLight,
+                                        textHint: '312',
+                                        keyboardType: TextInputType.number,
+                                        width: 150,
+                                        height: 50,
+                                        hintColor: kSecondaryTextLight
+                                            .withValues(alpha: (0.199 * 255)),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Text(
+                                          'من صفحة',
+                                          style: GoogleFonts.cairo(
+                                            textStyle: kBodyRegularText
+                                                .copyWith(
+                                                  fontSize: isWeb ? 19 : 16,
+                                                ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(height: 20),
+                                Visibility(
+                                  visible: _inputVisible,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      RoundedTextField(
+                                        controller: secondPageController,
+                                        obscure: false,
+                                        textColor: kPrimaryTextLight,
+                                        textHint: '330',
+                                        keyboardType: TextInputType.number,
+                                        width: 150,
+                                        height: 50,
+                                        hintColor: kSecondaryTextLight
+                                            .withValues(alpha: (0.199 * 255)),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Text(
+                                          'الى صفحة',
+                                          style: GoogleFonts.cairo(
+                                            textStyle: kBodyRegularText
+                                                .copyWith(
+                                                  fontSize: isWeb ? 19 : 16,
+                                                ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(height: 50),
+                                Visibility(
+                                  visible: _saveVisible,
+                                  child: Center(
+                                    child: RoundedButton(
+                                      buttonText: 'حفظ',
+                                      isPrimary: false,
+                                      onPressed: saveData,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(height: 50),
+                                StreamBuilder<QuerySnapshot>(
+                                  stream:
+                                      FirebaseFirestore.instance
+                                          .collection('daily_recitation')
+                                          .where(
+                                            'other_User',
+                                            isEqualTo: widget.userName,
+                                          )
+                                          .where(
+                                            'recitation_type',
+                                            isEqualTo: 'with',
+                                          )
+                                          .where('status', isEqualTo: 'pending')
+                                          .orderBy(
+                                            'timestamp',
+                                            descending: true,
+                                          )
+                                          .snapshots(),
+                                  builder: (context, snapshot) {
+                                    if (!snapshot.hasData) {
+                                      return const SizedBox();
+                                    }
+
+                                    final pendingItems = snapshot.data!.docs;
+
+                                    if (pendingItems.isEmpty) {
+                                      return const SizedBox();
+                                    }
+
+                                    return Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 16,
+                                            vertical: 8,
+                                          ),
+                                          child: Text(
+                                            'طلبات في انتظار التأكيد',
+                                            style: GoogleFonts.elMessiri(
+                                              textStyle: kBodyLargeText
+                                                  .copyWith(
+                                                    color: kPrimaryColor,
+                                                  ),
+                                            ),
+                                          ),
+                                        ),
+                                        ...pendingItems.map((doc) {
+                                          final data =
+                                              doc.data()
+                                                  as Map<String, dynamic>;
+                                          return Card(
+                                            color: Colors.white,
+                                            shape: RoundedRectangleBorder(
+                                              side: BorderSide(
+                                                color: kSecondaryBorderColor,
+                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                            ),
+                                            margin: const EdgeInsets.symmetric(
+                                              horizontal: 16,
+                                              vertical: 4,
+                                            ),
+                                            child: ListTile(
+                                              title: Text(
+                                                'هل قد قمت بالمدارسة مع ${data['user'].split(' ')[0]} من صفحة ${data['first_page']} الى ${data['second_page']} ؟',
+                                                style: GoogleFonts.cairo(
+                                                  textStyle: kBodySmallText,
+                                                ),
+                                                textAlign: TextAlign.right,
+                                              ),
+                                              leading: Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  IconButton(
+                                                    icon: const Icon(
+                                                      Icons.close,
+                                                      color: Colors.red,
+                                                    ),
+                                                    onPressed:
+                                                        () =>
+                                                            _handleConfirmation(
+                                                              doc.id,
+                                                              false,
+                                                            ),
+                                                  ),
+                                                  IconButton(
+                                                    icon: const Icon(
+                                                      Icons.check,
+                                                      color: Colors.green,
+                                                    ),
+                                                    onPressed:
+                                                        () =>
+                                                            _handleConfirmation(
+                                                              doc.id,
+                                                              true,
+                                                            ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          );
+                                        }).toList(),
+                                      ],
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
                           ),
-                        ],
+                        ),
                       ),
-                    ),
+                    ],
                   ),
-                ],
+                ),
               ),
-            ),
-          ),
-        ],
+            ],
+          );
+        },
       ),
     );
   }

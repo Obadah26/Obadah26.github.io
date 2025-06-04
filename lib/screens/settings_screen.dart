@@ -212,224 +212,253 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
         ],
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Align(
-                alignment: Alignment.centerRight,
-                child: Padding(
-                  padding: EdgeInsets.only(right: 25),
-                  child: Text(
-                    'الإشعارات',
-                    style: GoogleFonts.elMessiri(
-                      color: kPrimaryColor,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                      height: 1.5,
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final isWeb = constraints.maxWidth > 600;
+          return SafeArea(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: Padding(
+                      padding: EdgeInsets.only(right: isWeb ? 450 : 25),
+                      child: Text(
+                        'الإشعارات',
+                        style: GoogleFonts.elMessiri(
+                          color: kPrimaryColor,
+                          fontSize: isWeb ? 22 : 18,
+                          fontWeight: FontWeight.w600,
+                          height: 1.5,
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              ),
-              GreenContatiner(
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 12,
-                        horizontal: 16,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  Center(
+                    child: GreenContatiner(
+                      width: isWeb ? 600 : double.infinity,
+                      child: Column(
                         children: [
-                          CustomSwitch(
-                            value: isOn,
-                            onChanged: (bool value) {
-                              setState(() {
-                                isOn = value;
-                              });
-                              _storage.write(
-                                'notifications_enabled_${widget.userName}',
-                                isOn,
-                              );
-                              if (isOn) {
-                                NotificationService.reloadScheduledNotifications();
-                              } else {
-                                AwesomeNotifications().cancelAllSchedules();
-                              }
-                            },
-                          ),
-                          Text(
-                            'الإشعارات',
-                            style: GoogleFonts.cairo(
-                              fontSize: 14,
-                              color: kPrimaryTextLight,
-                              fontWeight: FontWeight.bold,
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 12,
+                              horizontal: 16,
                             ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                CustomSwitch(
+                                  value: isOn,
+                                  onChanged: (bool value) {
+                                    setState(() {
+                                      isOn = value;
+                                    });
+                                    _storage.write(
+                                      'notifications_enabled_${widget.userName}',
+                                      isOn,
+                                    );
+                                    if (isOn) {
+                                      NotificationService.reloadScheduledNotifications();
+                                    } else {
+                                      AwesomeNotifications()
+                                          .cancelAllSchedules();
+                                    }
+                                  },
+                                ),
+                                Text(
+                                  'الإشعارات',
+                                  style: GoogleFonts.cairo(
+                                    fontSize: isWeb ? 17 : 14,
+                                    color: kPrimaryTextLight,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Divider(
+                            color: kLightPrimaryColor,
+                            endIndent: 20,
+                            indent: 20,
+                          ),
+                          BuildTimePickerTile(
+                            title: 'وقت أذكار الصباح',
+                            time: morningAzkarTime,
+                            onTap:
+                                () => _pickTime(
+                                  'morningAzkarTime',
+                                  morningAzkarTime,
+                                ),
+                          ),
+                          BuildTimePickerTile(
+                            title: 'وقت أذكار المساء',
+                            time: eveningAzkarTime,
+                            onTap:
+                                () => _pickTime(
+                                  'eveningAzkarTime',
+                                  eveningAzkarTime,
+                                ),
+                          ),
+                          BuildTimePickerTile(
+                            title: 'وقت الورد اليومي صباحاً',
+                            time: morningRecitationTime,
+                            onTap:
+                                () => _pickTime(
+                                  'morningRecitationTime',
+                                  morningRecitationTime,
+                                ),
+                          ),
+                          BuildTimePickerTile(
+                            title: 'وقت الورد اليومي مساءً',
+                            time: eveningRecitationTime,
+                            onTap:
+                                () => _pickTime(
+                                  'eveningRecitationTime',
+                                  eveningRecitationTime,
+                                ),
                           ),
                         ],
                       ),
                     ),
-                    Divider(
-                      color: kLightPrimaryColor,
-                      endIndent: 20,
-                      indent: 20,
-                    ),
-                    BuildTimePickerTile(
-                      title: 'وقت أذكار الصباح',
-                      time: morningAzkarTime,
-                      onTap:
-                          () => _pickTime('morningAzkarTime', morningAzkarTime),
-                    ),
-                    BuildTimePickerTile(
-                      title: 'وقت أذكار المساء',
-                      time: eveningAzkarTime,
-                      onTap:
-                          () => _pickTime('eveningAzkarTime', eveningAzkarTime),
-                    ),
-                    BuildTimePickerTile(
-                      title: 'وقت الورد اليومي صباحاً',
-                      time: morningRecitationTime,
-                      onTap:
-                          () => _pickTime(
-                            'morningRecitationTime',
-                            morningRecitationTime,
+                  ),
+                  if (widget.isTeacher) ...[
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                          right: isWeb ? 450 : 25,
+                          top: 20,
+                        ),
+                        child: Text(
+                          'أوقات الدروس',
+                          style: GoogleFonts.elMessiri(
+                            color: kPrimaryColor,
+                            fontSize: isWeb ? 22 : 18,
+                            fontWeight: FontWeight.w600,
+                            height: 1.5,
                           ),
+                        ),
+                      ),
                     ),
-                    BuildTimePickerTile(
-                      title: 'وقت الورد اليومي مساءً',
-                      time: eveningRecitationTime,
-                      onTap:
-                          () => _pickTime(
-                            'eveningRecitationTime',
-                            eveningRecitationTime,
-                          ),
+                    Center(
+                      child: GreenContatiner(
+                        width: isWeb ? 600 : double.infinity,
+                        child: Column(
+                          children: [
+                            BuildTimePickerTile(
+                              title: 'وقت درس السبت',
+                              time: saturdayMeetingTime,
+                              onTap: () async {
+                                final picked = await _pickTime(
+                                  'saturdayMeetingTime',
+                                  saturdayMeetingTime,
+                                );
+                                if (picked != null) {
+                                  setState(() {
+                                    saturdayMeetingTime = picked;
+                                  });
+                                }
+                              },
+                            ),
+                            BuildTimePickerTile(
+                              title: 'وقت درس الثلاثاء',
+                              time: tuesdayMeetingTime,
+                              onTap: () async {
+                                final picked = await _pickTime(
+                                  'tuesdayMeetingTime',
+                                  tuesdayMeetingTime,
+                                );
+                                if (picked != null) {
+                                  setState(() {
+                                    tuesdayMeetingTime = picked;
+                                  });
+                                }
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ],
-                ),
-              ),
-              if (widget.isTeacher) ...[
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: Padding(
-                    padding: EdgeInsets.only(right: 25, top: 20),
-                    child: Text(
-                      'أوقات الدروس',
-                      style: GoogleFonts.elMessiri(
-                        color: kPrimaryColor,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        height: 1.5,
-                      ),
-                    ),
-                  ),
-                ),
-                GreenContatiner(
-                  child: Column(
-                    children: [
-                      BuildTimePickerTile(
-                        title: 'وقت درس السبت',
-                        time: saturdayMeetingTime,
-                        onTap: () async {
-                          final picked = await _pickTime(
-                            'saturdayMeetingTime',
-                            saturdayMeetingTime,
-                          );
-                          if (picked != null) {
-                            setState(() {
-                              saturdayMeetingTime = picked;
-                            });
-                          }
-                        },
-                      ),
-                      BuildTimePickerTile(
-                        title: 'وقت درس الثلاثاء',
-                        time: tuesdayMeetingTime,
-                        onTap: () async {
-                          final picked = await _pickTime(
-                            'tuesdayMeetingTime',
-                            tuesdayMeetingTime,
-                          );
-                          if (picked != null) {
-                            setState(() {
-                              tuesdayMeetingTime = picked;
-                            });
-                          }
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-              Visibility(
-                visible: widget.isTeacher ? false : true,
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: Padding(
-                    padding: EdgeInsets.fromLTRB(0, 20, 25, 0),
-                    child: Text(
-                      'الهدف الأسبوعي',
-                      style: GoogleFonts.elMessiri(
-                        color: kPrimaryColor,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        height: 1.5,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              Visibility(
-                visible: widget.isTeacher ? false : true,
-                child: GreenContatiner(
-                  child: Column(
-                    children: [
-                      Text(
-                        'الهدف الأسبوعي',
-                        style: GoogleFonts.cairo(
-                          fontSize: 14,
-                          color: kPrimaryTextLight,
-                          fontWeight: FontWeight.w500,
+                  Visibility(
+                    visible: widget.isTeacher ? false : true,
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: Padding(
+                        padding: EdgeInsets.fromLTRB(
+                          0,
+                          20,
+                          isWeb ? 450 : 25,
+                          0,
                         ),
-                      ),
-                      Slider(
-                        value: weeklyGoal.toDouble(),
-                        min: 10,
-                        max: 100,
-                        activeColor: kPrimaryColor,
-                        inactiveColor: Colors.grey[400],
-                        divisions: 18,
-                        label: '$weeklyGoal',
-                        onChanged: (double value) {
-                          setState(() {
-                            weeklyGoal = value.round();
-                          });
-                        },
-                      ),
-                      Center(
                         child: Text(
-                          '$weeklyGoal صفحة',
-                          style: GoogleFonts.cairo(
-                            fontSize: 14,
-                            color: kLightPrimaryColor,
-                            fontWeight: FontWeight.bold,
+                          'الهدف الأسبوعي',
+                          style: GoogleFonts.elMessiri(
+                            color: kPrimaryColor,
+                            fontSize: isWeb ? 22 : 18,
+                            fontWeight: FontWeight.w600,
+                            height: 1.5,
                           ),
-                          textDirection: TextDirection.rtl,
                         ),
                       ),
-                    ],
+                    ),
                   ),
-                ),
+                  Visibility(
+                    visible: widget.isTeacher ? false : true,
+                    child: Center(
+                      child: GreenContatiner(
+                        width: isWeb ? 600 : double.infinity,
+                        child: Column(
+                          children: [
+                            Text(
+                              'الهدف الأسبوعي',
+                              style: GoogleFonts.cairo(
+                                fontSize: isWeb ? 17 : 14,
+                                color: kPrimaryTextLight,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            Slider(
+                              value: weeklyGoal.toDouble(),
+                              min: 10,
+                              max: 100,
+                              activeColor: kPrimaryColor,
+                              inactiveColor: Colors.grey[400],
+                              divisions: 18,
+                              label: '$weeklyGoal',
+                              onChanged: (double value) {
+                                setState(() {
+                                  weeklyGoal = value.round();
+                                });
+                              },
+                            ),
+                            Center(
+                              child: Text(
+                                '$weeklyGoal صفحة',
+                                style: GoogleFonts.cairo(
+                                  fontSize: isWeb ? 17 : 14,
+                                  color: kLightPrimaryColor,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                textDirection: TextDirection.rtl,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 30),
+                  RoundedButton(
+                    onPressed: _saveSettings,
+                    buttonText: 'حفظ',
+                    isPrimary: false,
+                  ),
+                ],
               ),
-              SizedBox(height: 30),
-              RoundedButton(
-                onPressed: _saveSettings,
-                buttonText: 'حفظ',
-                isPrimary: false,
-              ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }

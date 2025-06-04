@@ -121,101 +121,113 @@ class _IjazahRecitationScreenState extends State<IjazahRecitationScreen> {
         ),
       ),
       backgroundColor: kBackgroundColor,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(height: 100),
-              GreenContatiner(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: Text(
-                            ': اضافة تسميع',
-                            style: GoogleFonts.cairo(
-                              textStyle: kBodyRegularText.copyWith(
-                                fontSize: 20,
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 20),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            RoundedTextField(
-                              controller: _firstPageController,
-                              obscure: false,
-                              textColor: kPrimaryTextLight,
-                              textHint: '312',
-                              keyboardType: TextInputType.number,
-                              width: 150,
-                              height: 50,
-                              hintColor: kSecondaryTextLight.withValues(
-                                alpha: (0.199 * 255),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(10),
-                              child: Text(
-                                'من صفحة',
-                                style: GoogleFonts.cairo(
-                                  textStyle: kBodyRegularText.copyWith(),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final isWeb = constraints.maxWidth > 600;
+          return SafeArea(
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(height: isWeb ? 50 : 100),
+                  Center(
+                    child: GreenContatiner(
+                      width: isWeb ? 600 : double.infinity,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: SingleChildScrollView(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: Text(
+                                  ': اضافة تسميع',
+                                  style: GoogleFonts.cairo(
+                                    textStyle: kBodyRegularText.copyWith(
+                                      fontSize: isWeb ? 24 : 20,
+                                    ),
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 40),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            RoundedTextField(
-                              controller: _secondPageController,
-                              obscure: false,
-                              textColor: kPrimaryTextLight,
-                              textHint: '330',
-                              keyboardType: TextInputType.number,
-                              width: 150,
-                              height: 50,
-                              hintColor: kSecondaryTextLight.withValues(
-                                alpha: (0.199 * 255),
+                              SizedBox(height: 20),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  RoundedTextField(
+                                    controller: _firstPageController,
+                                    obscure: false,
+                                    textColor: kPrimaryTextLight,
+                                    textHint: '312',
+                                    keyboardType: TextInputType.number,
+                                    width: 150,
+                                    height: 50,
+                                    hintColor: kSecondaryTextLight.withValues(
+                                      alpha: (0.199 * 255),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(10),
+                                    child: Text(
+                                      'من صفحة',
+                                      style: GoogleFonts.cairo(
+                                        textStyle: kBodyRegularText.copyWith(
+                                          fontSize: isWeb ? 19 : 16,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(10),
-                              child: Text(
-                                'الى صفحة',
-                                style: GoogleFonts.cairo(
-                                  textStyle: kBodyRegularText.copyWith(),
+                              SizedBox(height: 40),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  RoundedTextField(
+                                    controller: _secondPageController,
+                                    obscure: false,
+                                    textColor: kPrimaryTextLight,
+                                    textHint: '330',
+                                    keyboardType: TextInputType.number,
+                                    width: 150,
+                                    height: 50,
+                                    hintColor: kSecondaryTextLight.withValues(
+                                      alpha: (0.199 * 255),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(10),
+                                    child: Text(
+                                      'الى صفحة',
+                                      style: GoogleFonts.cairo(
+                                        textStyle: kBodyRegularText.copyWith(
+                                          fontSize: isWeb ? 19 : 16,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 50),
+                              Center(
+                                child: RoundedButton(
+                                  buttonText: 'حفظ',
+                                  isPrimary: false,
+                                  onPressed: saveData,
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 50),
-                        Center(
-                          child: RoundedButton(
-                            buttonText: 'حفظ',
-                            isPrimary: false,
-                            onPressed: saveData,
+                              SizedBox(height: 50),
+                            ],
                           ),
                         ),
-                        SizedBox(height: 50),
-                      ],
+                      ),
                     ),
                   ),
-                ),
+                ],
               ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }

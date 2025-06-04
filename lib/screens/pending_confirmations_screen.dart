@@ -22,12 +22,10 @@ class _PendingConfirmationsScreenState
       backgroundColor: kBackgroundColor,
       appBar: AppBar(
         title: Center(
-          child: Center(
-            child: Text(
-              'طلبات التأكيد',
-              style: GoogleFonts.elMessiri(
-                textStyle: kHeading2Text.copyWith(color: kDarkPrimaryColor),
-              ),
+          child: Text(
+            'طلبات التأكيد',
+            style: GoogleFonts.elMessiri(
+              textStyle: kHeading2Text.copyWith(color: kDarkPrimaryColor),
             ),
           ),
         ),
@@ -93,33 +91,59 @@ class _PendingConfirmationsScreenState
               var doc = snapshot.data!.docs[index];
               var data = doc.data() as Map<String, dynamic>;
 
-              return Card(
-                color: Colors.white,
-                shape: RoundedRectangleBorder(
-                  side: BorderSide(color: kSecondaryColor.withOpacity(0.3)),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                child: ListTile(
-                  title: Text(
-                    'هل قد قمت بالمدارسة مع ${data['user'].split(' ')[0]} من صفحة ${data['first_page']} الى ${data['second_page']} ؟',
-                    style: GoogleFonts.cairo(textStyle: kBodySmallText),
-                    textAlign: TextAlign.right,
-                  ),
-                  leading: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.close, color: Colors.red),
-                        onPressed: () => _handleConfirmation(doc.id, false),
+              return LayoutBuilder(
+                builder: (context, constraints) {
+                  final isWeb = constraints.maxWidth > 600;
+
+                  return Center(
+                    child: Card(
+                      color: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(color: kSecondaryBorderColor),
+                        borderRadius: BorderRadius.circular(20),
                       ),
-                      IconButton(
-                        icon: const Icon(Icons.check, color: Colors.green),
-                        onPressed: () => _handleConfirmation(doc.id, true),
+                      margin: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 4,
                       ),
-                    ],
-                  ),
-                ),
+                      child: Container(
+                        width: isWeb ? 600 : double.infinity,
+                        child: ListTile(
+                          title: Text(
+                            'هل قد قمت بالمدارسة مع ${data['user'].split(' ')[0]} من صفحة ${data['first_page']} الى ${data['second_page']} ؟',
+                            style: GoogleFonts.cairo(
+                              textStyle: kBodySmallText.copyWith(
+                                fontSize: isWeb ? 17 : 14,
+                              ),
+                            ),
+                            textAlign: TextAlign.right,
+                          ),
+                          leading: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                icon: const Icon(
+                                  Icons.close,
+                                  color: Colors.red,
+                                ),
+                                onPressed:
+                                    () => _handleConfirmation(doc.id, false),
+                              ),
+                              IconButton(
+                                icon: const Icon(
+                                  Icons.check,
+                                  color: Colors.green,
+                                ),
+                                onPressed:
+                                    () => _handleConfirmation(doc.id, true),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
               );
             },
           );

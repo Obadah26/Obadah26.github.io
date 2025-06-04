@@ -76,516 +76,639 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
         ),
       ),
       backgroundColor: kBackgroundColor,
-      body: Stack(
-        children: [
-          SafeArea(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                SizedBox(height: 10),
-                GreenContatiner(
-                  child: DropdownButton<String>(
-                    value: selectedFilter,
-                    isExpanded: true,
-                    underline: Container(),
-                    items:
-                        timeFilters.map((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Center(
-                              child: Text(
-                                value,
-                                style: GoogleFonts.cairo(
-                                  textStyle: kBodyRegularText.copyWith(),
-                                ),
-                              ),
-                            ),
-                          );
-                        }).toList(),
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        selectedFilter = newValue!;
-                      });
-                    },
-                  ),
-                ),
-                SizedBox(height: 10),
-                Expanded(
-                  child: GreenContatiner(
-                    child: StreamBuilder<QuerySnapshot>(
-                      stream:
-                          FirebaseFirestore.instance
-                              .collection('daily_recitation')
-                              .where(
-                                Filter.or(
-                                  Filter('user', isEqualTo: widget.userName),
-                                  Filter(
-                                    'other_User',
-                                    isEqualTo: widget.userName,
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final isWeb = constraints.maxWidth > 600;
+          return Stack(
+            children: [
+              SafeArea(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    SizedBox(height: 10),
+                    Center(
+                      child: GreenContatiner(
+                        width: isWeb ? 600 : double.infinity,
+                        child: DropdownButton<String>(
+                          value: selectedFilter,
+                          isExpanded: true,
+                          underline: Container(),
+                          items:
+                              timeFilters.map((String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Center(
+                                    child: Text(
+                                      value,
+                                      style: GoogleFonts.cairo(
+                                        textStyle: kBodyRegularText.copyWith(
+                                          fontSize: isWeb ? 19 : 16,
+                                        ),
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              )
-                              .orderBy('timestamp', descending: true)
-                              .snapshots(),
-                      builder: (context, snapshot) {
-                        if (snapshot.hasError) {
-                          return Center(
-                            child: Text('حدث خطأ: ${snapshot.error}'),
-                          );
-                        }
-
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return Center(child: CircularProgressIndicator());
-                        }
-
-                        if (snapshot.data!.docs.isEmpty) {
-                          return Center(
-                            child: Text(
-                              'لا توجد تسميعات مسجلة بعد',
-                              style: GoogleFonts.cairo(
-                                textStyle: kBodyRegularText,
-                              ),
-                            ),
-                          );
-                        }
-
-                        final now = DateTime.now();
-                        final filteredDocs =
-                            snapshot.data!.docs.where((doc) {
-                              final timestamp = doc['timestamp'] as Timestamp?;
-                              if (timestamp == null) return false;
-
-                              final date = timestamp.toDate();
-
-                              switch (selectedFilter) {
-                                case 'اليوم':
-                                  return date.isAfter(
-                                    now.subtract(Duration(days: 1)),
-                                  );
-                                case 'الأسبوع':
-                                  return date.isAfter(
-                                    now.subtract(Duration(days: 7)),
-                                  );
-                                case 'الشهر':
-                                  return date.isAfter(
-                                    now.subtract(Duration(days: 30)),
-                                  );
-                                case 'ثلاثة أشهر':
-                                  return date.isAfter(
-                                    now.subtract(Duration(days: 90)),
-                                  );
-                                case 'السنة':
-                                  return date.isAfter(
-                                    now.subtract(Duration(days: 365)),
-                                  );
-                                default:
-                                  return true;
-                              }
-                            }).toList();
-
-                        int totalPages = 0;
-                        int totalRecitations = 0;
-                        List<Map<String, dynamic>> recitationDetails = [];
-
-                        for (var doc in filteredDocs) {
-                          int firstPage =
-                              doc['first_page'] is String
-                                  ? int.tryParse(doc['first_page']) ?? 0
-                                  : (doc['first_page'] as int? ?? 0);
-                          int secondPage =
-                              doc['second_page'] is String
-                                  ? int.tryParse(doc['second_page']) ?? 0
-                                  : (doc['second_page'] as int? ?? 0);
-                          int pages = (secondPage - firstPage) + 1;
-
-                          if (pages > 0) {
-                            String recitationType =
-                                doc['recitation_type'] ?? '';
-                            String status = doc['status'] ?? '';
-
-                            if (recitationType == 'to') {
-                              totalPages += pages;
-                              totalRecitations++;
-                            } else if (recitationType == 'with' &&
-                                status == 'confirmed') {
-                              totalPages += pages;
-                              totalRecitations++;
-                            }
-
-                            // For your recitationDetails list, keep same logic to show partners, etc.
-                            String partner = '';
-                            String listenedBy = '';
-                            final data = doc.data() as Map<String, dynamic>;
-
-                            if (recitationType == 'with') {
-                              partner =
-                                  doc['user'] == widget.userName
-                                      ? doc['other_User']
-                                      : doc['user'];
-                            } else if (recitationType == 'to') {
-                              partner =
-                                  data.containsKey('other_User')
-                                      ? (data['other_User'] ?? '')
-                                      : '';
-                              listenedBy =
-                                  data.containsKey('listened_by')
-                                      ? (data['listened_by'] ?? '')
-                                      : '';
-                            }
-
-                            recitationDetails.add({
-                              'date': doc['timestamp'].toDate(),
-                              'pages': pages,
-                              'type':
-                                  recitationType.isEmpty
-                                      ? 'فردي'
-                                      : recitationType,
-                              'with': partner,
-                              'listened_by': listenedBy,
+                                );
+                              }).toList(),
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              selectedFilter = newValue!;
                             });
-                          }
-                        }
+                          },
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Expanded(
+                      child: Center(
+                        child: GreenContatiner(
+                          width: isWeb ? 600 : double.infinity,
+                          child: StreamBuilder<QuerySnapshot>(
+                            stream:
+                                FirebaseFirestore.instance
+                                    .collection('daily_recitation')
+                                    .where(
+                                      Filter.or(
+                                        Filter(
+                                          'user',
+                                          isEqualTo: widget.userName,
+                                        ),
+                                        Filter(
+                                          'other_User',
+                                          isEqualTo: widget.userName,
+                                        ),
+                                      ),
+                                    )
+                                    .orderBy('timestamp', descending: true)
+                                    .snapshots(),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasError) {
+                                return Center(
+                                  child: Text('حدث خطأ: ${snapshot.error}'),
+                                );
+                              }
 
-                        return Column(
-                          children: [
-                            Card(
-                              elevation: 3,
-                              color: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                                side: BorderSide(
-                                  color: kSecondaryBorderColor,
-                                  width: 2,
-                                ),
-                              ),
-                              child: Padding(
-                                padding: EdgeInsets.all(16),
-                                child: Column(
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.end,
-                                          children: [
-                                            Text(
-                                              'إجمالي التسميع',
-                                              style: GoogleFonts.cairo(
-                                                textStyle: kBodyRegularText
-                                                    .copyWith(fontSize: 16),
-                                              ),
-                                            ),
-                                            Text(
-                                              '$totalRecitations',
-                                              style: GoogleFonts.cairo(
-                                                textStyle: kBodySmallTextDark
-                                                    .copyWith(
-                                                      fontSize: 20,
-                                                      color: kPrimaryColor,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.end,
-                                          children: [
-                                            Text(
-                                              'إجمالي الصفحات',
-                                              style: GoogleFonts.cairo(
-                                                textStyle: kBodyRegularText
-                                                    .copyWith(fontSize: 16),
-                                              ),
-                                            ),
-                                            Text(
-                                              '$totalPages صفحة',
-                                              textDirection: TextDirection.rtl,
-                                              style: GoogleFonts.cairo(
-                                                textStyle: kBodySmallTextDark
-                                                    .copyWith(
-                                                      fontSize: 20,
-                                                      color: kPrimaryColor,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              }
+
+                              if (snapshot.data!.docs.isEmpty) {
+                                return Center(
+                                  child: Text(
+                                    'لا توجد تسميعات مسجلة بعد',
+                                    style: GoogleFonts.cairo(
+                                      textStyle: kBodyRegularText,
                                     ),
-                                    SizedBox(height: 10),
-                                    Divider(color: kLightPrimaryColor),
-                                    SizedBox(height: 10),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.end,
-                                          children: [
-                                            Text(
-                                              'متوسط الصفحات',
-                                              style: GoogleFonts.cairo(
-                                                textStyle: kBodyRegularText
-                                                    .copyWith(fontSize: 16),
-                                              ),
-                                            ),
-                                            Text(
-                                              totalRecitations > 0
-                                                  ? (totalPages /
-                                                          totalRecitations)
-                                                      .toStringAsFixed(1)
-                                                  : '0',
-                                              style: GoogleFonts.cairo(
-                                                textStyle: kBodySmallTextDark
-                                                    .copyWith(
-                                                      fontSize: 20,
-                                                      color: kPrimaryColor,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.end,
-                                          children: [
-                                            Text(
-                                              'آخر تسميع',
-                                              style: GoogleFonts.cairo(
-                                                textStyle: kBodyRegularText
-                                                    .copyWith(fontSize: 16),
-                                              ),
-                                            ),
-                                            Text(
-                                              filteredDocs.isNotEmpty
-                                                  ? (filteredDocs.first.data()
-                                                          as Map<
-                                                            String,
-                                                            dynamic
-                                                          >)['timestamp']
-                                                      .toDate()
-                                                      .toString()
-                                                      .substring(0, 10)
-                                                  : '--',
-                                              style: GoogleFonts.cairo(
-                                                textStyle: kBodySmallTextDark
-                                                    .copyWith(
-                                                      fontSize: 16,
-                                                      color: kPrimaryColor,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            SizedBox(height: 10),
-                            Expanded(
-                              child: ListView.builder(
-                                padding: EdgeInsets.all(10),
-                                itemCount: recitationDetails.length,
-                                itemBuilder: (context, index) {
-                                  final recitation = recitationDetails[index];
-                                  final doc = filteredDocs[index];
+                                  ),
+                                );
+                              }
+
+                              final now = DateTime.now();
+                              final filteredDocs =
+                                  snapshot.data!.docs.where((doc) {
+                                    final timestamp =
+                                        doc['timestamp'] as Timestamp?;
+                                    if (timestamp == null) return false;
+
+                                    final date = timestamp.toDate();
+
+                                    switch (selectedFilter) {
+                                      case 'اليوم':
+                                        return date.isAfter(
+                                          now.subtract(Duration(days: 1)),
+                                        );
+                                      case 'الأسبوع':
+                                        return date.isAfter(
+                                          now.subtract(Duration(days: 7)),
+                                        );
+                                      case 'الشهر':
+                                        return date.isAfter(
+                                          now.subtract(Duration(days: 30)),
+                                        );
+                                      case 'ثلاثة أشهر':
+                                        return date.isAfter(
+                                          now.subtract(Duration(days: 90)),
+                                        );
+                                      case 'السنة':
+                                        return date.isAfter(
+                                          now.subtract(Duration(days: 365)),
+                                        );
+                                      default:
+                                        return true;
+                                    }
+                                  }).toList();
+
+                              int totalPages = 0;
+                              int totalRecitations = 0;
+                              List<Map<String, dynamic>> recitationDetails = [];
+
+                              for (var doc in filteredDocs) {
+                                int firstPage =
+                                    doc['first_page'] is String
+                                        ? int.tryParse(doc['first_page']) ?? 0
+                                        : (doc['first_page'] as int? ?? 0);
+                                int secondPage =
+                                    doc['second_page'] is String
+                                        ? int.tryParse(doc['second_page']) ?? 0
+                                        : (doc['second_page'] as int? ?? 0);
+                                int pages = (secondPage - firstPage) + 1;
+
+                                if (pages > 0) {
                                   String recitationType =
                                       doc['recitation_type'] ?? '';
                                   String status = doc['status'] ?? '';
 
-                                  // Skip card if type is 'with' but status is NOT 'confirmed'
-                                  if (recitationType == 'with' &&
-                                      status != 'confirmed') {
-                                    return SizedBox.shrink();
+                                  if (recitationType == 'to') {
+                                    totalPages += pages;
+                                    totalRecitations++;
+                                  } else if (recitationType == 'with' &&
+                                      status == 'confirmed') {
+                                    totalPages += pages;
+                                    totalRecitations++;
                                   }
-                                  int firstPage =
-                                      doc['first_page'] is String
-                                          ? int.tryParse(doc['first_page']) ?? 0
-                                          : (doc['first_page'] as int? ?? 0);
-                                  int secondPage =
-                                      doc['second_page'] is String
-                                          ? int.tryParse(doc['second_page']) ??
-                                              0
-                                          : (doc['second_page'] as int? ?? 0);
-                                  return Card(
-                                    elevation: 2,
+
+                                  // For your recitationDetails list, keep same logic to show partners, etc.
+                                  String partner = '';
+                                  String listenedBy = '';
+                                  final data =
+                                      doc.data() as Map<String, dynamic>;
+
+                                  if (recitationType == 'with') {
+                                    partner =
+                                        doc['user'] == widget.userName
+                                            ? doc['other_User']
+                                            : doc['user'];
+                                  } else if (recitationType == 'to') {
+                                    partner =
+                                        data.containsKey('other_User')
+                                            ? (data['other_User'] ?? '')
+                                            : '';
+                                    listenedBy =
+                                        data.containsKey('listened_by')
+                                            ? (data['listened_by'] ?? '')
+                                            : '';
+                                  }
+
+                                  recitationDetails.add({
+                                    'date': doc['timestamp'].toDate(),
+                                    'pages': pages,
+                                    'type':
+                                        recitationType.isEmpty
+                                            ? 'فردي'
+                                            : recitationType,
+                                    'with': partner,
+                                    'listened_by': listenedBy,
+                                  });
+                                }
+                              }
+
+                              return Column(
+                                children: [
+                                  Card(
+                                    elevation: 3,
                                     color: Colors.white,
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(12),
                                       side: BorderSide(
                                         color: kSecondaryBorderColor,
-                                        width: 1,
+                                        width: 2,
                                       ),
                                     ),
                                     child: Padding(
-                                      padding: const EdgeInsets.all(16),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
+                                      padding: EdgeInsets.all(16),
+                                      child: Column(
                                         children: [
-                                          Expanded(
-                                            child: Column(
-                                              children: [
-                                                Text(
-                                                  'من صفحة $firstPage إلى $secondPage',
-                                                  style: GoogleFonts.cairo(
-                                                    textStyle: kBodySmallText,
-                                                  ),
-                                                  textAlign: TextAlign.right,
-                                                ),
-                                                Padding(
-                                                  padding: const EdgeInsets.all(
-                                                    8.0,
-                                                  ),
-                                                  child: Text(
-                                                    recitation['date']
-                                                        .toString()
-                                                        .substring(0, 10),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.end,
+                                                children: [
+                                                  Text(
+                                                    'إجمالي التسميع',
                                                     style: GoogleFonts.cairo(
-                                                      textStyle: kBodyRegularText
-                                                          .copyWith(
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            color:
-                                                                kLightPrimaryColor,
-                                                          ),
+                                                      textStyle:
+                                                          kBodyRegularText
+                                                              .copyWith(
+                                                                fontSize:
+                                                                    isWeb
+                                                                        ? 19
+                                                                        : 16,
+                                                              ),
                                                     ),
                                                   ),
-                                                ),
-                                              ],
-                                            ),
+                                                  Text(
+                                                    '$totalRecitations',
+                                                    style: GoogleFonts.cairo(
+                                                      textStyle:
+                                                          kBodySmallTextDark
+                                                              .copyWith(
+                                                                fontSize:
+                                                                    isWeb
+                                                                        ? 24
+                                                                        : 20,
+                                                                color:
+                                                                    kPrimaryColor,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.end,
+                                                children: [
+                                                  Text(
+                                                    'إجمالي الصفحات',
+                                                    style: GoogleFonts.cairo(
+                                                      textStyle:
+                                                          kBodyRegularText
+                                                              .copyWith(
+                                                                fontSize:
+                                                                    isWeb
+                                                                        ? 19
+                                                                        : 16,
+                                                              ),
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    '$totalPages صفحة',
+                                                    textDirection:
+                                                        TextDirection.rtl,
+                                                    style: GoogleFonts.cairo(
+                                                      textStyle:
+                                                          kBodySmallTextDark
+                                                              .copyWith(
+                                                                fontSize:
+                                                                    isWeb
+                                                                        ? 24
+                                                                        : 20,
+                                                                color:
+                                                                    kPrimaryColor,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
                                           ),
-                                          Expanded(
-                                            child: Column(
-                                              children: [
-                                                Text(
-                                                  textDirection:
-                                                      TextDirection.rtl,
-                                                  '${recitation['pages']} صفحة',
-                                                  style: GoogleFonts.cairo(
-                                                    textStyle: kBodyRegularText
-                                                        .copyWith(
-                                                          color: kPrimaryColor,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        ),
-                                                  ),
-                                                ),
-                                                SizedBox(height: 5),
-                                                AutoSizeText(
-                                                  recitation['type'] == 'with'
-                                                      ? 'نوع التسميع: مدارسة'
-                                                      : 'نوع التسميع: تسميع',
-                                                  style: GoogleFonts.cairo(
-                                                    textStyle: TextStyle(
-                                                      fontSize: 10,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                  maxLines: 1,
-                                                  minFontSize: 5,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                ),
-
-                                                if (recitation['type'] ==
-                                                        'with' &&
-                                                    recitation['with']
-                                                            ?.isNotEmpty ==
-                                                        true)
-                                                  AutoSizeText(
-                                                    'مع ${recitation['with']}',
+                                          SizedBox(height: 10),
+                                          Divider(color: kLightPrimaryColor),
+                                          SizedBox(height: 10),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.end,
+                                                children: [
+                                                  Text(
+                                                    'متوسط الصفحات',
                                                     style: GoogleFonts.cairo(
-                                                      textStyle: TextStyle(
-                                                        fontSize: 10,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
+                                                      textStyle:
+                                                          kBodyRegularText
+                                                              .copyWith(
+                                                                fontSize:
+                                                                    isWeb
+                                                                        ? 19
+                                                                        : 16,
+                                                              ),
                                                     ),
-                                                    maxLines: 1,
-                                                    minFontSize: 5,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
                                                   ),
-
-                                                if (recitation['type'] ==
-                                                        'to' &&
-                                                    recitation['with']
-                                                            ?.isNotEmpty ==
-                                                        true)
-                                                  AutoSizeText(
-                                                    'عند ${recitation['with']}',
+                                                  Text(
+                                                    totalRecitations > 0
+                                                        ? (totalPages /
+                                                                totalRecitations)
+                                                            .toStringAsFixed(1)
+                                                        : '0',
                                                     style: GoogleFonts.cairo(
-                                                      textStyle: TextStyle(
-                                                        fontSize: 10,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
+                                                      textStyle:
+                                                          kBodySmallTextDark
+                                                              .copyWith(
+                                                                fontSize:
+                                                                    isWeb
+                                                                        ? 24
+                                                                        : 20,
+                                                                color:
+                                                                    kPrimaryColor,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
                                                     ),
-                                                    maxLines: 1,
-                                                    minFontSize: 5,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
                                                   ),
-
-                                                if (recitation['type'] ==
-                                                        'to' &&
-                                                    recitation['listened_by']
-                                                            ?.isNotEmpty ==
-                                                        true)
-                                                  AutoSizeText(
-                                                    ' عند: ${recitation['listened_by']}',
+                                                ],
+                                              ),
+                                              Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.end,
+                                                children: [
+                                                  Text(
+                                                    'آخر تسميع',
                                                     style: GoogleFonts.cairo(
-                                                      textStyle: kBodySmallText
-                                                          .copyWith(
-                                                            fontSize: 10,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                          ),
+                                                      textStyle:
+                                                          kBodyRegularText
+                                                              .copyWith(
+                                                                fontSize:
+                                                                    isWeb
+                                                                        ? 19
+                                                                        : 16,
+                                                              ),
                                                     ),
-                                                    maxLines: 1,
-                                                    minFontSize: 8,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
                                                   ),
-                                              ],
-                                            ),
+                                                  Text(
+                                                    filteredDocs.isNotEmpty
+                                                        ? (filteredDocs.first
+                                                                    .data()
+                                                                as Map<
+                                                                  String,
+                                                                  dynamic
+                                                                >)['timestamp']
+                                                            .toDate()
+                                                            .toString()
+                                                            .substring(0, 10)
+                                                        : '--',
+                                                    style: GoogleFonts.cairo(
+                                                      textStyle:
+                                                          kBodySmallTextDark
+                                                              .copyWith(
+                                                                fontSize:
+                                                                    isWeb
+                                                                        ? 19
+                                                                        : 16,
+                                                                color:
+                                                                    kPrimaryColor,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
                                           ),
                                         ],
                                       ),
                                     ),
-                                  );
-                                },
-                              ),
-                            ),
-                          ],
-                        );
-                      },
+                                  ),
+                                  SizedBox(height: 10),
+                                  Expanded(
+                                    child: ListView.builder(
+                                      padding: EdgeInsets.all(10),
+                                      itemCount: recitationDetails.length,
+                                      itemBuilder: (context, index) {
+                                        final recitation =
+                                            recitationDetails[index];
+                                        final doc = filteredDocs[index];
+                                        String recitationType =
+                                            doc['recitation_type'] ?? '';
+                                        String status = doc['status'] ?? '';
+
+                                        // Skip card if type is 'with' but status is NOT 'confirmed'
+                                        if (recitationType == 'with' &&
+                                            status != 'confirmed') {
+                                          return SizedBox.shrink();
+                                        }
+                                        int firstPage =
+                                            doc['first_page'] is String
+                                                ? int.tryParse(
+                                                      doc['first_page'],
+                                                    ) ??
+                                                    0
+                                                : (doc['first_page'] as int? ??
+                                                    0);
+                                        int secondPage =
+                                            doc['second_page'] is String
+                                                ? int.tryParse(
+                                                      doc['second_page'],
+                                                    ) ??
+                                                    0
+                                                : (doc['second_page'] as int? ??
+                                                    0);
+                                        return Card(
+                                          elevation: 2,
+                                          color: Colors.white,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              12,
+                                            ),
+                                            side: BorderSide(
+                                              color: kSecondaryBorderColor,
+                                              width: 1,
+                                            ),
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(16),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                Expanded(
+                                                  child: Column(
+                                                    children: [
+                                                      Text(
+                                                        'من صفحة $firstPage إلى $secondPage',
+                                                        style: GoogleFonts.cairo(
+                                                          textStyle:
+                                                              kBodySmallText
+                                                                  .copyWith(
+                                                                    fontSize:
+                                                                        isWeb
+                                                                            ? 17
+                                                                            : 14,
+                                                                  ),
+                                                        ),
+                                                        textAlign:
+                                                            TextAlign.right,
+                                                      ),
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets.all(
+                                                              8.0,
+                                                            ),
+                                                        child: Text(
+                                                          recitation['date']
+                                                              .toString()
+                                                              .substring(0, 10),
+                                                          style: GoogleFonts.cairo(
+                                                            textStyle: kBodyRegularText
+                                                                .copyWith(
+                                                                  fontSize:
+                                                                      isWeb
+                                                                          ? 17
+                                                                          : 14,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  color:
+                                                                      kLightPrimaryColor,
+                                                                ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                                Expanded(
+                                                  child: Column(
+                                                    children: [
+                                                      Text(
+                                                        textDirection:
+                                                            TextDirection.rtl,
+                                                        '${recitation['pages']} صفحة',
+                                                        style: GoogleFonts.cairo(
+                                                          textStyle: kBodyRegularText
+                                                              .copyWith(
+                                                                fontSize:
+                                                                    isWeb
+                                                                        ? 19
+                                                                        : 16,
+                                                                color:
+                                                                    kPrimaryColor,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                        ),
+                                                      ),
+                                                      SizedBox(height: 5),
+                                                      AutoSizeText(
+                                                        recitation['type'] ==
+                                                                'with'
+                                                            ? 'نوع التسميع: مدارسة'
+                                                            : 'نوع التسميع: تسميع',
+                                                        style: GoogleFonts.cairo(
+                                                          textStyle: TextStyle(
+                                                            fontSize:
+                                                                isWeb ? 12 : 10,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                        maxLines: 1,
+                                                        minFontSize:
+                                                            isWeb ? 6 : 5,
+                                                        overflow:
+                                                            TextOverflow
+                                                                .ellipsis,
+                                                      ),
+
+                                                      if (recitation['type'] ==
+                                                              'with' &&
+                                                          recitation['with']
+                                                                  ?.isNotEmpty ==
+                                                              true)
+                                                        AutoSizeText(
+                                                          'مع ${recitation['with']}',
+                                                          style: GoogleFonts.cairo(
+                                                            textStyle:
+                                                                TextStyle(
+                                                                  fontSize:
+                                                                      isWeb
+                                                                          ? 12
+                                                                          : 10,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                ),
+                                                          ),
+                                                          maxLines: 1,
+                                                          minFontSize:
+                                                              isWeb ? 6 : 5,
+                                                          overflow:
+                                                              TextOverflow
+                                                                  .ellipsis,
+                                                        ),
+
+                                                      if (recitation['type'] ==
+                                                              'to' &&
+                                                          recitation['with']
+                                                                  ?.isNotEmpty ==
+                                                              true)
+                                                        AutoSizeText(
+                                                          'عند ${recitation['with']}',
+                                                          style: GoogleFonts.cairo(
+                                                            textStyle:
+                                                                TextStyle(
+                                                                  fontSize:
+                                                                      isWeb
+                                                                          ? 12
+                                                                          : 10,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                ),
+                                                          ),
+                                                          maxLines: 1,
+                                                          minFontSize:
+                                                              isWeb ? 6 : 5,
+                                                          overflow:
+                                                              TextOverflow
+                                                                  .ellipsis,
+                                                        ),
+
+                                                      if (recitation['type'] ==
+                                                              'to' &&
+                                                          recitation['listened_by']
+                                                                  ?.isNotEmpty ==
+                                                              true)
+                                                        AutoSizeText(
+                                                          ' عند: ${recitation['listened_by']}',
+                                                          style: GoogleFonts.cairo(
+                                                            textStyle: kBodySmallText
+                                                                .copyWith(
+                                                                  fontSize:
+                                                                      isWeb
+                                                                          ? 12
+                                                                          : 10,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                ),
+                                                          ),
+                                                          maxLines: 1,
+                                                          minFontSize:
+                                                              isWeb ? 10 : 8,
+                                                          overflow:
+                                                              TextOverflow
+                                                                  .ellipsis,
+                                                        ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
+                    SizedBox(height: 20),
+                  ],
                 ),
-                SizedBox(height: 20),
-              ],
-            ),
-          ),
-        ],
+              ),
+            ],
+          );
+        },
       ),
     );
   }

@@ -10,36 +10,42 @@ class Top5Users extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GreenContatiner(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(
-            'أفضل 5 مسمعين خلال هذا الشهر',
-            style: kHeading2Text.copyWith(
-              fontSize: 17,
-              color: kDarkPrimaryColor,
-            ),
-          ),
-          SizedBox(height: 12),
-          ...topUsers
-              .map(
-                (entry) => Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 6),
-                  child: Text(
-                    entry.key,
-                    style: GoogleFonts.cairo(
-                      textStyle: TextStyle(
-                        fontSize: 16,
-                        color: kLightPrimaryColor,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        bool isWeb = constraints.maxWidth > 600;
+
+        return GreenContatiner(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                'أفضل 5 مسمعين خلال هذا الشهر',
+                style: kHeading2Text.copyWith(
+                  fontSize: isWeb ? 22 : 17,
+                  color: kDarkPrimaryColor,
+                ),
+              ),
+              SizedBox(height: 12),
+              ...topUsers
+                  .map(
+                    (entry) => Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 6),
+                      child: Text(
+                        entry.key,
+                        style: GoogleFonts.cairo(
+                          textStyle: TextStyle(
+                            fontSize: isWeb ? 20 : 16,
+                            color: kLightPrimaryColor,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
-              )
-              .toList(),
-        ],
-      ),
+                  )
+                  .toList(),
+            ],
+          ),
+        );
+      },
     );
   }
 }
