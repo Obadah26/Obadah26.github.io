@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "523538994182",
+    "project_id": "alhadiqa-project",
+    "storage_bucket": "alhadiqa-project.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:523538994182:android:6b6b447018f753c7765f87",
+        "android_client_info": {
+          "package_name": "com.example.alhadiqa"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAWo6msDDeHRdrVXAzmkuyd_K60FpwGvJQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
